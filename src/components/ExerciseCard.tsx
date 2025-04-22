@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Plus, Video } from "lucide-react";
 import ExerciseMediaPopup from "./ExerciseMediaPopup";
 
+// Lien vers une image illustrant le mouvement (exemple fourni par l'utilisateur pour testing/demo)
+const EXAMPLE_PLACEHOLDER = "/lovable-uploads/1f2f97f3-bb50-463c-99b3-cd8dd70143c6.png";
+
 interface ExerciseCardProps {
   exercise: Exercise;
   onUpdate: (exerciseId: string, value: number) => void;
@@ -27,64 +30,61 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
   };
 
   return (
-    <div className={`tribal-card mb-4 transition-all ${isCompleted ? 'border-tribal-green' : ''}`}>
+    <div 
+      className={`tribal-card relative mb-6 border-2 bg-black/75 border-gold-dark shadow-jungle transition-all hover:shadow-gold`}
+      style={{ boxShadow: '0 6px 52px 0 #FFD70015, 0 2px 18px -2px #19ea5c22' }}
+    >
       <div className="flex justify-between items-start">
-        <div className="flex">
-          {exercise.image && (
-            <div
-              className="relative mr-4"
-              style={{ minWidth: 70, minHeight: 70 }}
-            >
-              <button
-                type="button"
-                onClick={() => setMediaOpen(true)}
-                className="focus:outline-none group"
-                aria-label={`Voir la vidéo pour ${exercise.name}`}
-              >
-                <img
-                  src={exercise.image}
-                  alt={`Illustration ${exercise.name}`}
-                  className={`w-20 h-20 rounded-xl object-cover border-2 border-tribal-purple group-hover:brightness-110 transition`}
-                />
-                <span className="absolute inset-0 flex items-center justify-center">
-                  <Video
-                    className="opacity-80 bg-black/50 rounded-full p-1 text-tribal-orange w-8 h-8 group-hover:scale-105 transition"
-                    strokeWidth={2.5}
-                  />
-                </span>
-              </button>
-              <ExerciseMediaPopup
-                open={mediaOpen}
-                onOpenChange={setMediaOpen}
-                exerciseName={exercise.name}
-                videoUrl={exercise.video}
-              />
-            </div>
-          )}
+        {/* Illustration : or, verteur, glow */}
+        <div className="flex flex-col items-center pr-3">
+          <button
+            type="button"
+            onClick={() => setMediaOpen(true)}
+            className="relative group outline-none focus-visible:ring-2 focus-visible:ring-gold"
+            aria-label={`Voir la vidéo pour ${exercise.name}`}
+          >
+            <span className="absolute z-20 right-2 top-2 animate-glow-gold opacity-70">
+              <Video className="w-7 h-7 text-gold drop-shadow-[0_0_3px_#FFD700cc]" strokeWidth={2.3} />
+            </span>
+            <img
+              src={exercise.image || EXAMPLE_PLACEHOLDER}
+              alt={`Illustration ${exercise.name}`}
+              className="w-24 h-24 rounded-[1rem] border-4 border-gold object-cover shadow-gold group-hover:scale-105 group-hover:shadow-[0_0_16px_1px_#FFD70099,0_0_32px_14px_#22df991a] transition-transform"
+            />
+            <span className="absolute bottom-[-11px] left-1/2 -translate-x-1/2 w-16 h-3 bg-gradient-to-r from-gold/70 via-gold/40 to-gold/0 blur-sm rounded-sm pointer-events-none -z-10" />
+          </button>
+          <ExerciseMediaPopup
+            open={mediaOpen}
+            onOpenChange={setMediaOpen}
+            exerciseName={exercise.name}
+            videoUrl={exercise.video}
+          />
+        </div>
 
-          <div>
-            <h3 className="text-lg font-medium mb-1">{exercise.name}</h3>
-            {exercise.description && (
-              <p className="text-sm text-gray-400 mb-2">{exercise.description}</p>
+        <div className="flex-1 ml-1">
+          <h3 className="text-xl font-semibold mb-1 text-gold">{exercise.name}</h3>
+          {exercise.description && (
+            <p className="text-sm text-jungle-green mb-2">{exercise.description}</p>
+          )}
+          <div className="text-gold font-medium">
+            {exercise.type === "reps" ? (
+              <span>{exercise.reps} répétitions</span>
+            ) : (
+              <span>{exercise.duration} secondes</span>
             )}
-            <div className="text-tribal-orange font-medium">
-              {exercise.type === "reps" ? (
-                <span>{exercise.reps} répétitions</span>
-              ) : (
-                <span>{exercise.duration} secondes</span>
-              )}
-            </div>
           </div>
         </div>
+
         <Button
           variant="outline"
           size="icon"
-          className={`rounded-full ${isCompleted ? 'bg-tribal-green/20 border-tribal-green text-tribal-green' : 'hover:bg-tribal-purple/20'}`}
+          className={`rounded-full border-gold/60 bg-jungle-green/10 text-gold shadow-md shadow-gold/30
+            hover:bg-gold hover:text-black transition-all ${isCompleted ? 'bg-jungle-green/60 text-black' : ''}`}
           onClick={handleIncrement}
           disabled={isCompleted}
         >
           {isCompleted ? (
-            <span className="text-xl">✓</span>
+            <span className="text-xl font-bold">✓</span>
           ) : (
             <Plus className="h-4 w-4" />
           )}
@@ -96,6 +96,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
           value={exercise.completed} 
           max={target} 
           showValue={true} 
+          className="bg-black/40"
         />
       </div>
 
@@ -104,11 +105,12 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
           {[5, 10, 20].map((amount) => (
             <button
               key={amount}
-              className={`px-2 py-1 text-xs rounded ${
-                incrementAmount === amount
-                  ? "bg-tribal-purple text-white"
-                  : "bg-tribal-gray-light text-gray-300"
-              }`}
+              className={`px-2 py-1 text-xs rounded font-semibold border transition-all
+                ${
+                  incrementAmount === amount
+                    ? "bg-gold text-black border-gold shadow-gold"
+                    : "bg-jungle-green/20 text-jungle-green border-transparent hover:border-gold/50"
+                }`}
               onClick={() => setIncrementAmount(amount)}
             >
               +{amount}
@@ -121,4 +123,3 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
 };
 
 export default ExerciseCard;
-
