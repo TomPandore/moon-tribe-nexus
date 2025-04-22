@@ -1,0 +1,185 @@
+
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { Program, DailyRitual, Exercise } from "@/types";
+import { programs } from "@/data/programs";
+import { getRitualsByProgram } from "@/data/rituals";
+import { useAuth } from "./AuthContext";
+import { useToast } from "@/hooks/use-toast";
+
+type ProgramContextType = {
+  availablePrograms: Program[];
+  currentProgram: Program | null;
+  currentRitual: DailyRitual | null;
+  selectProgram: (programId: string) => void;
+  updateExerciseProgress: (exerciseId: string, value: number) => void;
+  completeRitual: () => void;
+  isLoading: boolean;
+};
+
+const ProgramContext = createContext<ProgramContextType | undefined>(undefined);
+
+export const ProgramProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, updateUserProgress } = useAuth();
+  const { toast } = useToast();
+  const [availablePrograms] = useState<Program[]>(programs);
+  const [currentProgram, setCurrentProgram] = useState<Program | null>(null);
+  const [rituals, setRituals] = useState<DailyRitual[]>([]);
+  const [currentRitual, setCurrentRitual] = useState<DailyRitual | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Charger le programme actuel depuis le localStorage
+  useEffect(() => {
+    if (user?.progress.currentProgram) {
+      const program = programs.find(p => p.id === user.progress.currentProgram);
+      if (program) {
+        setCurrentProgram(program);
+        const programRituals = getRitualsByProgram(program.id);
+        setRituals(programRituals);
+        
+        // Trouver le rituel actuel basé sur le jour actuel
+        const currentDay = user.progress.currentDay || 1;
+        const ritual = programRituals.find(r => r.day === currentDay) || null;
+        setCurrentRitual(ritual);
+      }
+    }
+  }, [user]);
+
+  const selectProgram = (programId: string) => {
+    setIsLoading(true);
+    try {
+      const program = programs.find(p => p.id === programId);
+      if (!program) throw new Error("Programme non trouvé");
+      
+      setCurrentProgram(program);
+      const programRituals = getRitualsByProgram(program.id);
+      setRituals(programRituals);
+      
+      // Réinitialiser à jour 1
+      const ritual = programRituals.find(r => r.day === 1) || null;
+      setCurrentRitual(ritual);
+      
+      // Mettre à jour l'état utilisateur
+      updateUserProgress({
+        currentProgram: program.id,
+        currentDay: 1,
+        startDate: new Date().toISOString()
+      });
+      
+      toast({
+        title: "Programme sélectionné",
+        description: `Vous avez commencé le programme ${program.name}`,
+      });
+    } catch (error) {
+      console.error("Erreur lors de la sélection du programme:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger le programme",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateExerciseProgress = (exerciseId: string, value: number) => {
+    if (!currentRitual) return;
+    
+    const updatedExercises = currentRitual.exercises.map(exercise => {
+      if (exercise.id === exerciseId) {
+        return {
+          ...exercise,
+          completed: Math.min(exercise.type === 'reps' ? exercise.reps! : exercise.duration!, value)
+        };
+      }
+      return exercise;
+    });
+    
+    const updatedRitual = {
+      ...currentRitual,
+      exercises: updatedExercises
+    };
+    
+    setCurrentRitual(updatedRitual);
+    
+    // Mettre à jour également dans le tableau des rituels
+    const updatedRituals = rituals.map(ritual => 
+      ritual.day === currentRitual.day ? updatedRitual : ritual
+    );
+    
+    setRituals(updatedRituals);
+  };
+  
+  const completeRitual = () => {
+    if (!currentRitual || !user || !currentProgram) return;
+    
+    // Marquer le rituel comme complété
+    const updatedRitual = {
+      ...currentRitual,
+      completed: true
+    };
+    
+    // Mettre à jour les rituels
+    const updatedRituals = rituals.map(ritual => 
+      ritual.day === currentRitual.day ? updatedRitual : ritual
+    );
+    
+    setRituals(updatedRituals);
+    
+    // Calculer le prochain jour
+    const nextDay = user.progress.currentDay + 1;
+    const isLastDay = nextDay > currentProgram.duration;
+    
+    // Mise à jour progrès utilisateur
+    updateUserProgress({
+      currentDay: isLastDay ? 1 : nextDay, // Si dernier jour, retour au jour 1
+      lastCompletedDay: user.progress.currentDay,
+      streak: user.progress.streak + 1,
+      totalCompletedDays: user.progress.totalCompletedDays + 1
+    });
+    
+    // Si c'est le dernier jour, afficher un toast de félicitations
+    if (isLastDay) {
+      toast({
+        title: "Programme terminé !",
+        description: `Félicitations ! Vous avez terminé le programme ${currentProgram.name} !`,
+        variant: "default"
+      });
+    } else {
+      toast({
+        title: "Rituel complété !",
+        description: `Bravo ! Vous êtes prêt pour le jour ${nextDay}`,
+        variant: "default"
+      });
+    }
+    
+    // Mettre à jour le rituel courant
+    if (!isLastDay) {
+      const nextRitual = rituals.find(r => r.day === nextDay) || null;
+      setCurrentRitual(nextRitual);
+    }
+  };
+
+  return (
+    <ProgramContext.Provider 
+      value={{ 
+        availablePrograms, 
+        currentProgram, 
+        currentRitual, 
+        selectProgram, 
+        updateExerciseProgress, 
+        completeRitual,
+        isLoading
+      }}
+    >
+      {children}
+    </ProgramContext.Provider>
+  );
+};
+
+export const useProgram = () => {
+  const context = useContext(ProgramContext);
+  if (context === undefined) {
+    throw new Error("useProgram must be used within a ProgramProvider");
+  }
+  return context;
+};
