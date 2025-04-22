@@ -1,6 +1,9 @@
+
 import { DailyRitual } from "@/types";
 
 export const getRitualsByProgram = (programId: string): DailyRitual[] => {
+  // Dans une application réelle, ceci viendrait d'une API
+  // Pour la démo, nous créons quelques rituels pour le programme "origin"
   if (programId === "origin") {
     return [
       {
@@ -15,9 +18,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             description: "Pieds plus larges que les épaules, descendre profondément",
             reps: 30,
             type: "reps",
-            completed: 0,
-            image: "/photo-1493962853295-0fd70327578a",
-            video: "https://www.youtube.com/embed/DYEbUF4xs1Y"
+            completed: 0
           },
           {
             id: "pushup-1",
@@ -25,9 +26,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             description: "Commencez sur les genoux si nécessaire",
             reps: 10,
             type: "reps",
-            completed: 0,
-            image: "/photo-1501286353178-1ec881214838",
-            video: "https://www.youtube.com/embed/_l3ySVKYVJ8"
+            completed: 0
           },
           {
             id: "plank-1",
@@ -35,9 +34,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             description: "Maintenez une position de planche droite",
             duration: 30,
             type: "duration",
-            completed: 0,
-            image: "/photo-1485833077593-4278bba3f11f",
-            video: "https://www.youtube.com/embed/pSHjTRCQxIw"
+            completed: 0
           },
           {
             id: "breath-1",
@@ -45,9 +42,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             description: "Inspirez 4s, retenez 4s, expirez 8s",
             duration: 60,
             type: "duration",
-            completed: 0,
-            image: "/photo-1469041797191-50ace28483c3",
-            video: "https://www.youtube.com/embed/1ZcK5QK2KZc"
+            completed: 0
           }
         ]
       },
@@ -63,9 +58,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             description: "Déplacez-vous comme un ours, opposés main-pied",
             duration: 45,
             type: "duration",
-            completed: 0,
-            image: "/photo-1466721591366-2d5fba72006d",
-            video: "https://www.youtube.com/embed/IBqgRZGbv4E"
+            completed: 0
           },
           {
             id: "cossack-squats",
@@ -73,9 +66,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             description: "Alternez de gauche à droite",
             reps: 20,
             type: "reps",
-            completed: 0,
-            image: "/photo-1472396961693-142e6e269027",
-            video: "https://www.youtube.com/embed/uqLNxJe4L2I"
+            completed: 0
           },
           {
             id: "hip-circles",
@@ -83,9 +74,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             description: "Mobilisez vos hanches en cercles amples",
             reps: 20,
             type: "reps",
-            completed: 0,
-            image: "/photo-1493962853295-0fd70327578a",
-            video: "https://www.youtube.com/embed/bR5VWwYp-nY"
+            completed: 0
           },
           {
             id: "cat-cow",
@@ -93,9 +82,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             description: "Alternez entre arrondir et creuser le dos",
             duration: 60,
             type: "duration",
-            completed: 0,
-            image: "/photo-1469041797191-50ace28483c3",
-            video: "https://www.youtube.com/embed/kqnua4rHVVA"
+            completed: 0
           }
         ]
       },
