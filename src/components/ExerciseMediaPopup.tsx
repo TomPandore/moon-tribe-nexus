@@ -19,19 +19,19 @@ const ExerciseMediaPopup: React.FC<ExerciseMediaPopupProps> = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-md bg-black/70 border-gold/40 rounded-xl shadow-gold relative px-0 pt-0"
+        className="max-w-md bg-black/80 border-acid-yellow/30 rounded-xl shadow-acid relative px-0 pt-0 animate-scale-in"
         style={{
           boxShadow:
-            "0 0 120px 0 #FFD70033, 0 1.5px 12px -2px #22df9955",
+            "0 0 120px 0 rgba(175, 255, 0, 0.15), 0 1.5px 12px -2px rgba(46, 204, 64, 0.4)",
         }}
       >
         <div className="flex flex-col items-center p-5">
           <div className="mb-3 flex items-center gap-2">
-            <Video className="text-gold animate-glow-gold" />
-            <span className="text-lg font-bold text-gold drop-shadow-[0_1px_4px_#FFD700aa] tracking-wider">{exerciseName}</span>
+            <Video className="text-acid-yellow animate-glow-tribal" />
+            <span className="text-lg font-tribal uppercase tracking-wider text-acid-yellow drop-shadow-[0_1px_4px_rgba(175,255,0,0.7)]">{exerciseName}</span>
           </div>
           {videoUrl ? (
-            <div className="w-full aspect-video rounded-xl overflow-hidden bg-black mb-1 border-2 border-gold/60 shadow-gold">
+            <div className="w-full aspect-video rounded-xl overflow-hidden bg-black mb-1 border-2 border-acid-yellow/40 shadow-acid">
               <iframe
                 src={videoUrl}
                 title={exerciseName}
@@ -42,7 +42,7 @@ const ExerciseMediaPopup: React.FC<ExerciseMediaPopupProps> = ({
               />
             </div>
           ) : (
-            <div className="w-full h-40 flex items-center justify-center text-jungle-green bg-black/40 border border-gold/50 rounded-lg">
+            <div className="w-full h-40 flex items-center justify-center text-jungle-green bg-black/40 border border-acid-yellow/30 rounded-lg">
               Vidéo non disponible
             </div>
           )}
@@ -53,4 +53,3 @@ const ExerciseMediaPopup: React.FC<ExerciseMediaPopupProps> = ({
 };
 
 export default ExerciseMediaPopup;
-
