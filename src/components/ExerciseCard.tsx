@@ -3,11 +3,11 @@ import React, { useState } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
 import { Button } from "@/components/ui/button";
-import { Plus, Video } from "lucide-react";
+import { Video } from "lucide-react";
 import ExerciseMediaPopup from "./ExerciseMediaPopup";
 
-// Lien vers une image illustrant le mouvement (exemple fourni par l'utilisateur pour testing/demo)
-const EXAMPLE_PLACEHOLDER = "/lovable-uploads/1f2f97f3-bb50-463c-99b3-cd8dd70143c6.png";
+// Illustration vectorielle/tribal par défaut (option personnalisable)
+const EXAMPLE_PLACEHOLDER = "/lovable-uploads/1d67265c-800e-41ce-b4cf-cc752ce60434.png";
 
 interface ExerciseCardProps {
   exercise: Exercise;
@@ -31,27 +31,38 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
 
   return (
     <div 
-      className={`tribal-card relative mb-6 border-2 bg-black/75 border-gold-dark shadow-jungle transition-all hover:shadow-gold`}
-      style={{ boxShadow: '0 6px 52px 0 #FFD70015, 0 2px 18px -2px #19ea5c22' }}
+      className="relative mb-6 rounded-2xl border-2 border-acid-yellow bg-[#0f0f0f]/95 shadow-lg hover:shadow-jungle transition-shadow duration-300 animate-fade-in"
+      style={{
+        boxShadow: '0 4px 28px 0 #19241766, 0 1.5px 8px -2px #afff001b',
+        overflow: 'hidden',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='90' height='90' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='90' height='90' rx='24' fill='url(%23tribal-bg-grad)' fill-opacity='.12'/%3E%3Cdefs%3E%3ClinearGradient id='tribal-bg-grad' x1='0' y1='0' x2='90' y2='90' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%230f0f0f'/%3E%3Cstop offset='1' stop-color='%2300ff37' stop-opacity='.07'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E")`,
+        backgroundRepeat: "repeat",
+      }}
     >
-      <div className="flex justify-between items-start">
-        {/* Illustration : or, verteur, glow */}
-        <div className="flex flex-col items-center pr-3">
+      <div className="flex items-stretch gap-5 p-5">
+        {/* Illustration section */}
+        <div className="relative group mr-2 shrink-0">
           <button
             type="button"
             onClick={() => setMediaOpen(true)}
-            className="relative group outline-none focus-visible:ring-2 focus-visible:ring-gold"
+            className="relative focus-visible:ring-2 focus-visible:ring-acid-yellow rounded-xl overflow-hidden block w-20 h-20 shadow-md border-2 border-acid-yellow"
             aria-label={`Voir la vidéo pour ${exercise.name}`}
+            style={{
+              background: "#171917",
+              boxShadow: "0 3px 13px #242 0.10",
+            }}
           >
-            <span className="absolute z-20 right-2 top-2 animate-glow-gold opacity-70">
-              <Video className="w-7 h-7 text-gold drop-shadow-[0_0_3px_#FFD700cc]" strokeWidth={2.3} />
-            </span>
             <img
               src={exercise.image || EXAMPLE_PLACEHOLDER}
               alt={`Illustration ${exercise.name}`}
-              className="w-24 h-24 rounded-[1rem] border-4 border-gold object-cover shadow-gold group-hover:scale-105 group-hover:shadow-[0_0_16px_1px_#FFD70099,0_0_32px_14px_#22df991a] transition-transform"
+              className="object-cover w-full h-full rounded-xl"
+              draggable={false}
+              style={{background: "#000"}}
             />
-            <span className="absolute bottom-[-11px] left-1/2 -translate-x-1/2 w-16 h-3 bg-gradient-to-r from-gold/70 via-gold/40 to-gold/0 blur-sm rounded-sm pointer-events-none -z-10" />
+            {/* Video overlay icon (minimal) */}
+            <span className="absolute top-1.5 right-1.5 z-20 bg-black/80 rounded-full p-0.5 flex items-center shadow hover:scale-110 transition-transform">
+              <Video className="w-5 h-5 text-acid-yellow" strokeWidth={2.1} />
+            </span>
           </button>
           <ExerciseMediaPopup
             open={mediaOpen}
@@ -61,12 +72,13 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
           />
         </div>
 
-        <div className="flex-1 ml-1">
-          <h3 className="text-xl font-semibold mb-1 text-gold">{exercise.name}</h3>
+        {/* Main content */}
+        <div className="flex flex-col flex-1">
+          <h3 className="font-tribal text-2xl tracking-wide text-acid-yellow mb-1 leading-tight">{exercise.name}</h3>
           {exercise.description && (
-            <p className="text-sm text-jungle-green mb-2">{exercise.description}</p>
+            <p className="text-jungle-green font-medium text-base mb-2">{exercise.description}</p>
           )}
-          <div className="text-gold font-medium">
+          <div className="text-acid-yellow font-semibold text-base mb-1">
             {exercise.type === "reps" ? (
               <span>{exercise.reps} répétitions</span>
             ) : (
@@ -75,43 +87,46 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
           </div>
         </div>
 
+        {/* Action bouton */}
         <Button
           variant="outline"
           size="icon"
-          className={`rounded-full border-gold/60 bg-jungle-green/10 text-gold shadow-md shadow-gold/30
-            hover:bg-gold hover:text-black transition-all ${isCompleted ? 'bg-jungle-green/60 text-black' : ''}`}
+          className={`ml-3 self-start rounded-full border-acid-yellow border-2 bg-transparent text-acid-yellow hover:bg-acid-yellow/95 hover:text-black active:bg-jungle-green/70 active:text-black transition-all duration-150
+            ${isCompleted ? 'bg-jungle-green/80 text-black border-none' : ''}`}
           onClick={handleIncrement}
           disabled={isCompleted}
         >
           {isCompleted ? (
             <span className="text-xl font-bold">✓</span>
           ) : (
-            <Plus className="h-4 w-4" />
+            <span className="text-lg font-bold">+</span>
           )}
         </Button>
       </div>
-
-      <div className="mt-4">
+      {/* Progress Totem tribal */}
+      <div className="px-6 pb-4">
         <ProgressBar 
           value={exercise.completed} 
           max={target} 
           showValue={true} 
-          className="bg-black/40"
+          className="totem-progress"
         />
       </div>
 
+      {/* Choix d'incrément - minimaliste vert/or */}
       {!isCompleted && (
-        <div className="flex gap-2 mt-3">
+        <div className="flex gap-3 px-6 pb-4">
           {[5, 10, 20].map((amount) => (
             <button
               key={amount}
-              className={`px-2 py-1 text-xs rounded font-semibold border transition-all
+              className={`px-3 py-1 text-sm rounded font-bold border-2 transition-all duration-150
                 ${
                   incrementAmount === amount
-                    ? "bg-gold text-black border-gold shadow-gold"
-                    : "bg-jungle-green/20 text-jungle-green border-transparent hover:border-gold/50"
+                    ? "bg-acid-yellow text-black border-acid-yellow"
+                    : "border-jungle-green text-jungle-green bg-[#1a201a]/80 hover:border-acid-yellow/60"
                 }`}
               onClick={() => setIncrementAmount(amount)}
+              aria-pressed={incrementAmount === amount}
             >
               +{amount}
             </button>
@@ -123,3 +138,4 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
 };
 
 export default ExerciseCard;
+
