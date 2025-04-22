@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Video } from "lucide-react";
+import ExerciseMediaPopup from "./ExerciseMediaPopup";
 
 interface ExerciseCardProps {
   exercise: Exercise;
@@ -14,30 +15,65 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
   const [incrementAmount, setIncrementAmount] = useState(
     exercise.type === "reps" ? 5 : 10
   );
-  
+  const [mediaOpen, setMediaOpen] = useState(false);
+
   const target = exercise.type === "reps" ? exercise.reps! : exercise.duration!;
   const isCompleted = exercise.completed >= target;
-  
+
   const handleIncrement = () => {
     if (isCompleted) return;
     const newValue = Math.min(target, exercise.completed + incrementAmount);
     onUpdate(exercise.id, newValue);
   };
-  
+
   return (
     <div className={`tribal-card mb-4 transition-all ${isCompleted ? 'border-tribal-green' : ''}`}>
       <div className="flex justify-between items-start">
-        <div>
-          <h3 className="text-lg font-medium mb-1">{exercise.name}</h3>
-          {exercise.description && (
-            <p className="text-sm text-gray-400 mb-2">{exercise.description}</p>
+        <div className="flex">
+          {exercise.image && (
+            <div
+              className="relative mr-4"
+              style={{ minWidth: 70, minHeight: 70 }}
+            >
+              <button
+                type="button"
+                onClick={() => setMediaOpen(true)}
+                className="focus:outline-none group"
+                aria-label={`Voir la vidéo pour ${exercise.name}`}
+              >
+                <img
+                  src={exercise.image}
+                  alt={`Illustration ${exercise.name}`}
+                  className={`w-20 h-20 rounded-xl object-cover border-2 border-tribal-purple group-hover:brightness-110 transition`}
+                />
+                <span className="absolute inset-0 flex items-center justify-center">
+                  <Video
+                    className="opacity-80 bg-black/50 rounded-full p-1 text-tribal-orange w-8 h-8 group-hover:scale-105 transition"
+                    strokeWidth={2.5}
+                  />
+                </span>
+              </button>
+              <ExerciseMediaPopup
+                open={mediaOpen}
+                onOpenChange={setMediaOpen}
+                exerciseName={exercise.name}
+                videoUrl={exercise.video}
+              />
+            </div>
           )}
-          <div className="text-tribal-orange font-medium">
-            {exercise.type === "reps" ? (
-              <span>{exercise.reps} répétitions</span>
-            ) : (
-              <span>{exercise.duration} secondes</span>
+
+          <div>
+            <h3 className="text-lg font-medium mb-1">{exercise.name}</h3>
+            {exercise.description && (
+              <p className="text-sm text-gray-400 mb-2">{exercise.description}</p>
             )}
+            <div className="text-tribal-orange font-medium">
+              {exercise.type === "reps" ? (
+                <span>{exercise.reps} répétitions</span>
+              ) : (
+                <span>{exercise.duration} secondes</span>
+              )}
+            </div>
           </div>
         </div>
         <Button
@@ -54,7 +90,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
           )}
         </Button>
       </div>
-      
+
       <div className="mt-4">
         <ProgressBar 
           value={exercise.completed} 
@@ -62,7 +98,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
           showValue={true} 
         />
       </div>
-      
+
       {!isCompleted && (
         <div className="flex gap-2 mt-3">
           {[5, 10, 20].map((amount) => (
@@ -85,3 +121,4 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
 };
 
 export default ExerciseCard;
+

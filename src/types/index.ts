@@ -7,6 +7,8 @@ export type Exercise = {
   duration?: number;
   type: 'reps' | 'duration';
   completed: number;
+  image?: string; // Ajout image illustrative (URL ou chemin public)
+  video?: string; // Ajout URL vidéo (ex : YouTube ou mp4)
 };
 
 export type DailyRitual = {
@@ -42,3 +44,4 @@ export type User = {
   name?: string;
   progress: UserProgress;
 };
+
