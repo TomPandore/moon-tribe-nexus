@@ -72,6 +72,8 @@ export const programs: ProgramExt[] = [
     difficulty: "medium",
     focus: ["Souplesse", "Contrôle", "Respiration", "Conscience corporelle"],
     image: "https://images.unsplash.com/photo-1504893524553-b855bce32c67",
-    category: "premium"
+    category: "premium",
+    illustration: "/lovable-uploads/5bff93d1-0e04-4995-87af-9fce87103940.png"
   }
 ];
+
