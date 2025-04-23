@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
@@ -83,10 +82,11 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
                 {exercise.description}
               </p>
             )}
-            <div className="text-muted-foreground text-xs mt-1">
-              {exercise.type === "reps"
-                ? `${exercise.reps} répétitions`
-                : `${exercise.duration} secondes`}
+            <div className="text-base font-semibold text-primary mt-1">
+              {exercise.type === "reps" 
+                ? `${exercise.completed}/${exercise.reps} répétitions`
+                : `${exercise.completed}/${exercise.duration} secondes`
+              }
             </div>
           </div>
 
@@ -105,48 +105,44 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
         />
 
         {!isCompleted && (
-          <div className="flex flex-col gap-2 w-full">
-            <div className="flex items-center gap-2 justify-between">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={handleDecrement}
-                  disabled={exercise.completed <= 0}
-                  aria-label="Réduire"
-                >
-                  <Minus size={16} />
-                </Button>
+          <div className="flex items-center gap-2 mt-2">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              onClick={handleDecrement}
+              disabled={exercise.completed <= 0}
+              aria-label="Réduire"
+            >
+              <Minus size={16} />
+            </Button>
 
-                {[5, 10, 20].map((amount) => (
-                  <button
-                    key={amount}
-                    type="button"
-                    className={`
-                      px-2 py-1 text-xs font-medium rounded
-                      ${incrementAmount === amount
-                        ? "bg-primary/10 text-primary"
-                        : "bg-muted text-muted-foreground"}
-                      transition
-                    `}
-                    onClick={() => setIncrementAmount(amount)}
-                  >
-                    +{amount}
-                  </button>
-                ))}
+            {[5, 10, 20].map((amount) => (
+              <button
+                key={amount}
+                type="button"
+                className={`
+                  px-2 py-1 text-xs font-medium rounded
+                  ${incrementAmount === amount
+                    ? "bg-primary/10 text-primary"
+                    : "bg-muted text-muted-foreground"}
+                  transition
+                `}
+                onClick={() => setIncrementAmount(amount)}
+              >
+                +{amount}
+              </button>
+            ))}
 
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={handleIncrement}
-                  aria-label="Augmenter"
-                >
-                  <Plus size={16} />
-                </Button>
-              </div>
-            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              onClick={handleIncrement}
+              aria-label="Augmenter"
+            >
+              <Plus size={16} />
+            </Button>
           </div>
         )}
       </div>
