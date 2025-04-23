@@ -5,35 +5,35 @@
 
 @layer base {
   :root {
-    --background: 248 32% 98%;
-    --foreground: 0 0% 15%;
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
+    --card: 0 0% 14%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
+    --popover: 0 0% 14%;
+    --popover-foreground: 0 0% 98%;
 
     --primary: 95 100% 50%;
-    --primary-foreground: 0 0% 15%;
+    --primary-foreground: 0 0% 10%;
 
-    --secondary: 70 10% 92%;
-    --secondary-foreground: 95 100% 40%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 95 100% 50%;
 
-    --muted: 97 10% 90%;
-    --muted-foreground: 99 10% 42%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 40 90% 65%;
-    --accent-foreground: 99 10% 15%;
+    --accent: 28 100% 55%;
+    --accent-foreground: 0 0% 10%;
 
     --destructive: 0 77% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 58 13% 90%;
-    --input: 58 13% 90%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
     --ring: 95 100% 50%;
 
-    --radius: 1.25rem;
+    --radius: 0.75rem;
   }
 }
 
@@ -44,45 +44,72 @@
   
   html, body {
     @apply h-full overflow-x-hidden;
-    background: #f8fafb;
+    background: #0f0f0f;
   }
   
   body {
     @apply text-foreground font-sans antialiased;
-    background: #f8fafb;
+    background: #0f0f0f;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
   }
   
   #root {
-    @apply min-h-screen flex flex-col bg-[#f8fafb];
+    @apply min-h-screen flex flex-col bg-[#0f0f0f];
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-oswald uppercase tracking-wide;
   }
 }
 
 @layer components {
   .tribal-input {
-    @apply bg-white rounded-md border-[#e4e9e1] text-[#2f3432] px-4 py-3 focus:ring-1 focus:ring-tribal-green focus:border-tribal-green transition-all;
+    @apply bg-secondary border-2 border-border rounded-md text-foreground px-4 py-3 focus:border-tribal-green focus-visible:outline-none focus:ring-1 focus:ring-tribal-green transition-all;
   }
   
   .tribal-card {
-    @apply bg-white rounded-lg border border-[#e4e9e1] p-5 shadow;
+    @apply bg-card rounded-xl border border-border p-5 shadow-lg shadow-black/50 hover:border-tribal-green/30 transition-all;
   }
   
   .tribal-btn-primary {
-    @apply bg-tribal-green hover:bg-opacity-90 text-black rounded-lg px-6 py-3 font-medium shadow-md transition-all;
+    @apply bg-tribal-green hover:bg-opacity-90 text-black rounded-md px-6 py-3 font-medium uppercase tracking-wider shadow-md shadow-tribal-green/20 transition-all;
   }
   
   .tribal-btn-accent {
-    @apply bg-tribal-orange hover:bg-opacity-90 text-white rounded-lg px-6 py-3 font-medium shadow-md transition-all;
+    @apply bg-tribal-orange hover:bg-opacity-90 text-white rounded-md px-6 py-3 font-medium uppercase tracking-wider shadow-md shadow-tribal-orange/20 transition-all;
   }
   
   .tribal-btn-outline {
-    @apply bg-transparent border border-tribal-green text-tribal-green hover:bg-tribal-green hover:bg-opacity-10 rounded-lg px-6 py-3 font-medium transition-all;
+    @apply bg-transparent border-2 border-tribal-green text-tribal-green hover:bg-tribal-green/10 rounded-md px-6 py-3 font-medium uppercase tracking-wider transition-all;
   }
 
   .progress-tribal {
-    @apply h-2 rounded-full bg-[#e4e9e1] overflow-hidden;
+    @apply h-2 rounded-full bg-muted overflow-hidden;
   }
   
   .progress-tribal-fill {
     @apply h-full bg-gradient-to-r from-tribal-green to-tribal-purple;
+  }
+  
+  .tribal-link {
+    @apply text-tribal-green hover:text-tribal-green/80 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-tribal-green after:origin-bottom-right after:scale-x-0 hover:after:scale-x-100 hover:after:origin-bottom-left after:transition-transform;
+  }
+  
+  .tribal-heading {
+    @apply font-oswald uppercase text-tribal-green tracking-wide;
+  }
+  
+  .tribal-pattern {
+    background-image: linear-gradient(45deg, #222 25%, transparent 25%), 
+      linear-gradient(-45deg, #222 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #222 75%),
+      linear-gradient(-45deg, transparent 75%, #222 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+    opacity: 0.05;
+  }
+  
+  .glass-panel {
+    @apply bg-black/30 backdrop-blur-sm border border-white/10;
   }
 }

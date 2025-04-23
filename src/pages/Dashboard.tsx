@@ -8,6 +8,7 @@ import ExerciseCard from "@/components/ExerciseCard";
 import ProgressBar from "@/components/ProgressBar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { LogOut, Calendar, Trophy, Flame } from "lucide-react";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const Dashboard: React.FC = () => {
     if (!allExercisesCompleted) {
       toast({
         title: "Exercices incomplets",
-        description: "Vous devez compléter tous les exercices avant de valider le rituel",
+        description: "Complète tous les exercices avant de valider le rituel",
         variant: "destructive"
       });
       return;
@@ -47,57 +48,66 @@ const Dashboard: React.FC = () => {
   };
   
   return (
-    <div className="min-h-screen pb-10 bg-gradient-to-b from-tribal-darker to-tribal-dark">
-      <header className="px-4 py-4 flex justify-between items-center">
-        <Logo />
-        <div className="flex space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => navigate("/programs")}
-            className="border-tribal-gray-light text-tribal-purple hover:text-white hover:bg-tribal-purple"
-          >
-            Programmes
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={logout}
-            className="border-tribal-gray-light text-white hover:bg-tribal-gray-light"
-          >
-            Déconnexion
-          </Button>
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* Background pattern */}
+      <div className="absolute inset-0 tribal-pattern pointer-events-none"></div>
+      
+      <header className="relative z-10 container mx-auto pt-6 pb-4 px-4">
+        <div className="flex justify-between items-center">
+          <Logo />
+          <div className="flex space-x-3">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate("/programs")}
+              className="border-tribal-green/70 text-tribal-green hover:bg-tribal-green/10"
+            >
+              Programmes
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={logout}
+              className="border-tribal-green/70 text-tribal-green hover:bg-tribal-green/10"
+            >
+              <LogOut size={16} className="mr-2" />
+              Déconnexion
+            </Button>
+          </div>
         </div>
       </header>
       
-      <main className="container mx-auto px-4 py-6">
+      <main className="relative z-10 container mx-auto px-4 py-6 pb-20 max-w-3xl">
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-2">
-            <h1 className="text-xl font-bold">{currentProgram.name}</h1>
-            <span className="text-sm bg-tribal-gray-light px-2 py-1 rounded-full">
-              Jour {user.progress.currentDay}/{currentProgram.duration}
-            </span>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold text-tribal-green">{currentProgram.name}</h1>
+            <div className="flex items-center bg-muted px-3 py-1 rounded-full">
+              <Calendar size={16} className="mr-2 text-muted-foreground" />
+              <span className="text-sm font-medium text-muted-foreground">
+                Jour {user.progress.currentDay}/{currentProgram.duration}
+              </span>
+            </div>
           </div>
           <ProgressBar 
             value={user.progress.currentDay} 
             max={currentProgram.duration} 
-            className="h-1.5"
+            className="h-2"
           />
         </div>
         
-        <div className="tribal-card mb-6">
+        <div className="tribal-card mb-8 glass-panel">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">{currentRitual.title}</h2>
-            <span className="text-sm text-tribal-orange">
+            <h2 className="text-xl font-bold text-tribal-green">{currentRitual.title}</h2>
+            <span className="text-sm text-tribal-orange font-medium">
               {completedExercises}/{totalExercises}
             </span>
           </div>
           
           {currentRitual.description && (
-            <p className="text-gray-400 mb-6">{currentRitual.description}</p>
+            <p className="text-muted-foreground mb-6">{currentRitual.description}</p>
           )}
           
-          <div className="mb-4">
+          <div className="mb-6">
             <ProgressBar 
               value={completedExercises} 
               max={totalExercises} 
@@ -105,21 +115,31 @@ const Dashboard: React.FC = () => {
             />
           </div>
           
-          <div className="stats flex gap-4 mb-6">
-            <div className="tribal-card flex-1 p-3 text-center">
-              <div className="text-sm text-gray-400">Série actuelle</div>
-              <div className="text-xl font-bold">{user.progress.streak}</div>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="tribal-card flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                <Flame size={20} className="text-tribal-orange" />
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Série actuelle</div>
+                <div className="text-xl font-bold text-tribal-green">{user.progress.streak}</div>
+              </div>
             </div>
-            <div className="tribal-card flex-1 p-3 text-center">
-              <div className="text-sm text-gray-400">Total complété</div>
-              <div className="text-xl font-bold">{user.progress.totalCompletedDays}</div>
+            <div className="tribal-card flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                <Trophy size={20} className="text-tribal-orange" />
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Total complété</div>
+                <div className="text-xl font-bold text-tribal-green">{user.progress.totalCompletedDays}</div>
+              </div>
             </div>
           </div>
         </div>
         
-        <h3 className="text-lg font-semibold mb-4">Exercices à compléter</h3>
+        <h3 className="text-lg font-bold mb-4 text-tribal-green">Exercices à compléter</h3>
         
-        <div className="space-y-4">
+        <div className="space-y-4 mb-20">
           {currentRitual.exercises.map((exercise) => (
             <ExerciseCard
               key={exercise.id}
@@ -129,18 +149,21 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
         
-        <div className="mt-8 sticky bottom-4">
-          <Button 
-            className={`w-full py-6 ${allExercisesCompleted ? 'tribal-btn-accent' : 'tribal-btn-primary opacity-70'}`} 
-            onClick={handleCompleteRitual}
-            disabled={isCompleting}
-          >
-            {isCompleting 
-              ? "Validation en cours..." 
-              : allExercisesCompleted 
-                ? "Valider le rituel du jour" 
-                : "Complétez tous les exercices pour valider"}
-          </Button>
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t border-border z-20">
+          <div className="container max-w-3xl mx-auto">
+            <Button 
+              className={`w-full py-6 ${allExercisesCompleted ? 'bg-tribal-orange text-white' : 'bg-tribal-green/60 text-black'}`}
+              onClick={handleCompleteRitual}
+              disabled={isCompleting || !allExercisesCompleted}
+              variant="default"
+            >
+              {isCompleting 
+                ? "Validation en cours..." 
+                : allExercisesCompleted 
+                  ? "Valider le rituel du jour" 
+                  : "Complète tous les exercices pour valider"}
+            </Button>
+          </div>
         </div>
       </main>
     </div>

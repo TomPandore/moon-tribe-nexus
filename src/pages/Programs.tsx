@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
 import ProgramCard from "@/components/ProgramCard";
 import { Button } from "@/components/ui/button";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, LogOut } from "lucide-react";
 import { programs } from "@/data/programs";
 
 const getProgramsByCategory = (cat) => programs.filter(p => p.category === cat);
@@ -27,47 +27,46 @@ const Programs: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafb] relative overflow-x-hidden transition-colors">
-      <div className="w-full h-[90px] md:h-[160px] bg-gradient-to-b from-[#f4f7f3] to-[#f8fafb] flex items-end pb-6 mb-2">
-        <img
-          src="/lovable-uploads/b2241549-ce89-484c-98c7-e2cb86c69ba7.png"
-          alt=""
-          className="max-w-[180px] md:max-w-xs pointer-events-none opacity-80 absolute top-2 right-0"
-          style={{ zIndex: 1 }}
-        />
-        <div className="container z-10">
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* Background pattern */}
+      <div className="absolute inset-0 tribal-pattern pointer-events-none"></div>
+      
+      <header className="relative z-10 container mx-auto pt-6 pb-4 px-4">
+        <div className="flex justify-between items-center">
           <Logo />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={logout}
+            className="border-tribal-green/70 text-tribal-green hover:bg-tribal-green/10"
+          >
+            <LogOut size={16} className="mr-2" />
+            Déconnexion
+          </Button>
         </div>
-      </div>
-      <header className="container flex justify-end items-center mb-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={logout}
-          className="border-[#dedede] text-tribal-green hover:text-[#fff] hover:bg-tribal-green font-extrabold uppercase"
-        >
-          Déconnexion
-        </Button>
       </header>
-      <main className="container mx-auto max-w-5xl px-2 sm:px-6 pb-12 z-10 relative">
-        <h1
-          className="text-3xl md:text-4xl font-black mb-3 mt-2 tracking-tight text-[#293321] uppercase"
-          style={{
-            letterSpacing: ".01em",
-            fontFamily: "Oswald, 'Inter', sans-serif"
-          }}
-        >
-          Choisis ton rituel MoHero
+      
+      <main className="relative z-10 container mx-auto px-4 py-6 pb-20">
+        <h1 className="text-3xl md:text-4xl mb-3 text-tribal-green">
+          Choisis ton rituel
         </h1>
-        <div className="max-w-2xl mx-auto text-lg text-[#576948] mb-8 font-medium text-center">
-          Explore les programmes gratuits ou découvre la <b className="text-tribal-green">Voie MoHero</b> pour transformer ta pratique.
-        </div>
+        <p className="text-lg text-muted-foreground mb-10 max-w-2xl">
+          Explore les programmes gratuits ou découvre la <span className="text-tribal-green font-medium">Voie MoHero</span> pour transformer ta pratique.
+        </p>
+        
         {/* Programmes Découverte */}
         <section className="mb-16">
-          <h2 className="text-xl md:text-2xl font-black mb-6 tracking-tight text-[#45a162] uppercase" style={{fontFamily: "Oswald, 'Inter', sans-serif"}}>
-            🌿 Programmes Découverte <span className="text-xs ml-2 py-1 rounded-full bg-[#eaf3e1] text-[#45a162] font-bold inline-block px-3">Gratuit</span>
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="bg-muted w-1 h-8"></div>
+            <h2 className="text-xl md:text-2xl font-bold text-tribal-green flex items-center">
+              Programmes Découverte
+              <span className="ml-3 text-xs py-1 px-3 rounded-full bg-muted text-tribal-green font-semibold">
+                Gratuit
+              </span>
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {freePrograms.map((program) => (
               <ProgramCard
                 key={program.id}
@@ -79,12 +78,17 @@ const Programs: React.FC = () => {
             ))}
           </div>
         </section>
+        
         {/* Voie MoHero premium */}
         <section>
-          <h2 className="text-xl md:text-2xl font-black mb-6 tracking-tight text-[#b8833c] uppercase" style={{fontFamily: "Oswald, 'Inter', sans-serif"}}>
-            🔥 Voie MoHero
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="bg-tribal-orange w-1 h-8"></div>
+            <h2 className="text-xl md:text-2xl font-bold text-tribal-orange flex items-center">
+              Voie MoHero
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {premiumPrograms.map((program) => (
               <ProgramCard
                 key={program.id}
@@ -96,16 +100,16 @@ const Programs: React.FC = () => {
             ))}
           </div>
         </section>
+        
         {user && currentProgram && (
           <div className="mt-12 text-center">
             <Button
-              className="bg-tribal-green text-black font-black text-lg px-10 py-5 rounded-lg shadow hover:bg-[#b1f206]"
+              className="bg-tribal-orange text-white font-bold text-lg px-8 py-6 rounded-md hover:bg-tribal-orange/90"
               onClick={() => navigate("/dashboard")}
               disabled={isLoading}
-              variant="default"
             >
               <ArrowUp className="mr-2 h-5 w-5" />
-              Retourner à mon programme actuel
+              Retourner à mon programme
             </Button>
           </div>
         )}
