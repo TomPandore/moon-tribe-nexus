@@ -27,6 +27,27 @@ const Dashboard: React.FC = () => {
     const target = ex.type === "reps" ? ex.reps! : ex.duration!;
     return ex.completed >= target;
   }).length;
+  
+  // Restored the allExercisesCompleted variable
+  const allExercisesCompleted = completedExercises === totalExercises;
+
+  // Restored the handleCompleteRitual function
+  const handleCompleteRitual = () => {
+    if (!allExercisesCompleted) {
+      toast({
+        title: "Exercices incomplets",
+        description: "Complète tous les exercices avant de valider le rituel",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsCompleting(true);
+    setTimeout(() => {
+      completeRitual();
+      setIsCompleting(false);
+    }, 1000);
+  };
 
   const getEncouragingMessage = () => {
     const userName = user.name || "Champion";
@@ -146,4 +167,3 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
-
