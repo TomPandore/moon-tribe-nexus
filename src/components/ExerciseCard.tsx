@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
@@ -74,7 +75,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
                 {exercise.description}
               </p>
             )}
-            <div className="text-base font-semibold text-primary/80 mt-1">
+            <div className="text-sm font-semibold text-primary/80 mt-1">
               {exercise.type === "reps" 
                 ? `${exercise.completed}/${exercise.reps} répétitions`
                 : `${exercise.completed}/${exercise.duration} secondes`
