@@ -73,7 +73,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
         </div>
       </div>
       
-      <div className="mt-2 flex flex-wrap gap-2 mb-4">
+      <div className="mt-4 mb-4 flex flex-wrap justify-center gap-2">
         {program.focus.map((f, i) => (
           <Badge
             key={i}
