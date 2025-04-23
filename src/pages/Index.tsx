@@ -31,7 +31,7 @@ const Index: React.FC = () => {
       
       <div className="flex flex-col min-h-screen">
         <header className="relative z-10 container mx-auto pt-6 pb-4 px-4">
-          <Logo />
+          <Logo variant="horizontal" size="lg" />
         </header>
         
         <main className="flex-grow flex flex-col items-center justify-center text-center px-4 py-12 relative z-10">
@@ -105,3 +105,4 @@ const Index: React.FC = () => {
 };
 
 export default Index;
+
