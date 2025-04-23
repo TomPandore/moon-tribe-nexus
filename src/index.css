@@ -33,7 +33,7 @@
     --input: 240 6% 90%;
     --ring: 220 90% 56%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
   }
 }
 
@@ -41,78 +41,62 @@
   * {
     @apply border-border;
   }
-  
+
   html, body {
     @apply h-full overflow-x-hidden;
     background: #fafafa;
   }
-  
+
   body {
     @apply text-foreground font-sans antialiased;
     background: #fafafa;
     font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
   }
-  
+
   #root {
     @apply min-h-screen flex flex-col bg-[#fafafa];
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-medium tracking-tight;
   }
 }
 
 @layer components {
-  .bg-card {
-    background-color: hsl(var(--card));
-    @apply shadow-sm;
-  }
-
   .app-input {
     @apply bg-white border border-border rounded-lg text-foreground px-4 py-3 focus:border-primary focus-visible:outline-none focus:ring-1 focus:ring-primary/20 transition-all;
   }
-  
+
   .app-card {
-    @apply bg-white rounded-lg border border-border p-5 shadow-sm hover:shadow-md transition-all;
-  }
-  
-  .btn-primary {
-    @apply bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-3 font-medium shadow-sm transition-all;
-  }
-  
-  .btn-secondary {
-    @apply bg-secondary hover:bg-secondary/80 text-foreground rounded-lg px-6 py-3 font-medium transition-all;
-  }
-  
-  .btn-outline {
-    @apply bg-transparent border border-border text-foreground hover:bg-secondary/50 rounded-lg px-6 py-3 font-medium transition-all;
+    @apply bg-white rounded-xl border border-border p-5 shadow-[0_1px_4px_0_rgba(0,0,0,0.06)];
   }
 
-  .progress-bar {
-    @apply h-1.5 rounded-full bg-muted overflow-hidden;
+  .exercise-block {
+    @apply bg-white rounded-xl border border-border shadow-sm p-4 mb-2;
   }
-  
-  .progress-bar-fill {
-    @apply h-full bg-primary;
+
+  .exercise-header {
+    @apply flex items-center gap-4 mb-2;
   }
-  
-  .app-link {
-    @apply text-primary hover:text-primary/80 transition-colors;
+
+  .exercise-title {
+    @apply text-base font-semibold text-foreground;
   }
-  
-  .badge {
-    @apply text-xs font-medium px-2 py-0.5 rounded-full;
+
+  .exercise-description {
+    @apply text-xs text-muted-foreground;
   }
-  
-  .badge-primary {
-    @apply bg-primary/10 text-primary;
+
+  .exercise-stats {
+    @apply mt-1 text-xs text-muted-foreground;
   }
-  
-  .badge-secondary {
-    @apply bg-secondary text-foreground/70;
+
+  .exercise-actions {
+    @apply flex items-center gap-2 mt-2;
   }
-  
-  .tag {
-    @apply bg-secondary text-xs font-medium px-2 py-1 rounded-full;
+
+  /* Séparateur pour blocs exercices */
+  .exercise-separator {
+    @apply w-full h-px bg-gray-200 my-4;
   }
 }
