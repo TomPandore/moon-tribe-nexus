@@ -8,7 +8,7 @@ const navItems = [
   {
     label: "Accueil",
     icon: Home,
-    to: "/",  // Modification : utiliser "/" explicitement pour l'accueil
+    to: "/",
     testId: "menu-home"
   },
   {
@@ -20,7 +20,7 @@ const navItems = [
   {
     label: "Rituel du jour",
     icon: Calendar,
-    to: "/dashboard",
+    to: "/",  // Changed to / since Dashboard is now the home page
     testId: "menu-ritual"
   },
   {

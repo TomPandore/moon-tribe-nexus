@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -9,7 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProgramProvider } from "@/contexts/ProgramContext";
 import Login from "./pages/Login";
 import Programs from "./pages/Programs";
-import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import AppMenuBar from "@/components/AppMenuBar";
@@ -42,7 +41,7 @@ const App = () => (
                   path="/" 
                   element={
                     <ProtectedRoute>
-                      <Dashboard />
+                      <Home />
                     </ProtectedRoute>
                   } 
                 />
