@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
@@ -9,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import { programs } from "@/data/programs";
 
-const getProgramsByCategory = (cat) => programs.filter(p => p.category === cat);
+const getProgramsByCategory = (cat: "free" | "premium") => 
+  programs.filter(p => p.category === cat);
 
 const Programs: React.FC = () => {
   const navigate = useNavigate();
@@ -102,4 +102,3 @@ const Programs: React.FC = () => {
 };
 
 export default Programs;
-

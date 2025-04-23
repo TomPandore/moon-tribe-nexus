@@ -21,6 +21,7 @@ export const programs: Program[] = [
     difficulty: "easy",
     focus: ["Endurance", "Respiration", "Stress", "Force"],
     image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
+    illustration: "/lovable-uploads/f7e5bccc-424f-4f9b-9b96-ae1f50cf0ad5.png",
     category: "free"
   },
 
