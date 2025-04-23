@@ -44,15 +44,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
   };
 
   return (
-    <div
-      className={`
-        app-card 
-        flex gap-4
-        p-4 rounded-2xl border border-border bg-white 
-        shadow-none
-        transition-all
-      `}
-    >
+    <div className="app-card flex gap-4 p-4 rounded-2xl border border-border bg-white shadow-none transition-all">
       {exercise.image && (
         <button
           type="button"
@@ -82,7 +74,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
                 {exercise.description}
               </p>
             )}
-            <div className="text-base font-semibold text-primary mt-1">
+            <div className="text-base font-semibold text-primary/80 mt-1">
               {exercise.type === "reps" 
                 ? `${exercise.completed}/${exercise.reps} répétitions`
                 : `${exercise.completed}/${exercise.duration} secondes`
