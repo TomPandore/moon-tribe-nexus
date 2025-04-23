@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
@@ -10,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { LogOut, Calendar, Trophy, Flame } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import DashboardHeader from "@/components/DashboardHeader";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -48,35 +48,21 @@ const Dashboard: React.FC = () => {
     }, 1000);
   };
 
+  // Handler pour aller vers la section rituel du jour (scroll smooth)
+  const scrollToRitual = () => {
+    const el = document.getElementById('ritual-section');
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground relative">
-      {/* Background pattern */}
-      {/* <div className="absolute inset-0 tribal-pattern pointer-events-none"></div> */}
+      {/* Header menu */}
+      <DashboardHeader onRitualClick={scrollToRitual} />
 
-      <header className="relative z-10 container mx-auto pt-6 pb-4 px-4">
-        <div className="flex justify-between items-center">
-          <Logo />
-          <div className="flex space-x-3">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate("/programs")}
-              className="border-border text-foreground hover:bg-secondary"
-            >
-              Programmes
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={logout}
-              className="border-border text-foreground hover:bg-secondary"
-            >
-              <LogOut size={16} className="mr-2" />
-              Déconnexion
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Spacer sous le header */}
+      <div className="h-[72px]" />
 
       <main className="relative z-10 container mx-auto px-4 py-6 pb-20 max-w-3xl">
         <div className="mb-8">
@@ -96,7 +82,8 @@ const Dashboard: React.FC = () => {
           />
         </div>
 
-        <div className="app-card mb-8">
+        {/* Section Rituel */}
+        <section id="ritual-section" className="app-card mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">{currentRitual.title}</h2>
             <span className="text-sm font-medium">
@@ -136,7 +123,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         <h3 className="text-lg font-bold mb-4">Exercices à compléter</h3>
 
