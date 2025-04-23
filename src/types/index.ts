@@ -10,3 +10,39 @@ export interface Program {
   illustration?: string;
   category?: "free" | "premium";
 }
+
+export type Exercise = {
+  id: string;
+  name: string;
+  description?: string;
+  reps?: number;
+  duration?: number;
+  type: "reps" | "duration";
+  completed: number;
+  image?: string;
+  video?: string;
+};
+
+export type DailyRitual = {
+  day: number;
+  title: string;
+  description?: string;
+  exercises: Exercise[];
+  completed: boolean;
+};
+
+export type UserProgress = {
+  currentProgram?: string;
+  currentDay: number;
+  lastCompletedDay?: number;
+  streak: number;
+  totalCompletedDays: number;
+  startDate?: string;
+};
+
+export type User = {
+  id: string;
+  email: string;
+  name?: string;
+  progress: UserProgress;
+};

@@ -2,6 +2,7 @@
 import React from "react";
 import { Program } from "@/types";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Leaf, TreeDeciduous, Flame, Zap, Waves } from "lucide-react";
 import Image from "@/components/ui/image";
 
@@ -72,21 +73,22 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
         </div>
       </div>
       
-      <div className="mt-2 flex flex-wrap gap-1.5 mb-4">
+      <div className="mt-2 flex flex-wrap gap-2 mb-4">
         {program.focus.map((f, i) => (
-          <span
+          <Badge
             key={i}
-            className="tag"
+            variant="secondary"
+            className="px-3 py-1 bg-[#E5DEFF] text-[#6E59A5] hover:bg-[#E5DEFF] hover:text-[#6E59A5] border-0"
           >
             {f}
-          </span>
+          </Badge>
         ))}
       </div>
       
       <div className="flex items-center justify-between mt-auto pt-2">
-        <span className="badge badge-secondary">
+        <Badge variant="outline" className="bg-secondary/50">
           {program.duration} jours
-        </span>
+        </Badge>
       </div>
       
       <Button
@@ -107,8 +109,10 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
       </Button>
       
       {isSelected && (
-        <div className="absolute top-3 right-3 badge badge-primary">
-          Sélectionné
+        <div className="absolute top-3 right-3">
+          <Badge variant="default" className="bg-primary">
+            Sélectionné
+          </Badge>
         </div>
       )}
     </div>
