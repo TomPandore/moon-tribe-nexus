@@ -51,12 +51,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
             <div className="absolute inset-0 flex items-center justify-center">
               <Video className="text-gray-500 bg-white/60 rounded-full p-1 w-7 h-7" strokeWidth={2} />
             </div>
-            <ExerciseMediaPopup
-              open={mediaOpen}
-              onOpenChange={setMediaOpen}
-              exerciseName={exercise.name}
-              videoUrl={exercise.video}
-            />
           </button>
         )}
         <div>
@@ -119,6 +113,13 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
           </Button>
         </div>
       )}
+
+      <ExerciseMediaPopup
+        open={mediaOpen}
+        onOpenChange={setMediaOpen}
+        exerciseName={exercise.name}
+        videoUrl={exercise.video}
+      />
     </div>
   );
 };
