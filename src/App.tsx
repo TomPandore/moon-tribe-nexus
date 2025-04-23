@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -15,6 +14,7 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import AppMenuBar from "@/components/AppMenuBar";
 import AppHeader from "@/components/AppHeader";
+import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
@@ -39,7 +39,14 @@ const App = () => (
             <div className="min-h-screen pb-16 relative bg-background pt-20">
               <AppHeader />
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route 
+                  path="/" 
+                  element={
+                    <ProtectedRoute>
+                      <Home />
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route path="/login" element={<Login />} />
                 <Route 
                   path="/programs" 
