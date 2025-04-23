@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Programs from "./pages/Programs";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import AppMenuBar from "@/components/AppMenuBar";
 
 const queryClient = new QueryClient();
 
@@ -34,27 +35,31 @@ const App = () => (
       <AuthProvider>
         <ProgramProvider>
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route 
-                path="/programs" 
-                element={
-                  <ProtectedRoute>
-                    <Programs />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            {/* Wrapper pour espace menu (padding bottom 64px pour le menu bas) */}
+            <div className="min-h-screen pb-16 relative bg-background">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route 
+                  path="/programs" 
+                  element={
+                    <ProtectedRoute>
+                      <Programs />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <AppMenuBar />
+            </div>
           </BrowserRouter>
         </ProgramProvider>
       </AuthProvider>
