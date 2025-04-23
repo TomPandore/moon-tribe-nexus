@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
@@ -23,7 +22,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
   const target = exercise.type === "reps" ? exercise.reps! : exercise.duration!;
   const isCompleted = exercise.completed >= target;
 
-  // Animation scale when completed
   const previousCompleted = useRef(isCompleted);
   useEffect(() => {
     if (isCompleted && !previousCompleted.current) {
