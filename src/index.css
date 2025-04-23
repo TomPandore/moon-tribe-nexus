@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 14%;
 
-    --primary: 220 90% 56%;
+    --primary: 170 54% 33%; /* HSL for #2a9d8f */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 240 5% 96%;
@@ -23,7 +23,7 @@
     --muted: 240 5% 94%;
     --muted-foreground: 240 5% 40%;
 
-    --accent: 220 90% 56%;
+    --accent: 170 54% 33%; /* Same as primary */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -31,7 +31,7 @@
 
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 220 90% 56%;
+    --ring: 170 54% 33%; /* Same as primary */
 
     --radius: 1rem;
   }
