@@ -1,12 +1,4 @@
-
-import { Program } from "@/types";
-
-export type ProgramCategory = "free" | "premium";
-
-export interface ProgramExt extends Program {
-  category: ProgramCategory;
-  illustration?: string;
-}
+import { ProgramExt } from "@/types";
 
 export const programs: ProgramExt[] = [
   // PROGRAMMES DÉCOUVERTE (gratuits)
@@ -62,7 +54,8 @@ export const programs: ProgramExt[] = [
     difficulty: "medium",
     focus: ["Agilité", "Explosivité", "Coordination", "Vitesse"],
     image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
-    category: "premium"
+    category: "premium",
+    illustration: "/lovable-uploads/a71438cc-e059-423f-9968-974d095c8b09.png"
   },
   {
     id: "maree-crocodile",
@@ -76,4 +69,3 @@ export const programs: ProgramExt[] = [
     illustration: "/lovable-uploads/5bff93d1-0e04-4995-87af-9fce87103940.png"
   }
 ];
-
