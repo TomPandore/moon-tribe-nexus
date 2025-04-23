@@ -1,38 +1,39 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 10%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 98%;
+    --foreground: 240 10% 14%;
 
-    --card: 0 0% 14%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 14%;
 
-    --popover: 0 0% 14%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 14%;
 
-    --primary: 95 100% 50%;
-    --primary-foreground: 0 0% 10%;
+    --primary: 220 90% 56%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 95 100% 50%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 14%;
 
-    --muted: 0 0% 20%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 240 5% 94%;
+    --muted-foreground: 240 5% 40%;
 
-    --accent: 28 100% 55%;
-    --accent-foreground: 0 0% 10%;
+    --accent: 220 90% 56%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 77% 55%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 95 100% 50%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 220 90% 56%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
   }
 }
 
@@ -43,76 +44,75 @@
   
   html, body {
     @apply h-full overflow-x-hidden;
-    background: #0f0f0f;
+    background: #fafafa;
   }
   
   body {
     @apply text-foreground font-sans antialiased;
-    background: #0f0f0f;
-    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #fafafa;
+    font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
   }
   
   #root {
-    @apply min-h-screen flex flex-col bg-[#0f0f0f];
+    @apply min-h-screen flex flex-col bg-[#fafafa];
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-oswald uppercase tracking-wide;
+    @apply font-medium tracking-tight;
   }
 }
 
 @layer components {
   .bg-card {
     background-color: hsl(var(--card));
+    @apply shadow-sm;
   }
 
-  .tribal-input {
-    @apply bg-secondary border-2 border-border rounded-md text-foreground px-4 py-3 focus:border-tribal-green focus-visible:outline-none focus:ring-1 focus:ring-tribal-green transition-all;
+  .app-input {
+    @apply bg-white border border-border rounded-lg text-foreground px-4 py-3 focus:border-primary focus-visible:outline-none focus:ring-1 focus:ring-primary/20 transition-all;
   }
   
-  .tribal-card {
-    @apply bg-card rounded-xl border border-border p-5 shadow-lg shadow-black/50 hover:border-tribal-green/30 transition-all;
+  .app-card {
+    @apply bg-white rounded-lg border border-border p-5 shadow-sm hover:shadow-md transition-all;
   }
   
-  .tribal-btn-primary {
-    @apply bg-tribal-green hover:bg-opacity-90 text-black rounded-md px-6 py-3 font-medium uppercase tracking-wider shadow-md shadow-tribal-green/20 transition-all;
+  .btn-primary {
+    @apply bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-3 font-medium shadow-sm transition-all;
   }
   
-  .tribal-btn-accent {
-    @apply bg-tribal-orange hover:bg-opacity-90 text-white rounded-md px-6 py-3 font-medium uppercase tracking-wider shadow-md shadow-tribal-orange/20 transition-all;
+  .btn-secondary {
+    @apply bg-secondary hover:bg-secondary/80 text-foreground rounded-lg px-6 py-3 font-medium transition-all;
   }
   
-  .tribal-btn-outline {
-    @apply bg-transparent border-2 border-tribal-green text-tribal-green hover:bg-tribal-green/10 rounded-md px-6 py-3 font-medium uppercase tracking-wider transition-all;
+  .btn-outline {
+    @apply bg-transparent border border-border text-foreground hover:bg-secondary/50 rounded-lg px-6 py-3 font-medium transition-all;
   }
 
-  .progress-tribal {
-    @apply h-2 rounded-full bg-muted overflow-hidden;
+  .progress-bar {
+    @apply h-1.5 rounded-full bg-muted overflow-hidden;
   }
   
-  .progress-tribal-fill {
-    @apply h-full bg-gradient-to-r from-tribal-green to-tribal-purple;
+  .progress-bar-fill {
+    @apply h-full bg-primary;
   }
   
-  .tribal-link {
-    @apply text-tribal-green hover:text-tribal-green/80 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-tribal-green after:origin-bottom-right after:scale-x-0 hover:after:scale-x-100 hover:after:origin-bottom-left after:transition-transform;
+  .app-link {
+    @apply text-primary hover:text-primary/80 transition-colors;
   }
   
-  .tribal-heading {
-    @apply font-oswald uppercase text-tribal-green tracking-wide;
+  .badge {
+    @apply text-xs font-medium px-2 py-0.5 rounded-full;
   }
   
-  .tribal-pattern {
-    background-image: linear-gradient(45deg, #222 25%, transparent 25%), 
-      linear-gradient(-45deg, #222 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #222 75%),
-      linear-gradient(-45deg, transparent 75%, #222 75%);
-    background-size: 10px 10px;
-    background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
-    opacity: 0.05;
+  .badge-primary {
+    @apply bg-primary/10 text-primary;
   }
   
-  .glass-panel {
-    @apply bg-black/30 backdrop-blur-sm border border-white/10;
+  .badge-secondary {
+    @apply bg-secondary text-foreground/70;
+  }
+  
+  .tag {
+    @apply bg-secondary text-xs font-medium px-2 py-1 rounded-full;
   }
 }

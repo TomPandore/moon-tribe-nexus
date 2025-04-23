@@ -27,18 +27,15 @@ const Programs: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative">
-      {/* Background pattern */}
-      <div className="absolute inset-0 tribal-pattern pointer-events-none"></div>
-      
-      <header className="relative z-10 container mx-auto pt-6 pb-4 px-4">
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="container mx-auto pt-6 pb-4 px-4">
         <div className="flex justify-between items-center">
           <Logo />
           <Button
             variant="outline"
             size="sm"
             onClick={logout}
-            className="border-tribal-green/70 text-tribal-green hover:bg-tribal-green/10"
+            className="border-border text-foreground hover:bg-secondary"
           >
             <LogOut size={16} className="mr-2" />
             Déconnexion
@@ -46,27 +43,24 @@ const Programs: React.FC = () => {
         </div>
       </header>
       
-      <main className="relative z-10 container mx-auto px-4 py-6 pb-20">
-        <h1 className="text-3xl md:text-4xl mb-3 text-tribal-green">
-          Choisis ton rituel
+      <main className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
+        <h1 className="text-2xl md:text-3xl mb-2 font-medium">
+          Choisissez votre programme
         </h1>
-        <p className="text-lg text-muted-foreground mb-10 max-w-2xl">
-          Explore les programmes gratuits ou découvre la <span className="text-tribal-green font-medium">Voie MoHero</span> pour transformer ta pratique.
+        <p className="text-muted-foreground mb-8 max-w-2xl">
+          Explorez nos programmes d'entraînement et trouvez celui qui correspond à vos objectifs.
         </p>
         
         {/* Programmes Découverte */}
-        <section className="mb-16">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-muted w-1 h-8"></div>
-            <h2 className="text-xl md:text-2xl font-bold text-tribal-green flex items-center">
-              Programmes Découverte
-              <span className="ml-3 text-xs py-1 px-3 rounded-full bg-muted text-tribal-green font-semibold">
-                Gratuit
-              </span>
-            </h2>
-          </div>
+        <section className="mb-12">
+          <h2 className="text-lg md:text-xl font-medium mb-4 flex items-center">
+            Programmes Découverte
+            <span className="ml-3 badge badge-secondary">
+              Gratuit
+            </span>
+          </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {freePrograms.map((program) => (
               <ProgramCard
                 key={program.id}
@@ -79,16 +73,13 @@ const Programs: React.FC = () => {
           </div>
         </section>
         
-        {/* Voie MoHero premium */}
+        {/* Programmes Premium */}
         <section>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-tribal-orange w-1 h-8"></div>
-            <h2 className="text-xl md:text-2xl font-bold text-tribal-orange flex items-center">
-              Voie MoHero
-            </h2>
-          </div>
+          <h2 className="text-lg md:text-xl font-medium mb-4">
+            Programmes Premium
+          </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             {premiumPrograms.map((program) => (
               <ProgramCard
                 key={program.id}
@@ -104,7 +95,7 @@ const Programs: React.FC = () => {
         {user && currentProgram && (
           <div className="mt-12 text-center">
             <Button
-              className="bg-tribal-orange text-white font-bold text-lg px-8 py-6 rounded-md hover:bg-tribal-orange/90"
+              className="bg-primary text-white font-medium text-base px-6 py-5 rounded-lg hover:bg-primary/90"
               onClick={() => navigate("/dashboard")}
               disabled={isLoading}
             >

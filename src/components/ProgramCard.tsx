@@ -7,17 +7,17 @@ import { Leaf, TreeDeciduous, Flame, Zap, Waves } from "lucide-react";
 function getProgramIcon(id: string) {
   switch (id) {
     case "origin":
-      return <Flame className="text-tribal-orange" size={28} />;
+      return <Flame className="text-primary" size={20} />;
     case "rituels-nomades":
-      return <Leaf className="text-tribal-green" size={28} />;
+      return <Leaf className="text-primary" size={20} />;
     case "souffle-jaguar":
-      return <Zap className="text-[#eabb21]" size={28} />;
+      return <Zap className="text-amber-400" size={20} />;
     case "corps-chene":
-      return <TreeDeciduous className="text-tribal-green" size={28} />;
+      return <TreeDeciduous className="text-primary" size={20} />;
     case "fureur-jaguar":
-      return <Zap className="text-tribal-orange" size={28} />;
+      return <Zap className="text-orange-500" size={20} />;
     case "maree-crocodile":
-      return <Waves className="text-[#53cdb7]" size={28} />;
+      return <Waves className="text-teal-500" size={20} />;
     default:
       return null;
   }
@@ -39,9 +39,8 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
   return (
     <div
       className={`
-        tribal-card transition-all overflow-hidden flex flex-col
-        ${isSelected ? "border-tribal-green ring-1 ring-tribal-green" : ""}
-        hover:shadow-xl hover:shadow-black/40 group
+        app-card flex flex-col
+        ${isSelected ? "border-primary ring-1 ring-primary/30" : ""}
       `}
       onClick={onSelect}
       tabIndex={0}
@@ -49,11 +48,11 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
       aria-pressed={isSelected}
     >
       <div className="flex items-start gap-3">
-        <div className="w-14 h-14 flex items-center justify-center rounded-lg bg-secondary/70 border border-border">
+        <div className="w-10 h-10 flex items-center justify-center rounded-md bg-secondary">
           {getProgramIcon(program.id)}
         </div>
         <div>
-          <h3 className="font-oswald text-xl text-tribal-green tracking-wide uppercase mb-1">
+          <h3 className="font-medium text-lg mb-1">
             {program.name}
           </h3>
           <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
@@ -66,7 +65,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
         {program.focus.map((f, i) => (
           <span
             key={i}
-            className="bg-muted text-tribal-green border border-muted px-2 py-0.5 text-xs rounded-full font-medium"
+            className="tag"
           >
             {f}
           </span>
@@ -74,31 +73,30 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
       </div>
       
       <div className="flex items-center justify-between mt-auto pt-2">
-        <span className="text-sm font-medium px-3 py-1 rounded-full bg-muted text-muted-foreground">
+        <span className="badge badge-secondary">
           {program.duration} jours
         </span>
       </div>
       
       <Button
         className={`
-          w-full h-11 font-bold text-base rounded-md mt-4
+          w-full h-10 font-medium text-sm rounded-lg mt-4
           ${isSelected
-            ? "bg-tribal-green text-black border border-tribal-green hover:bg-[#d6f483]"
-            : "bg-secondary text-tribal-green border hover:bg-tribal-green hover:text-black"
+            ? "bg-primary text-white hover:bg-primary/90"
+            : "bg-secondary text-foreground hover:bg-secondary/80"
           }
-          transition-all
         `}
         onClick={e => {
           e.stopPropagation();
           onSelect();
         }}
-        variant="default"
+        variant={isSelected ? "default" : "secondary"}
       >
         {isSelected ? "Continuer" : "Choisir"}
       </Button>
       
       {isSelected && (
-        <div className="absolute top-3 right-3 bg-tribal-green text-black font-bold text-xs px-3 py-1 rounded-full shadow-lg">
+        <div className="absolute top-3 right-3 badge badge-primary">
           Sélectionné
         </div>
       )}
