@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User, UserProgress } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,16 +31,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             .single();
 
           if (profile) {
+            // Initialize default progress object if it's null
+            const progressData: UserProgress = profile.progress ? 
+              profile.progress as UserProgress : 
+              {
+                currentDay: 1,
+                streak: 0,
+                totalCompletedDays: 0
+              };
+
             setUser({
               id: session.user.id,
               email: session.user.email!,
               name: profile.name,
-              progress: {
-                currentDay: 1,
-                streak: 0,
-                totalCompletedDays: 0,
-                ...profile.progress
-              }
+              progress: progressData
             });
           }
         } else {
