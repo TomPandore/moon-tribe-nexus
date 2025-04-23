@@ -44,7 +44,8 @@ export const programs: ProgramExt[] = [
     difficulty: "medium",
     focus: ["Mobilité", "Respiration", "Posture", "Agilité"],
     image: "https://images.unsplash.com/photo-1472396961693-142e6e269027",
-    category: "premium"
+    category: "premium",
+    illustration: "/lovable-uploads/2a0005ce-b4eb-45cc-801b-c82f727cd714.png"
   },
   {
     id: "fureur-jaguar",
