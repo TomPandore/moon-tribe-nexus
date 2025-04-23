@@ -1,11 +1,12 @@
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
 import { Button } from "@/components/ui/button";
-import { Plus, Minus, Video, Check } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import ExerciseMediaPopup from "./ExerciseMediaPopup";
 import { Separator } from "@/components/ui/separator";
+import AccompliBadge from "./AccompliBadge";
 
 interface ExerciseCardProps {
   exercise: Exercise;
@@ -17,9 +18,20 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
     exercise.type === "reps" ? 5 : 10
   );
   const [mediaOpen, setMediaOpen] = useState(false);
+  const [checkAnim, setCheckAnim] = useState(false);
 
   const target = exercise.type === "reps" ? exercise.reps! : exercise.duration!;
   const isCompleted = exercise.completed >= target;
+
+  // Animation scale when completed
+  const previousCompleted = useRef(isCompleted);
+  useEffect(() => {
+    if (isCompleted && !previousCompleted.current) {
+      setCheckAnim(true);
+      setTimeout(() => setCheckAnim(false), 700);
+    }
+    previousCompleted.current = isCompleted;
+  }, [isCompleted]);
 
   const handleIncrement = () => {
     if (isCompleted) return;
@@ -34,8 +46,16 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
   };
 
   return (
-    <div className="exercise-block">
-      <div className="exercise-header">
+    <div
+      className={`
+        app-card 
+        flex flex-col gap-2 
+        p-4 rounded-2xl border border-border bg-white 
+        shadow-none
+        transition-all
+      `}
+    >
+      <div className="flex items-center gap-4 mb-2">
         {exercise.image && (
           <button
             type="button"
@@ -46,46 +66,54 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
             <img
               src={exercise.image}
               alt={exercise.name}
-              className={`w-16 h-16 rounded-md object-cover border border-border`}
+              className="w-14 h-14 rounded-md object-cover border border-border bg-white"
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <Video className="text-gray-500 bg-white/60 rounded-full p-1 w-7 h-7" strokeWidth={2} />
+              <span className="bg-white/80 rounded-full p-1">
+                {/* Placeholder for video icon */}
+              </span>
             </div>
           </button>
         )}
-        <div>
-          <div className="exercise-title">{exercise.name}</div>
+
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-lg leading-snug truncate">{exercise.name}</div>
           {exercise.description && (
-            <div className="exercise-description">{exercise.description}</div>
+            <div className="text-muted-foreground text-sm truncate">
+              {exercise.description}
+            </div>
           )}
-          <div className="exercise-stats">
+          <div className="text-muted-foreground text-xs mt-1">
             {exercise.type === "reps"
               ? `${exercise.reps} répétitions`
               : `${exercise.duration} secondes`}
           </div>
         </div>
-        <div className="ml-auto flex items-center">
+
+        <div className="ml-auto flex items-center min-w-[90px] justify-end">
           {isCompleted && (
-            <Check className="text-primary" size={20} />
+            <span className={checkAnim ? "animate-scale-in" : ""}>
+              <AccompliBadge animated={checkAnim} />
+            </span>
           )}
         </div>
       </div>
-
-      <ProgressBar 
-        value={exercise.completed} 
+      <ProgressBar
+        value={exercise.completed}
         max={target}
-        showValue={true}
-        className="h-2 mt-2"
+        completed={isCompleted}
+        className="my-1"
       />
 
       {!isCompleted && (
-        <div className="exercise-actions">
+        <div className="flex items-center gap-2 mt-2">
           <Button
             variant="outline"
             size="icon"
             className="h-8 w-8"
             onClick={handleDecrement}
             disabled={exercise.completed <= 0}
+            aria-label="Réduire"
           >
             <Minus size={16} />
           </Button>
@@ -93,11 +121,13 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
             <button
               key={amount}
               type="button"
-              className={`px-2 py-1 text-xs font-medium rounded ${
-                incrementAmount === amount
+              className={`
+                px-2 py-1 text-xs font-medium rounded
+                ${incrementAmount === amount
                   ? "bg-primary/10 text-primary"
-                  : "bg-muted text-muted-foreground"
-              }`}
+                  : "bg-muted text-muted-foreground"}
+                transition
+              `}
               onClick={() => setIncrementAmount(amount)}
             >
               +{amount}
@@ -108,6 +138,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
             size="icon"
             className="h-8 w-8"
             onClick={handleIncrement}
+            aria-label="Augmenter"
           >
             <Plus size={16} />
           </Button>
