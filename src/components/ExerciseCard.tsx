@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
@@ -119,70 +118,72 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
         />
 
         {!isCompleted && (
-          <>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={handleDecrement}
-                disabled={exercise.completed <= 0}
-                aria-label="Réduire"
-              >
-                <Minus size={16} />
-              </Button>
-
-              {[5, 10, 20].map((amount) => (
-                <button
-                  key={amount}
-                  type="button"
-                  className={`
-                    px-2 py-1 text-xs font-medium rounded
-                    ${incrementAmount === amount
-                      ? "bg-primary/10 text-primary"
-                      : "bg-muted text-muted-foreground"}
-                    transition
-                  `}
-                  onClick={() => setIncrementAmount(amount)}
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex items-center gap-2 justify-between">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={handleDecrement}
+                  disabled={exercise.completed <= 0}
+                  aria-label="Réduire"
                 >
-                  +{amount}
-                </button>
-              ))}
+                  <Minus size={16} />
+                </Button>
 
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={handleIncrement}
-                aria-label="Augmenter"
+                {[5, 10, 20].map((amount) => (
+                  <button
+                    key={amount}
+                    type="button"
+                    className={`
+                      px-2 py-1 text-xs font-medium rounded
+                      ${incrementAmount === amount
+                        ? "bg-primary/10 text-primary"
+                        : "bg-muted text-muted-foreground"}
+                      transition
+                    `}
+                    onClick={() => setIncrementAmount(amount)}
+                  >
+                    +{amount}
+                  </button>
+                ))}
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={handleIncrement}
+                  aria-label="Augmenter"
+                >
+                  <Plus size={16} />
+                </Button>
+              </div>
+
+              <form 
+                onSubmit={handleCustomValueSubmit} 
+                className="flex items-center gap-2"
               >
-                <Plus size={16} />
-              </Button>
+                <Input
+                  type="number"
+                  min="1"
+                  max={target}
+                  value={customValue}
+                  onChange={(e) => setCustomValue(e.target.value)}
+                  className="w-12 h-8 text-center text-sm p-1"
+                />
+                <Button 
+                  type="submit" 
+                  variant="outline" 
+                  size="sm"
+                  className="h-8 px-3"
+                  disabled={!customValue}
+                >
+                  Ajouter
+                </Button>
+              </form>
             </div>
-
-            <form 
-              onSubmit={handleCustomValueSubmit} 
-              className="flex items-center gap-2 mt-2 w-full"
-            >
-              <Input
-                type="number"
-                min="1"
-                max={target}
-                value={customValue}
-                onChange={(e) => setCustomValue(e.target.value)}
-                className="flex-1 h-8 text-sm"
-              />
-              <Button 
-                type="submit" 
-                variant="outline" 
-                size="sm"
-                className="h-8"
-                disabled={!customValue}
-              >
-                Ajouter
-              </Button>
-            </form>
-          </>
+          </div>
         )}
       </div>
 
@@ -197,4 +198,3 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
 };
 
 export default ExerciseCard;
-
