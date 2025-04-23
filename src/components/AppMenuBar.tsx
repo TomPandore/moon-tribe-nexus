@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Home, Calendar, List, Cog } from "lucide-react";
@@ -7,7 +8,7 @@ const navItems = [
   {
     label: "Accueil",
     icon: Home,
-    to: "/",
+    to: "/",  // Modification : utiliser "/" explicitement pour l'accueil
     testId: "menu-home"
   },
   {
@@ -36,7 +37,7 @@ const AppMenuBar: React.FC = () => {
 
   const isActive = (to: string) =>
     location.pathname === to ||
-    (to === "/dashboard" && location.pathname === "/");
+    (to === "/" && location.pathname === "/"); // S'assurer que "/" est bien géré
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-50 px-safe">
@@ -54,6 +55,13 @@ const AppMenuBar: React.FC = () => {
                   active ? "text-primary font-semibold" : "text-gray-500"
                 )}
                 onClick={() => {
+                  // Pour la page d'accueil, naviguer directement
+                  if (item.to === "/") {
+                    navigate("/");
+                    return;
+                  }
+                  
+                  // Pour le dashboard, gérer le défilement si déjà sur la page
                   if (item.to === "/dashboard" && location.pathname === "/dashboard") {
                     const el = document.getElementById("ritual-section");
                     if (el) {
@@ -61,6 +69,7 @@ const AppMenuBar: React.FC = () => {
                       return;
                     }
                   }
+                  
                   navigate(item.to);
                 }}
                 title={item.label}
@@ -77,3 +86,4 @@ const AppMenuBar: React.FC = () => {
 };
 
 export default AppMenuBar;
+
