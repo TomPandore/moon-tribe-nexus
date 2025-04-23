@@ -28,23 +28,18 @@ const Dashboard: React.FC = () => {
     return ex.completed >= target;
   }).length;
 
-  const allExercisesCompleted = completedExercises === totalExercises;
-
-  const handleCompleteRitual = () => {
-    if (!allExercisesCompleted) {
-      toast({
-        title: "Exercices incomplets",
-        description: "Complète tous les exercices avant de valider le rituel",
-        variant: "destructive"
-      });
-      return;
+  const getEncouragingMessage = () => {
+    const userName = user.name || "Champion";
+    
+    if (completedExercises === 0) {
+      return `Bonjour ${userName} ! Prêt(e) à commencer ta séance ? Tu vas tout déchirer aujourd'hui ! 💪`;
+    } else if (completedExercises < totalExercises / 2) {
+      return `Continue comme ça ${userName} ! Tu es sur la bonne voie ! 🔥`;
+    } else if (completedExercises < totalExercises) {
+      return `Wow ${userName}, tu es en feu ! Plus que quelques exercices ! ⭐`;
+    } else {
+      return `Incroyable ${userName} ! Tu as terminé tous tes exercices, quelle détermination ! 🎉`;
     }
-
-    setIsCompleting(true);
-    setTimeout(() => {
-      completeRitual();
-      setIsCompleting(false);
-    }, 1000);
   };
 
   return (
@@ -74,6 +69,10 @@ const Dashboard: React.FC = () => {
               {completedExercises}/{totalExercises}
             </span>
           </div>
+
+          <p className="text-primary font-medium mb-4 text-lg">
+            {getEncouragingMessage()}
+          </p>
 
           {currentRitual.description && (
             <p className="text-muted-foreground mb-6">{currentRitual.description}</p>
@@ -147,3 +146,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
