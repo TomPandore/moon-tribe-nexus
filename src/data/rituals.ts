@@ -26,7 +26,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             reps: 10,
             type: "reps",
             completed: 0,
-            image: "/placeholder.svg",
+            image: "/lovable-uploads/8b2d7862-7f24-4d2c-9c40-177ea8fae531.png",
             video: "https://www.youtube.com/embed/_l3ySVKYVJ8"
           },
           {
