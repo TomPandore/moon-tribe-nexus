@@ -77,8 +77,8 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
         {program.focus.map((f, i) => (
           <Badge
             key={i}
-            variant="secondary"
-            className="px-3 py-1 bg-secondary/10 text-secondary-foreground border-0 hover:bg-secondary/20"
+            variant="outline"
+            className="px-3 py-1 bg-[#F1F1F1] text-foreground border-[#E5E5E5] hover:bg-[#E5E5E5]"
           >
             {f}
           </Badge>
