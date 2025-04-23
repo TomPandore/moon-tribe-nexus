@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -36,6 +35,12 @@ export default {
           DEFAULT: "#161616",
           foreground: "#afff00"
         },
+        'tribal-dark': '#0f0f0f',
+        'tribal-gray': '#222222',
+        'tribal-gray-light': '#333333',
+        'tribal-purple': '#8b5cf6',
+        'tribal-orange': '#ff7849',
+        'tribal-green': '#ccff00',
         destructive: {
           DEFAULT: "#ED4245",
           foreground: "#fae7e7"
@@ -55,6 +60,9 @@ export default {
           yellow: "#ffe445",
           cyan: "#6dffe9"
         }
+      },
+      backgroundImage: {
+        'gradient-tribal': 'linear-gradient(to right, #8b5cf6, #ff7849)',
       },
       borderRadius: {
         lg: "1.5rem",
