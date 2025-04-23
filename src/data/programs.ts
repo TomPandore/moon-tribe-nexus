@@ -1,3 +1,4 @@
+
 import { Program } from "@/types";
 
 export type ProgramCategory = "free" | "premium";
@@ -66,7 +67,7 @@ export const programs: ProgramExt[] = [
   {
     id: "maree-crocodile",
     name: "Marée du Crocodile",
-    description: "Fluidité dans l'effort, relâchement dans l’intensité. Mouvement pur.",
+    description: "Fluidité dans l'effort, relâchement dans l'intensité. Mouvement pur.",
     duration: 21,
     difficulty: "medium",
     focus: ["Souplesse", "Contrôle", "Respiration", "Conscience corporelle"],

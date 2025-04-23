@@ -3,6 +3,7 @@ import React from "react";
 import { Program } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Leaf, TreeDeciduous, Flame, Zap, Waves } from "lucide-react";
+import Image from "@/components/ui/image";
 
 function getProgramIcon(id: string) {
   switch (id) {
@@ -39,7 +40,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
   return (
     <div
       className={`
-        app-card flex flex-col
+        app-card flex flex-col relative
         ${isSelected ? "border-primary ring-1 ring-primary/30" : ""}
       `}
       onClick={onSelect}
@@ -47,6 +48,16 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
       role="button"
       aria-pressed={isSelected}
     >
+      {program.illustration && (
+        <div className="mb-4 -mx-6 -mt-6 overflow-hidden rounded-t-lg">
+          <Image 
+            src={program.illustration} 
+            alt={program.name} 
+            className="w-full h-40 object-cover"
+          />
+        </div>
+      )}
+      
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 flex items-center justify-center rounded-md bg-secondary">
           {getProgramIcon(program.id)}
