@@ -1,4 +1,3 @@
-
 import { DailyRitual } from "@/types";
 
 export const getRitualsByProgram = (programId: string): DailyRitual[] => {
@@ -17,7 +16,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             reps: 30,
             type: "reps",
             completed: 0,
-            image: "/placeholder.svg",
+            image: "/lovable-uploads/c24a3b41-af9b-45e4-bf90-5f30cc14174b.png",
             video: "https://www.youtube.com/embed/DYEbUF4xs1Y"
           },
           {
@@ -128,4 +127,3 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
     ]
   }));
 };
-
