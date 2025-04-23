@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Program } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -64,10 +63,11 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
           {getProgramIcon(program.id)}
         </div>
         <div>
-          <h3 className="font-medium text-lg mb-1">
+          <h3 className="font-medium text-lg mb-1 flex items-center gap-2">
             {program.name}
+            <span className="text-sm text-muted-foreground">({program.duration} jours)</span>
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+          <p className="text-sm text-muted-foreground line-clamp-2">
             {program.description}
           </p>
         </div>
@@ -83,12 +83,6 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
             {f}
           </Badge>
         ))}
-      </div>
-      
-      <div className="flex items-center justify-between mt-auto pt-2">
-        <Badge variant="outline" className="bg-secondary/50">
-          {program.duration} jours
-        </Badge>
       </div>
       
       <Button
