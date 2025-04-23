@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
@@ -159,15 +160,17 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
               </Button>
             </div>
 
-            <form onSubmit={handleCustomValueSubmit} className="flex items-center gap-2 mt-2">
+            <form 
+              onSubmit={handleCustomValueSubmit} 
+              className="flex items-center gap-2 mt-2 w-full"
+            >
               <Input
                 type="number"
                 min="1"
                 max={target}
                 value={customValue}
                 onChange={(e) => setCustomValue(e.target.value)}
-                placeholder="Valeur personnalisée"
-                className="w-32 h-8"
+                className="flex-1 h-8 text-sm"
               />
               <Button 
                 type="submit" 
@@ -194,3 +197,4 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
 };
 
 export default ExerciseCard;
+
