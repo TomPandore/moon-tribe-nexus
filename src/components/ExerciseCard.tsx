@@ -3,7 +3,6 @@ import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
 import { Button } from "@/components/ui/button";
 import { Plus, Minus, Video } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import ExerciseMediaPopup from "./ExerciseMediaPopup";
 import { Separator } from "@/components/ui/separator";
 import AccompliBadge from "./AccompliBadge";
@@ -17,8 +16,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
   const [incrementAmount, setIncrementAmount] = useState(
     exercise.type === "reps" ? 5 : 10
   );
-  const [customValue, setCustomValue] = useState("");
-  const [mediaOpen, setMediaOpen] = useState(false);
   const [checkAnim, setCheckAnim] = useState(false);
 
   const target = exercise.type === "reps" ? exercise.reps! : exercise.duration!;
@@ -159,29 +156,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
                   <Plus size={16} />
                 </Button>
               </div>
-
-              <form 
-                onSubmit={handleCustomValueSubmit} 
-                className="flex items-center gap-2"
-              >
-                <Input
-                  type="number"
-                  min="1"
-                  max={target}
-                  value={customValue}
-                  onChange={(e) => setCustomValue(e.target.value)}
-                  className="w-12 h-8 text-center text-sm p-1"
-                />
-                <Button 
-                  type="submit" 
-                  variant="outline" 
-                  size="sm"
-                  className="h-8 px-3"
-                  disabled={!customValue}
-                >
-                  Ajouter
-                </Button>
-              </form>
             </div>
           </div>
         )}
