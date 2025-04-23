@@ -1,3 +1,4 @@
+
 import { DailyRitual } from "@/types";
 
 export const getRitualsByProgram = (programId: string): DailyRitual[] => {
@@ -16,7 +17,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             reps: 30,
             type: "reps",
             completed: 0,
-            image: "/photo-1493962853295-0fd70327578a",
+            image: "/placeholder.svg",
             video: "https://www.youtube.com/embed/DYEbUF4xs1Y"
           },
           {
@@ -26,7 +27,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             reps: 10,
             type: "reps",
             completed: 0,
-            image: "/photo-1501286353178-1ec881214838",
+            image: "/placeholder.svg",
             video: "https://www.youtube.com/embed/_l3ySVKYVJ8"
           },
           {
@@ -36,7 +37,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             duration: 30,
             type: "duration",
             completed: 0,
-            image: "/photo-1485833077593-4278bba3f11f",
+            image: "/placeholder.svg",
             video: "https://www.youtube.com/embed/pSHjTRCQxIw"
           },
           {
@@ -46,7 +47,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             duration: 60,
             type: "duration",
             completed: 0,
-            image: "/photo-1469041797191-50ace28483c3",
+            image: "/placeholder.svg",
             video: "https://www.youtube.com/embed/1ZcK5QK2KZc"
           }
         ]
@@ -64,7 +65,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             duration: 45,
             type: "duration",
             completed: 0,
-            image: "/photo-1466721591366-2d5fba72006d",
+            image: "/placeholder.svg",
             video: "https://www.youtube.com/embed/IBqgRZGbv4E"
           },
           {
@@ -74,7 +75,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             reps: 20,
             type: "reps",
             completed: 0,
-            image: "/photo-1472396961693-142e6e269027",
+            image: "/placeholder.svg",
             video: "https://www.youtube.com/embed/uqLNxJe4L2I"
           },
           {
@@ -84,7 +85,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             reps: 20,
             type: "reps",
             completed: 0,
-            image: "/photo-1493962853295-0fd70327578a",
+            image: "/placeholder.svg",
             video: "https://www.youtube.com/embed/bR5VWwYp-nY"
           },
           {
@@ -94,7 +95,7 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
             duration: 60,
             type: "duration",
             completed: 0,
-            image: "/photo-1469041797191-50ace28483c3",
+            image: "/placeholder.svg",
             video: "https://www.youtube.com/embed/kqnua4rHVVA"
           }
         ]
@@ -127,3 +128,4 @@ export const getRitualsByProgram = (programId: string): DailyRitual[] => {
     ]
   }));
 };
+

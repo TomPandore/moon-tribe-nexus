@@ -1,8 +1,9 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
 import { Button } from "@/components/ui/button";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Minus, Video } from "lucide-react";
 import ExerciseMediaPopup from "./ExerciseMediaPopup";
 import { Separator } from "@/components/ui/separator";
 import AccompliBadge from "./AccompliBadge";
@@ -68,7 +69,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="bg-white/80 rounded-full p-1">
-                {/* Placeholder for video icon */}
+                <Video size={16} className="text-primary" />
               </span>
             </div>
           </button>
@@ -96,6 +97,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
           )}
         </div>
       </div>
+
       <ProgressBar
         value={exercise.completed}
         max={target}
