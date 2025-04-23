@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import { programs } from "@/data/programs";
 
-// Utilitaire pour split la liste par catégories
 const getProgramsByCategory = (cat) => programs.filter(p => p.category === cat);
 
 const Programs: React.FC = () => {
@@ -29,11 +28,11 @@ const Programs: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafb] relative overflow-x-hidden transition-colors">
-      <div className="w-full h-[140px] md:h-[190px] bg-gradient-to-b from-[#f4f7f3] to-[#f8fafb] flex items-end pb-8 mb-4">
+      <div className="w-full h-[90px] md:h-[160px] bg-gradient-to-b from-[#f4f7f3] to-[#f8fafb] flex items-end pb-6 mb-2">
         <img
           src="/lovable-uploads/b2241549-ce89-484c-98c7-e2cb86c69ba7.png"
           alt=""
-          className="max-w-[220px] md:max-w-xs pointer-events-none opacity-80 absolute top-0 right-0"
+          className="max-w-[180px] md:max-w-xs pointer-events-none opacity-80 absolute top-2 right-0"
           style={{ zIndex: 1 }}
         />
         <div className="container z-10">
@@ -50,9 +49,9 @@ const Programs: React.FC = () => {
           Déconnexion
         </Button>
       </header>
-      <main className="container mx-auto px-2 sm:px-4 pb-12 z-10 relative">
+      <main className="container mx-auto max-w-5xl px-2 sm:px-6 pb-12 z-10 relative">
         <h1
-          className="text-3xl md:text-4xl font-black mb-2 tracking-tight text-[#293321] uppercase"
+          className="text-3xl md:text-4xl font-black mb-3 mt-2 tracking-tight text-[#293321] uppercase"
           style={{
             letterSpacing: ".01em",
             fontFamily: "Oswald, 'Inter', sans-serif"
@@ -60,16 +59,15 @@ const Programs: React.FC = () => {
         >
           Choisis ton rituel MoHero
         </h1>
-        <div className="max-w-2xl mx-auto text-lg text-[#586442] mb-10 font-medium text-center">
-          <span>
-            Explore les programmes gratuits ou découvre la <b className="text-tribal-green">Voie MoHero</b> pour transformer ta pratique.
-          </span>
+        <div className="max-w-2xl mx-auto text-lg text-[#576948] mb-8 font-medium text-center">
+          Explore les programmes gratuits ou découvre la <b className="text-tribal-green">Voie MoHero</b> pour transformer ta pratique.
         </div>
+        {/* Programmes Découverte */}
         <section className="mb-16">
-          <h2 className="text-xl md:text-2xl font-black mb-5 tracking-tight text-[#45a162] uppercase" style={{fontFamily: "Oswald, 'Inter', sans-serif"}}>
-            🌿 Programmes Découverte <span className="text-xs ml-2 rounded-full px-3 py-1 bg-[#eaf3e1] text-[#45a162] font-bold">Gratuit</span>
+          <h2 className="text-xl md:text-2xl font-black mb-6 tracking-tight text-[#45a162] uppercase" style={{fontFamily: "Oswald, 'Inter', sans-serif"}}>
+            🌿 Programmes Découverte <span className="text-xs ml-2 py-1 rounded-full bg-[#eaf3e1] text-[#45a162] font-bold inline-block px-3">Gratuit</span>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {freePrograms.map((program) => (
               <ProgramCard
                 key={program.id}
@@ -81,11 +79,12 @@ const Programs: React.FC = () => {
             ))}
           </div>
         </section>
+        {/* Voie MoHero premium */}
         <section>
-          <h2 className="text-xl md:text-2xl font-black mb-5 tracking-tight text-[#b8833c] uppercase" style={{fontFamily: "Oswald, 'Inter', sans-serif"}}>
+          <h2 className="text-xl md:text-2xl font-black mb-6 tracking-tight text-[#b8833c] uppercase" style={{fontFamily: "Oswald, 'Inter', sans-serif"}}>
             🔥 Voie MoHero
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {premiumPrograms.map((program) => (
               <ProgramCard
                 key={program.id}

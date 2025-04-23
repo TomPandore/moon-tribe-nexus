@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -86,3 +85,5 @@
     @apply h-full bg-gradient-to-r from-tribal-green to-tribal-purple;
   }
 }
+
+// Suppression des backgrounds trop sombres ou chargés pour laisser place à une esthétique naturelle et aérienne.
