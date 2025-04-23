@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import AppMenuBar from "@/components/AppMenuBar";
+import AppHeader from "@/components/AppHeader";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +36,8 @@ const App = () => (
       <AuthProvider>
         <ProgramProvider>
           <BrowserRouter>
-            <div className="min-h-screen pb-16 relative bg-background">
+            <div className="min-h-screen pb-16 relative bg-background pt-20">
+              <AppHeader />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
