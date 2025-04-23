@@ -1,4 +1,3 @@
-
 import { Program } from "@/types";
 
 export type ProgramCategory = "free" | "premium";
@@ -41,7 +40,8 @@ export const programs: ProgramExt[] = [
     difficulty: "hard",
     focus: ["Force", "Endurance", "Respiration", "Posture", "Discipline"],
     image: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
-    category: "premium"
+    category: "premium",
+    illustration: "/lovable-uploads/e868776b-601e-42cb-b122-0fa9e4c28a41.png"
   },
   {
     id: "corps-chene",
@@ -74,4 +74,3 @@ export const programs: ProgramExt[] = [
     category: "premium"
   }
 ];
-
