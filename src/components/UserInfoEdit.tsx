@@ -49,33 +49,35 @@ export const UserInfoEdit = ({ currentName, currentEmail, onUpdate }: UserInfoEd
         <DialogHeader>
           <DialogTitle>Modifier le profil</DialogTitle>
         </DialogHeader>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pseudo</FormLabel>
-                <FormControl>
-                  <Input placeholder="Votre pseudo" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="Votre email" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="w-full">Sauvegarder</Button>
-        </form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Pseudo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Votre pseudo" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="Votre email" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full">Sauvegarder</Button>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
