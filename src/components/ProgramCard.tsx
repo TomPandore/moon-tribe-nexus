@@ -78,7 +78,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
           <Badge
             key={i}
             variant="secondary"
-            className="px-3 py-1 bg-[#E5DEFF] text-[#6E59A5] hover:bg-[#E5DEFF] hover:text-[#6E59A5] border-0"
+            className="px-3 py-1 bg-secondary/10 text-secondary-foreground border-0 hover:bg-secondary/20"
           >
             {f}
           </Badge>
