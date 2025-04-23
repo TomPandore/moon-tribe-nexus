@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,14 +11,13 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Programs from "./pages/Programs";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import AppMenuBar from "@/components/AppMenuBar";
 
 const queryClient = new QueryClient();
 
-// Composant de garde pour les routes protégées
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  // Ici nous vérifions si l'utilisateur est connecté en regardant le localStorage
   const isAuthenticated = localStorage.getItem("mohero_user") !== null;
   
   if (!isAuthenticated) {
@@ -35,7 +35,6 @@ const App = () => (
       <AuthProvider>
         <ProgramProvider>
           <BrowserRouter>
-            {/* Wrapper pour espace menu (padding bottom 64px pour le menu bas) */}
             <div className="min-h-screen pb-16 relative bg-background">
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -53,6 +52,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/settings" 
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
                     </ProtectedRoute>
                   } 
                 />

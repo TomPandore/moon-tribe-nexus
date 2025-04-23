@@ -1,21 +1,20 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
-import Logo from "@/components/Logo";
 import ExerciseCard from "@/components/ExerciseCard";
 import ProgressBar from "@/components/ProgressBar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { LogOut, Calendar, Trophy, Flame } from "lucide-react";
+import { Trophy, Flame } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import DashboardHeader from "@/components/DashboardHeader";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { currentProgram, currentRitual, updateExerciseProgress, completeRitual } = useProgram();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [isCompleting, setIsCompleting] = useState(false);
 
   if (!user || !currentProgram || !currentRitual) {
@@ -48,28 +47,13 @@ const Dashboard: React.FC = () => {
     }, 1000);
   };
 
-  // Handler pour aller vers la section rituel du jour (scroll smooth)
-  const scrollToRitual = () => {
-    const el = document.getElementById('ritual-section');
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background text-foreground relative">
-      {/* Header menu */}
-      <DashboardHeader onRitualClick={scrollToRitual} />
-
-      {/* Spacer sous le header */}
-      <div className="h-[72px]" />
-
       <main className="relative z-10 container mx-auto px-4 py-6 pb-20 max-w-3xl">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold">{currentProgram.name}</h1>
             <div className="flex items-center bg-muted px-3 py-1 rounded-full">
-              <Calendar size={16} className="mr-2 text-muted-foreground" />
               <span className="text-sm font-medium text-muted-foreground">
                 Jour {user.progress.currentDay}/{currentProgram.duration}
               </span>
