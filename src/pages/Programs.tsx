@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
 import ProgramCard from "@/components/ProgramCard";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, LogOut } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { programs } from "@/data/programs";
 
 const getProgramsByCategory = (cat) => programs.filter(p => p.category === cat);
@@ -14,7 +14,7 @@ const getProgramsByCategory = (cat) => programs.filter(p => p.category === cat);
 const Programs: React.FC = () => {
   const navigate = useNavigate();
   const { selectProgram, currentProgram, isLoading } = useProgram();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   const freePrograms = getProgramsByCategory("free");
   const premiumPrograms = getProgramsByCategory("premium");
@@ -31,15 +31,7 @@ const Programs: React.FC = () => {
       <header className="container mx-auto pt-6 pb-4 px-4">
         <div className="flex justify-between items-center">
           <Logo />
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={logout}
-            className="border-border text-foreground hover:bg-secondary"
-          >
-            <LogOut size={16} className="mr-2" />
-            Déconnexion
-          </Button>
+          {/* Bouton déconnexion retiré sur demande */}
         </div>
       </header>
       
@@ -110,3 +102,4 @@ const Programs: React.FC = () => {
 };
 
 export default Programs;
+
