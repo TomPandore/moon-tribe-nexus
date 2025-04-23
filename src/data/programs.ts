@@ -1,50 +1,77 @@
 
 import { Program } from "@/types";
 
-export const programs: Program[] = [
+export type ProgramCategory = "free" | "premium";
+
+export interface ProgramExt extends Program {
+  category: ProgramCategory;
+  illustration?: string;
+}
+
+export const programs: ProgramExt[] = [
+  // PROGRAMMES DÉCOUVERTE (gratuits)
+  {
+    id: "rituels-nomades",
+    name: "Rituels Nomades",
+    description: "Découvre les mouvements essentiels des MoHero, à faire partout, sans matériel.",
+    duration: 5,
+    difficulty: "easy",
+    focus: ["Mobilité", "Conscience corporelle", "Posture"],
+    image: "https://images.unsplash.com/photo-1472396961693-142e6e269027",
+    category: "free",
+    illustration: "/lovable-uploads/1b6475fd-aa0b-4602-9a08-ff76c3a326c0.png"
+  },
+  {
+    id: "souffle-jaguar",
+    name: "Souffle du Jaguar",
+    description: "Un programme court et intense pour activer ton énergie vitale et ton ancrage.",
+    duration: 7,
+    difficulty: "easy",
+    focus: ["Endurance", "Respiration", "Stress", "Force"],
+    image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
+    category: "free"
+  },
+
+  // PROGRAMMES PREMIUM (MOHERO)
   {
     id: "origin",
     name: "MoHero Origin",
-    description: "Programme d'introduction aux mouvements tribaux et fonctionnels",
-    duration: 28,
-    difficulty: "easy",
-    focus: ["Mobilité", "Force", "Posture"],
-    image: "/programs/origin.jpg"
-  },
-  {
-    id: "warrior",
-    name: "Warrior Flow",
-    description: "Développez votre force et votre endurance avec des mouvements inspirés des guerriers",
-    duration: 21,
-    difficulty: "medium",
-    focus: ["Force", "Endurance", "Coordination"],
-    image: "/programs/warrior.jpg"
-  },
-  {
-    id: "primal",
-    name: "Primal Movement",
-    description: "Reconnectez-vous avec vos mouvements naturels et instinctifs",
-    duration: 14,
-    difficulty: "medium",
-    focus: ["Mobilité", "Agilité", "Coordination"],
-    image: "/programs/primal.jpg"
-  },
-  {
-    id: "breathe",
-    name: "Breathe & Move",
-    description: "Intégrez des techniques de respiration puissantes avec le mouvement",
-    duration: 7,
-    difficulty: "easy",
-    focus: ["Respiration", "Récupération", "Conscience corporelle"],
-    image: "/programs/breathe.jpg"
-  },
-  {
-    id: "strength",
-    name: "Tribal Strength",
-    description: "Construisez une force fonctionnelle avec des mouvements simples mais puissants",
+    description: "La fondation complète de l'héritier MoHero. Corps entier, mental focus, rituels ancestraux.",
     duration: 42,
     difficulty: "hard",
-    focus: ["Force", "Puissance", "Endurance"],
-    image: "/programs/strength.jpg"
+    focus: ["Force", "Endurance", "Respiration", "Posture", "Discipline"],
+    image: "https://images.unsplash.com/photo-1501286353178-1ec881214838",
+    category: "premium"
+  },
+  {
+    id: "corps-chene",
+    name: "Le Corps du Chêne",
+    description: "Mobilité, agilité et souffle. Un corps enraciné mais fluide, fort mais libre.",
+    duration: 28,
+    difficulty: "medium",
+    focus: ["Mobilité", "Respiration", "Posture", "Agilité"],
+    image: "https://images.unsplash.com/photo-1472396961693-142e6e269027",
+    category: "premium"
+  },
+  {
+    id: "fureur-jaguar",
+    name: "Fureur du Jaguar",
+    description: "Vitesse, explosivité, et précision animale. Deviens un chasseur insaisissable.",
+    duration: 28,
+    difficulty: "medium",
+    focus: ["Agilité", "Explosivité", "Coordination", "Vitesse"],
+    image: "https://images.unsplash.com/photo-1466721591366-2d5fba72006d",
+    category: "premium"
+  },
+  {
+    id: "maree-crocodile",
+    name: "Marée du Crocodile",
+    description: "Fluidité dans l'effort, relâchement dans l’intensité. Mouvement pur.",
+    duration: 21,
+    difficulty: "medium",
+    focus: ["Souplesse", "Contrôle", "Respiration", "Conscience corporelle"],
+    image: "https://images.unsplash.com/photo-1504893524553-b855bce32c67",
+    category: "premium"
   }
 ];
+

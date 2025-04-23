@@ -5,10 +5,10 @@ export type Exercise = {
   description?: string;
   reps?: number;
   duration?: number;
-  type: 'reps' | 'duration';
+  type: "reps" | "duration";
   completed: number;
-  image?: string; // Ajout image illustrative (URL ou chemin public)
-  video?: string; // Ajout URL vidéo (ex : YouTube ou mp4)
+  image?: string;
+  video?: string;
 };
 
 export type DailyRitual = {
@@ -24,7 +24,7 @@ export type Program = {
   name: string;
   description: string;
   duration: number;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
   focus: string[];
   image?: string;
 };
@@ -44,4 +44,7 @@ export type User = {
   name?: string;
   progress: UserProgress;
 };
+
+// Pas besoin d'exporter la catégorie ici (car Programme de base est neutre)
+// Extension/ajout nécessaire côté /data/programs
 
