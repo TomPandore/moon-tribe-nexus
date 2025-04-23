@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,6 +8,16 @@ import ProgramCard from "@/components/ProgramCard";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import { programs } from "@/data/programs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const getProgramsByCategory = (cat: "free" | "premium") => 
   programs.filter(p => p.category === cat);
@@ -15,15 +26,41 @@ const Programs: React.FC = () => {
   const navigate = useNavigate();
   const { selectProgram, currentProgram, isLoading } = useProgram();
   const { user } = useAuth();
+  const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const freePrograms = getProgramsByCategory("free");
   const premiumPrograms = getProgramsByCategory("premium");
 
   const handleProgramSelect = (programId: string) => {
-    selectProgram(programId);
-    setTimeout(() => {
+    // Si on n'a pas de programme en cours, on sélectionne directement
+    if (!currentProgram) {
+      selectProgram(programId);
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
+      return;
+    }
+
+    // Si on clique sur le même programme, on retourne au dashboard
+    if (currentProgram.id === programId) {
       navigate("/dashboard");
-    }, 1000);
+      return;
+    }
+
+    // Sinon on montre la boîte de dialogue de confirmation
+    setSelectedProgramId(programId);
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmProgramChange = () => {
+    if (selectedProgramId) {
+      selectProgram(selectedProgramId);
+      setShowConfirmDialog(false);
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
+    }
   };
 
   return (
@@ -96,6 +133,23 @@ const Programs: React.FC = () => {
             </Button>
           </div>
         )}
+
+        <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Changer de programme ?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Attention, en changeant de programme, vous perdrez toute votre progression actuelle et repartirez à zéro. Êtes-vous sûr de vouloir continuer ?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirmProgramChange}>
+                Confirmer
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </main>
     </div>
   );
