@@ -1,16 +1,20 @@
-
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Cog, Calendar, List } from "lucide-react";
+import { Home, Calendar, List, Cog } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// (optionnel : on peut plus tard ajouter une prop pour rendre ce menu context-sensitive)
 const navItems = [
   {
-    label: "Paramètres",
-    icon: Cog,
-    to: "/settings",
-    testId: "menu-settings"
+    label: "Accueil",
+    icon: Home,
+    to: "/",
+    testId: "menu-home"
+  },
+  {
+    label: "Programmes",
+    icon: List,
+    to: "/programs",
+    testId: "menu-programs"
   },
   {
     label: "Rituel du jour",
@@ -19,10 +23,10 @@ const navItems = [
     testId: "menu-ritual"
   },
   {
-    label: "Programmes",
-    icon: List,
-    to: "/programs",
-    testId: "menu-programs"
+    label: "Paramètres",
+    icon: Cog,
+    to: "/settings",
+    testId: "menu-settings"
   }
 ];
 
@@ -30,9 +34,8 @@ const AppMenuBar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Pour gérer des focus/états actifs :
   const isActive = (to: string) =>
-    location.pathname.startsWith(to) ||
+    location.pathname === to ||
     (to === "/dashboard" && location.pathname === "/");
 
   return (
@@ -51,9 +54,7 @@ const AppMenuBar: React.FC = () => {
                   active ? "text-primary font-semibold" : "text-gray-500"
                 )}
                 onClick={() => {
-                  // Spécificité : si on est déjà sur dashboard et clique sur Rituel → scroll section
                   if (item.to === "/dashboard" && location.pathname === "/dashboard") {
-                    // scroll smooth vers le rituel
                     const el = document.getElementById("ritual-section");
                     if (el) {
                       el.scrollIntoView({ behavior: "smooth" });
