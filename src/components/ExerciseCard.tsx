@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
@@ -16,6 +17,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
   const [incrementAmount, setIncrementAmount] = useState(
     exercise.type === "reps" ? 5 : 10
   );
+  const [mediaOpen, setMediaOpen] = useState(false);
   const [checkAnim, setCheckAnim] = useState(false);
 
   const target = exercise.type === "reps" ? exercise.reps! : exercise.duration!;
@@ -40,18 +42,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
     if (isCompleted) return;
     const newValue = Math.max(0, exercise.completed - incrementAmount);
     onUpdate(exercise.id, newValue);
-  };
-
-  const handleCustomValueSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customValue || isCompleted) return;
-
-    const value = parseInt(customValue);
-    if (isNaN(value)) return;
-
-    const newValue = Math.min(target, exercise.completed + value);
-    onUpdate(exercise.id, newValue);
-    setCustomValue("");
   };
 
   return (
