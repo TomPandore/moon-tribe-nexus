@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProgramProvider } from "@/contexts/ProgramContext";
-import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Programs from "./pages/Programs";
 import Dashboard from "./pages/Dashboard";
@@ -39,21 +38,20 @@ const App = () => (
             <div className="min-h-screen pb-16 relative bg-background pt-20">
               <AppHeader />
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route 
+                  path="/" 
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route path="/login" element={<Login />} />
                 <Route 
                   path="/programs" 
                   element={
                     <ProtectedRoute>
                       <Programs />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
                     </ProtectedRoute>
                   } 
                 />
