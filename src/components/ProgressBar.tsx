@@ -29,7 +29,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       <div
         className={cn(
           "h-full rounded-full transition-all duration-500 ease-out",
-          completed ? "bg-[#8B5CF6] animate-scale-in" : "bg-[#D6BCFA]"
+          completed ? "bg-[#19dfa8] animate-scale-in" : "bg-[#19dfa8]/50"
         )}
         style={{
           width: `${percentage}%`,
