@@ -47,3 +47,9 @@ export type User = {
   progress: UserProgress;
 };
 
+export type Session = {
+  access_token: string;
+  refresh_token: string;
+  expires_at?: number;
+  user: any;
+};

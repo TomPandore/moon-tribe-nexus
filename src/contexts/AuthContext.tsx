@@ -1,11 +1,12 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User, UserProgress } from "@/types";
+import { User, UserProgress, Session } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 type AuthContextType = {
   user: User | null;
+  session: Session | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name?: string) => Promise<void>;
@@ -17,62 +18,80 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Configuration de l'écouteur d'état d'authentification
+    // 1. Établir l'écouteur d'état d'authentification AVANT de vérifier la session
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log("Auth state changed:", event, session?.user?.id);
+      (event, currentSession) => {
+        console.log("Auth state changed:", event, currentSession?.user?.id);
         
-        if (session?.user) {
-          try {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
+        // Mise à jour synchrone de l'état de la session
+        setSession(currentSession);
+        
+        // Si nous avons une session, planifier un traitement asynchrone avec setTimeout
+        if (currentSession?.user) {
+          // Utiliser setTimeout pour éviter les deadlocks avec l'API Supabase
+          setTimeout(async () => {
+            try {
+              // Récupérer le profil de l'utilisateur
+              const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', currentSession.user.id)
+                .single();
 
-            if (profile) {
-              // Initialize default progress object if it's null
-              const progressData: UserProgress = profile.progress ? 
-                profile.progress as UserProgress : 
-                {
-                  currentDay: 1,
-                  streak: 0,
-                  totalCompletedDays: 0
-                };
+              if (error) throw error;
 
-              setUser({
-                id: session.user.id,
-                email: session.user.email!,
-                name: profile.name,
-                progress: progressData
-              });
-              console.log("User set from profile:", profile);
+              if (profile) {
+                // Initialize default progress object if it's null
+                const progressData: UserProgress = profile.progress ? 
+                  profile.progress as UserProgress : 
+                  {
+                    currentDay: 1,
+                    streak: 0,
+                    totalCompletedDays: 0
+                  };
+
+                setUser({
+                  id: currentSession.user.id,
+                  email: currentSession.user.email!,
+                  name: profile.name,
+                  progress: progressData
+                });
+                console.log("User set from profile:", profile);
+              }
+              
+              // Marquons le chargement comme terminé après avoir configuré l'utilisateur
+              setIsLoading(false);
+            } catch (error) {
+              console.error("Error getting profile:", error);
+              setIsLoading(false);
             }
-          } catch (error) {
-            console.error("Error getting profile:", error);
-          }
+          }, 0);
         } else {
+          // Pas de session, définir l'utilisateur à null
           setUser(null);
+          setIsLoading(false);
           console.log("User set to null");
         }
-        setIsLoading(false);
       }
     );
 
-    // Vérifier la session actuelle au chargement initial
+    // 2. PUIS vérifier la session existante
     const checkSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          console.log("No session found on load");
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        
+        // Ne rien faire d'autre ici - la session sera traitée par l'écouteur onAuthStateChange
+        console.log("Session check completed:", currentSession ? "Session exists" : "No session");
+        
+        // S'il n'y a pas de session, nous devons marquer le chargement comme terminé
+        // car l'écouteur ne sera pas déclenché
+        if (!currentSession) {
           setIsLoading(false);
-        } else {
-          console.log("Session found on load:", session.user?.id);
-          // La session sera traitée par l'écouteur onAuthStateChange
         }
       } catch (error) {
         console.error("Error checking session:", error);
@@ -81,8 +100,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     checkSession();
-    return () => subscription.unsubscribe();
+    
+    // Nettoyer l'abonnement quand le composant se démonte
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
+
+  // Fonction pour rafraîchir la session avant expiration
+  useEffect(() => {
+    if (session) {
+      // Configuration d'un intervalle pour rafraîchir la session avant expiration
+      // Généralement, la durée d'expiration par défaut est de 1 heure, donc nous rafraîchissons après 50 minutes
+      const refreshInterval = setInterval(async () => {
+        try {
+          const { error } = await supabase.auth.refreshSession();
+          if (error) throw error;
+          console.log("Session refreshed successfully");
+        } catch (error) {
+          console.error("Error refreshing session:", error);
+        }
+      }, 50 * 60 * 1000); // 50 minutes
+
+      return () => clearInterval(refreshInterval);
+    }
+  }, [session]);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -151,6 +193,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       setUser(null);
+      setSession(null);
     } catch (error: any) {
       toast({
         title: "Erreur de déconnexion",
@@ -190,7 +233,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, updateUserProgress }}>
+    <AuthContext.Provider value={{ user, session, isLoading, login, register, logout, updateUserProgress }}>
       {children}
     </AuthContext.Provider>
   );

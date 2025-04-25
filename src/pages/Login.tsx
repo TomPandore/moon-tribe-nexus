@@ -13,31 +13,32 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login, register, user, isLoading } = useAuth();
   const { toast } = useToast();
-  const [loginInProgress, setLoginInProgress] = useState(false);
-  const [registerInProgress, setRegisterInProgress] = useState(false);
   
   // États pour le login
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [loginInProgress, setLoginInProgress] = useState(false);
   
   // États pour l'inscription
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
+  const [registerInProgress, setRegisterInProgress] = useState(false);
   
   // Redirect if user is already logged in
   useEffect(() => {
-    console.log("Login page - user state changed:", user ? "logged in" : "not logged in");
-    if (user) {
+    console.log("Login page - auth state:", { user, isLoading });
+    
+    if (user && !isLoading) {
       console.log("Redirecting to dashboard because user is logged in");
       navigate("/dashboard", { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, isLoading, navigate]);
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (loginInProgress) return; // Éviter les soumissions multiples
+    if (loginInProgress) return;
     
     try {
       setLoginInProgress(true);
@@ -52,6 +53,7 @@ const Login: React.FC = () => {
       
     } catch (error) {
       console.error("Login form error:", error);
+    } finally {
       setLoginInProgress(false);
     }
   };
@@ -59,7 +61,7 @@ const Login: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (registerInProgress) return; // Éviter les soumissions multiples
+    if (registerInProgress) return;
     
     try {
       setRegisterInProgress(true);
@@ -69,13 +71,26 @@ const Login: React.FC = () => {
       }
       
       await register(registerEmail, registerPassword, registerName);
-      setRegisterInProgress(false);
       
     } catch (error) {
       console.error("Register form error:", error);
+    } finally {
       setRegisterInProgress(false);
     }
   };
+  
+  if (isLoading && user === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="mb-4">
+            <Logo size="lg" />
+          </div>
+          <p className="text-lg text-muted-foreground animate-pulse">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen bg-background text-foreground relative">
@@ -161,9 +176,9 @@ const Login: React.FC = () => {
                     </Button>
                   </div>
                   
-                  {/* Débogage */}
+                  {/* Debugging state */}
                   <div className="text-xs text-muted-foreground">
-                    État: {loginInProgress ? "En cours" : "Prêt"} | 
+                    État: {loginInProgress ? "Connexion en cours" : "Prêt"} | 
                     Auth: {isLoading ? "Chargement" : (user ? "Connecté" : "Non connecté")}
                   </div>
                 </form>
