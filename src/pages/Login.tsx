@@ -13,13 +13,28 @@ const Login: React.FC = () => {
   const { user, isLoading } = useAuth();
   
   useEffect(() => {
-    console.log("Login page - auth state:", user ? "logged in" : "not logged in", "isLoading:", isLoading);
+    console.log("Login page: Auth state check:", { 
+      isLoggedIn: !!user, 
+      isLoading 
+    });
     
     if (user && !isLoading) {
-      console.log("Redirecting to home because user is logged in");
+      console.log("Login page: User is logged in, redirecting to home");
       navigate("/", { replace: true });
     }
   }, [user, navigate, isLoading]);
+  
+  // Don't display anything while checking auth state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-tribal-green mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen bg-background text-foreground relative">
@@ -53,7 +68,7 @@ const Login: React.FC = () => {
               </TabsList>
               
               <TabsContent value="login">
-                <LoginForm isLoading={isLoading} />
+                <LoginForm />
               </TabsContent>
               
               <TabsContent value="register">

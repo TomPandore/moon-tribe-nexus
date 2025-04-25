@@ -5,124 +5,99 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Mail, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
-export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }) => {
+export const LoginForm = () => {
   const navigate = useNavigate();
-  const { login, user, isLoading: authIsLoading } = useAuth();
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [loginInProgress, setLoginInProgress] = useState(false);
-  const [loginError, setLoginError] = useState<string | null>(null);
+  const { login, user } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
-      console.log("LoginForm: User is logged in, redirecting to /");
       navigate("/", { replace: true });
     }
   }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     
-    if (loginInProgress) {
-      console.log("Login already in progress, skipping");
+    if (!email || !password) {
+      setError("Veuillez remplir tous les champs");
       return;
     }
     
     try {
-      setLoginError(null);
-      setLoginInProgress(true);
-      
-      if (!loginEmail || !loginPassword) {
-        setLoginInProgress(false);
-        throw new Error("Veuillez remplir tous les champs");
-      }
-      
-      console.log("Submitting login form with email:", loginEmail);
-      await login(loginEmail, loginPassword);
-      console.log("Login successful, redirection will be handled by useEffect");
-      
-    } catch (error: any) {
-      console.error("Login form error:", error);
-      setLoginError(error.message || "Une erreur est survenue lors de la connexion");
+      setIsSubmitting(true);
+      console.log("LoginForm: Attempting login with email:", email);
+      await login(email, password);
+      console.log("LoginForm: Login successful");
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue sur MoHero !",
+      });
+    } catch (err: any) {
+      console.error("LoginForm: Login failed:", err);
+      setError(err.message || "Une erreur est survenue lors de la connexion");
     } finally {
-      console.log("Login form finally block, setting loginInProgress to false");
-      setLoginInProgress(false);
+      setIsSubmitting(false);
     }
   };
 
-  // On ne désactive le bouton que pendant le processus de connexion local
-  const isButtonDisabled = loginInProgress;
-  
-  console.log("LoginForm rendering with states:", { 
-    loginInProgress, 
-    authIsLoading, 
-    parentIsLoading,
-    isButtonDisabled
-  });
-
   return (
     <form onSubmit={handleLogin} className="space-y-6">
-      {loginError && (
+      {error && (
         <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
-          {loginError}
+          {error}
         </div>
       )}
       
       <div>
-        <label htmlFor="login-email" className="block text-sm font-medium text-muted-foreground mb-1">
+        <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-1">
           Email
         </label>
         <div className="relative">
           <Mail size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
           <Input
-            id="login-email"
-            name="email"
+            id="email"
             type="email"
             autoComplete="email"
             required
             className="tribal-input w-full pl-10"
-            value={loginEmail}
-            onChange={(e) => setLoginEmail(e.target.value)}
-            // Important: ne pas désactiver les champs de saisie pendant le chargement
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="login-password" className="block text-sm font-medium text-muted-foreground mb-1">
+        <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-1">
           Mot de passe
         </label>
         <div className="relative">
           <Lock size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
           <Input
-            id="login-password"
-            name="password"
+            id="password"
             type="password"
             autoComplete="current-password"
             required
             className="tribal-input w-full pl-10"
-            value={loginPassword}
-            onChange={(e) => setLoginPassword(e.target.value)}
-            // Important: ne pas désactiver les champs de saisie pendant le chargement
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
       </div>
 
-      <div>
-        <Button 
-          type="submit" 
-          className="w-full tribal-btn-primary" 
-          disabled={isButtonDisabled}
-        >
-          {loginInProgress ? "Connexion..." : "Se connecter"}
-        </Button>
-      </div>
-      
-      <div className="text-xs text-muted-foreground">
-        État: {loginInProgress ? "En cours" : "Prêt"} | 
-        Auth: {authIsLoading ? "Chargement" : "Non connecté"}
-      </div>
+      <Button 
+        type="submit" 
+        className="w-full tribal-btn-primary" 
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Connexion en cours..." : "Se connecter"}
+      </Button>
     </form>
   );
 };

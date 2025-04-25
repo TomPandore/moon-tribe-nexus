@@ -1,82 +1,177 @@
 
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { AuthContextType } from "@/types/auth";
+import { User } from "@/types/auth";
 import { UserProgress } from "@/types"; 
-import { useAuthState } from "@/hooks/useAuthState";
+import { supabase } from "@/integrations/supabase/client";
 import { handleLogin, handleRegister, handleLogout, handleUpdateUserProgress } from "@/utils/authUtils";
-import { useToast } from "@/hooks/use-toast";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, setUser, isLoading, setIsLoading } = useAuthState();
-  const { toast } = useToast();
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    console.log("AuthProvider: Initializing");
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("AuthProvider: Auth state changed:", event, session?.user?.id);
+      
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session?.user) {
+          try {
+            console.log("AuthProvider: Fetching profile after sign in");
+            const { data: profile, error } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
+
+            if (error) {
+              console.error("AuthProvider: Error fetching profile:", error);
+              setUser(null);
+              setIsLoading(false);
+              return;
+            }
+
+            if (profile) {
+              const progressData = profile.progress ? 
+                profile.progress as UserProgress : 
+                {
+                  currentDay: 1,
+                  streak: 0,
+                  totalCompletedDays: 0
+                };
+
+              setUser({
+                id: session.user.id,
+                email: session.user.email!,
+                name: profile.name,
+                progress: progressData
+              });
+              console.log("AuthProvider: User set from profile:", profile);
+            }
+          } catch (error) {
+            console.error("AuthProvider: Error in auth state change:", error);
+          } finally {
+            setIsLoading(false);
+          }
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        console.log("AuthProvider: User signed out, set to null");
+        setIsLoading(false);
+      }
+    });
+
+    // Check initial session
+    const checkSession = async () => {
+      try {
+        console.log("AuthProvider: Checking initial session");
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("AuthProvider: Session error:", error);
+          setIsLoading(false);
+          return;
+        }
+        
+        if (!session) {
+          console.log("AuthProvider: No session found");
+          setIsLoading(false);
+          return;
+        }
+
+        console.log("AuthProvider: Session found, user ID:", session.user?.id);
+        try {
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          
+          if (profileError) {
+            console.error("AuthProvider: Profile error:", profileError);
+            setIsLoading(false);
+            return;
+          }
+
+          if (profile) {
+            const progressData = profile.progress ? 
+              profile.progress as UserProgress : 
+              {
+                currentDay: 1,
+                streak: 0,
+                totalCompletedDays: 0
+              };
+
+            setUser({
+              id: session.user.id,
+              email: session.user.email!,
+              name: profile.name,
+              progress: progressData
+            });
+            console.log("AuthProvider: User set from profile on init:", profile);
+          }
+        } catch (error) {
+          console.error("AuthProvider: Error getting profile on init:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("AuthProvider: Error checking session:", error);
+        setIsLoading(false);
+      }
+    };
+
+    checkSession();
+    
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      setIsLoading(true);
-      console.log("AuthContext: Starting login process");
+      console.log("AuthProvider: Login attempt with email:", email);
       await handleLogin(email, password);
-      console.log("AuthContext: Login process complete, waiting for auth state change");
-    } catch (error: any) {
-      console.error("AuthContext: Login error:", error);
-      toast({
-        title: "Erreur de connexion",
-        description: error.message,
-        variant: "destructive",
-      });
+      // Auth state change will update the user
+    } catch (error) {
+      console.error("AuthProvider: Login error:", error);
       throw error;
-    } finally {
-      // Assurez-vous de toujours remettre isLoading à false
-      console.log("AuthContext: Login finally block, setting isLoading to false");
-      setIsLoading(false);
     }
   };
 
   const register = async (email: string, password: string, name?: string) => {
     try {
-      setIsLoading(true);
-      console.log("AuthContext: Starting registration process");
+      console.log("AuthProvider: Registration attempt with email:", email);
       await handleRegister(email, password, name);
-      console.log("AuthContext: Registration complete");
-    } catch (error: any) {
-      console.error("AuthContext: Registration error:", error);
-      toast({
-        title: "Erreur d'inscription",
-        description: error.message,
-        variant: "destructive",
-      });
+      // Auth state change will update the user if email confirmation is disabled
+    } catch (error) {
+      console.error("AuthProvider: Registration error:", error);
       throw error;
-    } finally {
-      console.log("AuthContext: Registration finally block, setting isLoading to false");
-      setIsLoading(false);
     }
   };
 
   const logout = async () => {
     try {
-      console.log("AuthContext: Starting logout process");
+      console.log("AuthProvider: Logout attempt");
       await handleLogout();
       setUser(null);
-      console.log("AuthContext: Logout complete, user set to null");
-    } catch (error: any) {
-      console.error("AuthContext: Logout error:", error);
-      toast({
-        title: "Erreur de déconnexion",
-        description: error.message,
-        variant: "destructive",
-      });
+    } catch (error) {
+      console.error("AuthProvider: Logout error:", error);
+      throw error;
     }
   };
 
   const updateUserProgress = async (progress: Partial<UserProgress>) => {
     if (!user) {
-      console.warn("AuthContext: Cannot update progress, no user logged in");
+      console.warn("AuthProvider: Cannot update progress, no user logged in");
       return;
     }
     
     try {
-      console.log("AuthContext: Updating user progress:", progress);
+      console.log("AuthProvider: Updating user progress");
       await handleUpdateUserProgress(user.id, progress);
       setUser({
         ...user,
@@ -85,18 +180,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           ...progress
         }
       });
-      console.log("AuthContext: Progress updated successfully");
-    } catch (error: any) {
-      console.error("AuthContext: Update progress error:", error);
-      toast({
-        title: "Erreur de mise à jour",
-        description: error.message,
-        variant: "destructive",
-      });
+    } catch (error) {
+      console.error("AuthProvider: Update progress error:", error);
+      throw error;
     }
   };
 
-  console.log("AuthContext: Current auth state:", { user, isLoading });
+  console.log("AuthProvider: Current state:", { user, isLoading });
 
   return (
     <AuthContext.Provider value={{ user, isLoading, login, register, logout, updateUserProgress }}>

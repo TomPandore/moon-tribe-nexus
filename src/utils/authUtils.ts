@@ -1,10 +1,9 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { UserProgress } from "@/types";
-import { toast } from "@/hooks/use-toast";
 
 export const handleLogin = async (email: string, password: string) => {
-  console.log("Attempting login with:", email);
+  console.log("AuthUtils: Attempting login with email:", email);
   
   const { error, data } = await supabase.auth.signInWithPassword({
     email,
@@ -12,64 +11,50 @@ export const handleLogin = async (email: string, password: string) => {
   });
 
   if (error) {
-    console.error("Login error:", error);
+    console.error("AuthUtils: Login error:", error);
     throw error;
   }
   
-  console.log("Login successful, data:", data);
-  toast({
-    title: "Connexion réussie",
-    description: "Bienvenue sur MoHero !",
-  });
-  
+  console.log("AuthUtils: Login successful", data.user?.id);
   return data;
 };
 
 export const handleRegister = async (email: string, password: string, name?: string) => {
-  console.log("Attempting registration with:", email);
+  console.log("AuthUtils: Attempting registration with email:", email);
   
   const { error, data } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
-        name: name
+        name: name || ""
       }
     }
   });
 
   if (error) {
-    console.error("Registration error:", error);
+    console.error("AuthUtils: Registration error:", error);
     throw error;
   }
   
-  console.log("Registration successful, data:", data);
-  toast({
-    title: "Inscription réussie",
-    description: "Veuillez vérifier votre email pour confirmer votre compte.",
-  });
-  
+  console.log("AuthUtils: Registration successful");
   return data;
 };
 
 export const handleLogout = async () => {
-  console.log("Attempting logout");
+  console.log("AuthUtils: Attempting logout");
   
   const { error } = await supabase.auth.signOut();
   if (error) {
-    console.error("Logout error:", error);
+    console.error("AuthUtils: Logout error:", error);
     throw error;
   }
   
-  console.log("Logout successful");
-  toast({
-    title: "Déconnexion réussie",
-    description: "À bientôt sur MoHero !",
-  });
+  console.log("AuthUtils: Logout successful");
 };
 
 export const handleUpdateUserProgress = async (userId: string, progress: Partial<UserProgress>) => {
-  console.log("Updating user progress for:", userId, progress);
+  console.log("AuthUtils: Updating user progress for:", userId);
   
   const { error, data } = await supabase
     .from('profiles')
@@ -77,10 +62,10 @@ export const handleUpdateUserProgress = async (userId: string, progress: Partial
     .eq('id', userId);
     
   if (error) {
-    console.error("Update progress error:", error);
+    console.error("AuthUtils: Update progress error:", error);
     throw error;
   }
   
-  console.log("Progress update successful, data:", data);
+  console.log("AuthUtils: Progress update successful");
   return data;
 };
