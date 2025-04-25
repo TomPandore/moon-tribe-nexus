@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,10 +16,23 @@ const Dashboard: React.FC = () => {
   const { currentProgram, currentRitual, updateExerciseProgress, completeRitual } = useProgram();
   const { user } = useAuth();
   const [isCompleting, setIsCompleting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (!user || !currentProgram || !currentRitual) {
+      if (!isRedirecting) {
+        setIsRedirecting(true);
+        navigate("/programs");
+      }
+    }
+  }, [user, currentProgram, currentRitual, navigate, isRedirecting]);
 
   if (!user || !currentProgram || !currentRitual) {
-    navigate("/programs");
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Chargement...</p>
+      </div>
+    );
   }
 
   const totalExercises = currentRitual.exercises.length;
