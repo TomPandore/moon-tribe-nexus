@@ -62,6 +62,7 @@ export const useAuthState = () => {
         
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           if (session?.user && mounted) {
+            setIsLoading(true); // Indiquez que nous chargeons pendant la récupération du profil
             try {
               const { data: profile } = await supabase
                 .from('profiles')
@@ -88,6 +89,8 @@ export const useAuthState = () => {
               }
             } catch (error) {
               console.error("Error getting profile:", error);
+            } finally {
+              if (mounted) setIsLoading(false);
             }
           }
         } else if (event === 'SIGNED_OUT') {

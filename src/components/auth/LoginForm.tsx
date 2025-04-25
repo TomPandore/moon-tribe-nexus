@@ -46,6 +46,9 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
     }
   };
 
+  // Détermine si le bouton devrait être désactivé
+  const isButtonDisabled = loginInProgress;
+
   return (
     <form onSubmit={handleLogin} className="space-y-6">
       {loginError && (
@@ -98,7 +101,7 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
         <Button 
           type="submit" 
           className="w-full tribal-btn-primary" 
-          disabled={loginInProgress || parentIsLoading}
+          disabled={isButtonDisabled}
         >
           {loginInProgress ? "Connexion..." : "Se connecter"}
         </Button>
