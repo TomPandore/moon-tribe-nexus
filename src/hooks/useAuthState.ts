@@ -14,18 +14,32 @@ export const useAuthState = () => {
 
     const checkSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        console.log("Checking initial session...");
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Error getting session:", error);
+          if (mounted) setIsLoading(false);
+          return;
+        }
+        
         if (!session) {
           console.log("No session found on load");
           if (mounted) setIsLoading(false);
         } else {
           console.log("Session found on load:", session.user?.id);
           try {
-            const { data: profile } = await supabase
+            const { data: profile, error: profileError } = await supabase
               .from('profiles')
               .select('*')
               .eq('id', session.user.id)
               .single();
+            
+            if (profileError) {
+              console.error("Error fetching profile:", profileError);
+              if (mounted) setIsLoading(false);
+              return;
+            }
 
             if (profile && mounted) {
               const progressData: UserProgress = profile.progress ? 
@@ -64,11 +78,18 @@ export const useAuthState = () => {
           if (session?.user && mounted) {
             setIsLoading(true); // Indiquez que nous chargeons pendant la récupération du profil
             try {
-              const { data: profile } = await supabase
+              console.log("Fetching profile data for user:", session.user.id);
+              const { data: profile, error: profileError } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', session.user.id)
                 .single();
+
+              if (profileError) {
+                console.error("Error fetching profile:", profileError);
+                if (mounted) setIsLoading(false);
+                return;
+              }
 
               if (profile && mounted) {
                 const progressData: UserProgress = profile.progress ? 
@@ -86,6 +107,8 @@ export const useAuthState = () => {
                   progress: progressData
                 });
                 console.log("User set from profile:", profile);
+              } else {
+                console.warn("No profile found for user:", session.user.id);
               }
             } catch (error) {
               console.error("Error getting profile:", error);

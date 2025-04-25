@@ -11,17 +11,24 @@ export const handleLogin = async (email: string, password: string) => {
     password,
   });
 
-  if (error) throw error;
+  if (error) {
+    console.error("Login error:", error);
+    throw error;
+  }
   
   console.log("Login successful, data:", data);
   toast({
     title: "Connexion réussie",
     description: "Bienvenue sur MoHero !",
   });
+  
+  return data;
 };
 
 export const handleRegister = async (email: string, password: string, name?: string) => {
-  const { error } = await supabase.auth.signUp({
+  console.log("Attempting registration with:", email);
+  
+  const { error, data } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -31,18 +38,30 @@ export const handleRegister = async (email: string, password: string, name?: str
     }
   });
 
-  if (error) throw error;
-
+  if (error) {
+    console.error("Registration error:", error);
+    throw error;
+  }
+  
+  console.log("Registration successful, data:", data);
   toast({
     title: "Inscription réussie",
     description: "Veuillez vérifier votre email pour confirmer votre compte.",
   });
+  
+  return data;
 };
 
 export const handleLogout = async () => {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+  console.log("Attempting logout");
   
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error("Logout error:", error);
+    throw error;
+  }
+  
+  console.log("Logout successful");
   toast({
     title: "Déconnexion réussie",
     description: "À bientôt sur MoHero !",
@@ -50,10 +69,18 @@ export const handleLogout = async () => {
 };
 
 export const handleUpdateUserProgress = async (userId: string, progress: Partial<UserProgress>) => {
-  const { error } = await supabase
+  console.log("Updating user progress for:", userId, progress);
+  
+  const { error, data } = await supabase
     .from('profiles')
     .update({ progress })
     .eq('id', userId);
     
-  if (error) throw error;
+  if (error) {
+    console.error("Update progress error:", error);
+    throw error;
+  }
+  
+  console.log("Progress update successful, data:", data);
+  return data;
 };

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }) => {
   const navigate = useNavigate();
-  const { login, user } = useAuth();
+  const { login, user, isLoading: authIsLoading } = useAuth();
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginInProgress, setLoginInProgress] = useState(false);
@@ -24,7 +24,10 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (loginInProgress) return;
+    if (loginInProgress || authIsLoading) {
+      console.log("Login already in progress, skipping");
+      return;
+    }
     
     try {
       setLoginError(null);
@@ -40,14 +43,22 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
       
     } catch (error: any) {
       console.error("Login form error:", error);
-      setLoginError(error.message);
+      setLoginError(error.message || "Une erreur est survenue lors de la connexion");
     } finally {
+      console.log("Login form finally block, setting loginInProgress to false");
       setLoginInProgress(false);
     }
   };
 
   // Détermine si le bouton devrait être désactivé
-  const isButtonDisabled = loginInProgress;
+  const isButtonDisabled = loginInProgress || authIsLoading;
+  
+  console.log("LoginForm rendering with states:", { 
+    loginInProgress, 
+    authIsLoading, 
+    parentIsLoading,
+    isButtonDisabled
+  });
 
   return (
     <form onSubmit={handleLogin} className="space-y-6">
@@ -72,7 +83,7 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
             className="tribal-input w-full pl-10"
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
-            disabled={loginInProgress}
+            disabled={isButtonDisabled}
           />
         </div>
       </div>
@@ -92,7 +103,7 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
             className="tribal-input w-full pl-10"
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
-            disabled={loginInProgress}
+            disabled={isButtonDisabled}
           />
         </div>
       </div>
@@ -109,7 +120,7 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
       
       <div className="text-xs text-muted-foreground">
         État: {loginInProgress ? "En cours" : "Prêt"} | 
-        Auth: {parentIsLoading ? "Chargement" : "Non connecté"}
+        Auth: {authIsLoading ? "Chargement" : "Non connecté"}
       </div>
     </form>
   );
