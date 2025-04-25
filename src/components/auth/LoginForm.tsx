@@ -6,7 +6,6 @@ import { Mail, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -44,7 +43,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-6">
+    <form onSubmit={handleLogin} className="space-y-6 p-6">
       {error && (
         <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
           {error}
@@ -62,10 +61,11 @@ export const LoginForm = () => {
             type="email"
             autoComplete="email"
             required
-            className="tribal-input w-full pl-10"
+            className="w-full pl-10"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={loginInProgress}
+            placeholder="votre@email.com"
           />
         </div>
       </div>
@@ -81,10 +81,11 @@ export const LoginForm = () => {
             type="password"
             autoComplete="current-password"
             required
-            className="tribal-input w-full pl-10"
+            className="w-full pl-10"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={loginInProgress}
+            placeholder="••••••••"
           />
         </div>
       </div>

@@ -17,24 +17,6 @@ const Login: React.FC = () => {
     return <Navigate to="/" replace />;
   }
   
-  // Loading state while checking authentication
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4 w-full max-w-md px-4">
-          <div className="w-24 mx-auto">
-            <Skeleton className="h-12 w-full rounded-full" />
-          </div>
-          <Skeleton className="h-8 w-48 mx-auto" />
-          <Skeleton className="h-4 w-64 mx-auto" />
-          <div className="tribal-card glass-panel">
-            <Skeleton className="h-64 w-full rounded-lg" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <div className="absolute inset-0 tribal-pattern pointer-events-none"></div>
@@ -54,26 +36,35 @@ const Login: React.FC = () => {
           </p>
 
           <div className="tribal-card glass-panel">
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login" className="data-[state=active]:bg-tribal-green data-[state=active]:text-black">
-                  <LogIn size={16} className="mr-2" />
-                  Connexion
-                </TabsTrigger>
-                <TabsTrigger value="register" className="data-[state=active]:bg-tribal-green data-[state=active]:text-black">
-                  <UserPlus size={16} className="mr-2" />
-                  Inscription
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="login">
-                <LoginForm />
-              </TabsContent>
-              
-              <TabsContent value="register">
-                <RegisterForm />
-              </TabsContent>
-            </Tabs>
+            {isLoading ? (
+              <div className="p-6 space-y-4">
+                <Skeleton className="h-8 w-32 mx-auto mb-4" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full mt-4" />
+              </div>
+            ) : (
+              <Tabs defaultValue="login" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="login" className="data-[state=active]:bg-tribal-green data-[state=active]:text-black">
+                    <LogIn size={16} className="mr-2" />
+                    Connexion
+                  </TabsTrigger>
+                  <TabsTrigger value="register" className="data-[state=active]:bg-tribal-green data-[state=active]:text-black">
+                    <UserPlus size={16} className="mr-2" />
+                    Inscription
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="login">
+                  <LoginForm />
+                </TabsContent>
+                
+                <TabsContent value="register">
+                  <RegisterForm />
+                </TabsContent>
+              </Tabs>
+            )}
           </div>
           
           <div className="mt-8 text-center text-sm text-muted-foreground">

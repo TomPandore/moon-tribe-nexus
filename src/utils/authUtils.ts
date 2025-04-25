@@ -1,7 +1,11 @@
 
+// We'll no longer use this file since we've moved the auth logic directly into the AuthContext
+// to avoid potential circular dependencies or issues with state synchronization
+
 import { supabase } from "@/integrations/supabase/client";
 import { UserProgress } from "@/types";
 
+// These functions are kept for reference but are no longer being used
 export const handleLogin = async (email: string, password: string) => {
   console.log("AuthUtils: Attempting login with email:", email);
   

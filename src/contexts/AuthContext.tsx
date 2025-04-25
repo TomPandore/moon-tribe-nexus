@@ -4,14 +4,14 @@ import { AuthContextType } from "@/types/auth";
 import { User } from "@/types/auth";
 import { UserProgress } from "@/types"; 
 import { supabase } from "@/integrations/supabase/client";
-import { handleLogin, handleRegister, handleLogout, handleUpdateUserProgress } from "@/utils/authUtils";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  
+  // Set up Supabase auth state detection
   useEffect(() => {
     console.log("AuthProvider: Initializing");
     
@@ -33,13 +33,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               console.error("AuthProvider: Error fetching profile:", error);
               setUser(null);
             } else if (profile) {
-              const progressData = profile.progress ? 
-                profile.progress as UserProgress : 
-                {
-                  currentDay: 1,
-                  streak: 0,
-                  totalCompletedDays: 0
-                };
+              const progressData = profile.progress ? profile.progress : {
+                currentDay: 1,
+                streak: 0,
+                totalCompletedDays: 0
+              };
 
               setUser({
                 id: session.user.id,
@@ -96,13 +94,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
 
             if (profile) {
-              const progressData = profile.progress ? 
-                profile.progress as UserProgress : 
-                {
-                  currentDay: 1,
-                  streak: 0,
-                  totalCompletedDays: 0
-                };
+              const progressData = profile.progress ? profile.progress : {
+                currentDay: 1,
+                streak: 0,
+                totalCompletedDays: 0
+              };
 
               setUser({
                 id: session.user.id,
@@ -133,11 +129,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     try {
       console.log("AuthProvider: Login attempt with email:", email);
-      await handleLogin(email, password);
-      // Auth state change will handle updating the user
+      const { error, data } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error("AuthProvider: Login error:", error);
+        throw error;
+      }
+      
+      console.log("AuthProvider: Login successful", data.user?.id);
+      // Let the auth state listener update the user
+      return data;
     } catch (error) {
       console.error("AuthProvider: Login error:", error);
-      setIsLoading(false);
       throw error;
     }
   };
@@ -145,11 +151,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (email: string, password: string, name?: string) => {
     try {
       console.log("AuthProvider: Registration attempt with email:", email);
-      await handleRegister(email, password, name);
-      // Auth state change will handle updating the user if email confirmation is disabled
+      const { error, data } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name || ""
+          }
+        }
+      });
+
+      if (error) {
+        console.error("AuthProvider: Registration error:", error);
+        throw error;
+      }
+      
+      console.log("AuthProvider: Registration successful");
+      return data;
     } catch (error) {
       console.error("AuthProvider: Registration error:", error);
-      setIsLoading(false);
       throw error;
     }
   };
@@ -157,8 +177,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       console.log("AuthProvider: Logout attempt");
-      await handleLogout();
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("AuthProvider: Logout error:", error);
+        throw error;
+      }
+      
       setUser(null);
+      console.log("AuthProvider: Logout successful");
     } catch (error) {
       console.error("AuthProvider: Logout error:", error);
       throw error;
@@ -173,7 +199,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       console.log("AuthProvider: Updating user progress");
-      await handleUpdateUserProgress(user.id, progress);
+      const { error, data } = await supabase
+        .from('profiles')
+        .update({ progress })
+        .eq('id', user.id);
+        
+      if (error) {
+        console.error("AuthProvider: Update progress error:", error);
+        throw error;
+      }
+      
       setUser({
         ...user,
         progress: {
@@ -181,6 +216,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           ...progress
         }
       });
+      
+      console.log("AuthProvider: Progress update successful");
+      return data;
     } catch (error) {
       console.error("AuthProvider: Update progress error:", error);
       throw error;
