@@ -41,8 +41,8 @@ export const useSessionManager = () => {
                 let progressData: UserProgress;
                 
                 if (profile.progress) {
-                  // Ensure we have a properly typed UserProgress object
-                  const rawProgress = profile.progress;
+                  // Check if progress is an object with expected properties
+                  const rawProgress = profile.progress as Record<string, any>;
                   progressData = {
                     currentDay: typeof rawProgress.currentDay === 'number' ? rawProgress.currentDay : 1,
                     streak: typeof rawProgress.streak === 'number' ? rawProgress.streak : 0,
