@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -11,9 +11,10 @@ import { UserPlus, LogIn, Mail, Lock, User } from "lucide-react";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login, register, user, isLoading } = useAuth();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [loginInProgress, setLoginInProgress] = useState(false);
+  const [registerInProgress, setRegisterInProgress] = useState(false);
   
   // États pour le login
   const [loginEmail, setLoginEmail] = useState("");
@@ -24,57 +25,55 @@ const Login: React.FC = () => {
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
   
+  // Redirect if user is already logged in
+  useEffect(() => {
+    console.log("Login page - user state changed:", user ? "logged in" : "not logged in");
+    if (user) {
+      console.log("Redirecting to dashboard because user is logged in");
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user, navigate]);
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    
+    if (loginInProgress) return; // Éviter les soumissions multiples
     
     try {
+      setLoginInProgress(true);
+      
       if (!loginEmail || !loginPassword) {
         throw new Error("Veuillez remplir tous les champs");
       }
       
+      console.log("Submitting login form");
       await login(loginEmail, loginPassword);
-      navigate("/dashboard");
-      toast({
-        title: "Connexion réussie",
-        description: "Bienvenue sur MoHero !",
-      });
+      // La redirection est gérée par l'useEffect ci-dessus
+      
     } catch (error) {
-      console.error(error);
-      toast({
-        title: "Erreur de connexion",
-        description: "Vérifiez vos identifiants et réessayez",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+      console.error("Login form error:", error);
+      setLoginInProgress(false);
     }
   };
   
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    
+    if (registerInProgress) return; // Éviter les soumissions multiples
     
     try {
+      setRegisterInProgress(true);
+      
       if (!registerEmail || !registerPassword) {
         throw new Error("Veuillez remplir tous les champs obligatoires");
       }
       
       await register(registerEmail, registerPassword, registerName);
-      navigate("/programs");
-      toast({
-        title: "Inscription réussie",
-        description: "Bienvenue sur MoHero ! Choisissez un programme pour commencer.",
-      });
+      setRegisterInProgress(false);
+      
     } catch (error) {
-      console.error(error);
-      toast({
-        title: "Erreur d'inscription",
-        description: "Une erreur est survenue lors de l'inscription",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+      console.error("Register form error:", error);
+      setRegisterInProgress(false);
     }
   };
   
@@ -127,6 +126,7 @@ const Login: React.FC = () => {
                         className="tribal-input w-full pl-10"
                         value={loginEmail}
                         onChange={(e) => setLoginEmail(e.target.value)}
+                        disabled={loginInProgress}
                       />
                     </div>
                   </div>
@@ -146,6 +146,7 @@ const Login: React.FC = () => {
                         className="tribal-input w-full pl-10"
                         value={loginPassword}
                         onChange={(e) => setLoginPassword(e.target.value)}
+                        disabled={loginInProgress}
                       />
                     </div>
                   </div>
@@ -154,10 +155,16 @@ const Login: React.FC = () => {
                     <Button 
                       type="submit" 
                       className="w-full tribal-btn-primary" 
-                      disabled={isLoading}
+                      disabled={loginInProgress}
                     >
-                      {isLoading ? "Connexion..." : "Se connecter"}
+                      {loginInProgress ? "Connexion..." : "Se connecter"}
                     </Button>
+                  </div>
+                  
+                  {/* Débogage */}
+                  <div className="text-xs text-muted-foreground">
+                    État: {loginInProgress ? "En cours" : "Prêt"} | 
+                    Auth: {isLoading ? "Chargement" : (user ? "Connecté" : "Non connecté")}
                   </div>
                 </form>
               </TabsContent>
@@ -178,6 +185,7 @@ const Login: React.FC = () => {
                         className="tribal-input w-full pl-10"
                         value={registerName}
                         onChange={(e) => setRegisterName(e.target.value)}
+                        disabled={registerInProgress}
                       />
                     </div>
                   </div>
@@ -197,6 +205,7 @@ const Login: React.FC = () => {
                         className="tribal-input w-full pl-10"
                         value={registerEmail}
                         onChange={(e) => setRegisterEmail(e.target.value)}
+                        disabled={registerInProgress}
                       />
                     </div>
                   </div>
@@ -216,6 +225,7 @@ const Login: React.FC = () => {
                         className="tribal-input w-full pl-10"
                         value={registerPassword}
                         onChange={(e) => setRegisterPassword(e.target.value)}
+                        disabled={registerInProgress}
                       />
                     </div>
                   </div>
@@ -224,9 +234,9 @@ const Login: React.FC = () => {
                     <Button 
                       type="submit" 
                       className="w-full tribal-btn-primary" 
-                      disabled={isLoading}
+                      disabled={registerInProgress}
                     >
-                      {isLoading ? "Inscription..." : "S'inscrire"}
+                      {registerInProgress ? "Inscription..." : "S'inscrire"}
                     </Button>
                   </div>
                 </form>
