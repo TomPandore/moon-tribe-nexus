@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -9,21 +8,13 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProgramProvider } from "@/contexts/ProgramContext";
 import Login from "./pages/Login";
 import Programs from "./pages/Programs";
-import Dashboard from "./pages/Dashboard";
-import Ritual from "./pages/Ritual";
+import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import AppMenuBar from "@/components/AppMenuBar";
 import AppHeader from "@/components/AppHeader";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = localStorage.getItem("mohero_user") !== null;
@@ -50,19 +41,11 @@ const App = () => (
                   path="/" 
                   element={
                     <ProtectedRoute>
-                      <Dashboard />
+                      <Home />
                     </ProtectedRoute>
                   } 
                 />
                 <Route path="/login" element={<Login />} />
-                <Route 
-                  path="/ritual" 
-                  element={
-                    <ProtectedRoute>
-                      <Ritual />
-                    </ProtectedRoute>
-                  } 
-                />
                 <Route 
                   path="/programs" 
                   element={
