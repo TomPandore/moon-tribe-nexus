@@ -83,7 +83,7 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
             className="tribal-input w-full pl-10"
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
-            disabled={isButtonDisabled}
+            // Important: ne pas désactiver les champs de saisie pendant le chargement
           />
         </div>
       </div>
@@ -103,7 +103,7 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
             className="tribal-input w-full pl-10"
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
-            disabled={isButtonDisabled}
+            // Important: ne pas désactiver les champs de saisie pendant le chargement
           />
         </div>
       </div>
