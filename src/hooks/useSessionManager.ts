@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Session, User } from "@/types";
+import { Session, User, UserProgress } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useSessionManager = () => {
@@ -30,13 +30,30 @@ export const useSessionManager = () => {
               if (error) throw error;
 
               if (profile) {
-                const progressData = profile.progress ? 
-                  profile.progress : 
-                  {
-                    currentDay: 1,
-                    streak: 0,
-                    totalCompletedDays: 0
+                // Create a default progress object for new users
+                const defaultProgress: UserProgress = {
+                  currentDay: 1,
+                  streak: 0,
+                  totalCompletedDays: 0
+                };
+                
+                // Type-safe handling of progress data
+                let progressData: UserProgress;
+                
+                if (profile.progress) {
+                  // Ensure we have a properly typed UserProgress object
+                  const rawProgress = profile.progress;
+                  progressData = {
+                    currentDay: typeof rawProgress.currentDay === 'number' ? rawProgress.currentDay : 1,
+                    streak: typeof rawProgress.streak === 'number' ? rawProgress.streak : 0,
+                    totalCompletedDays: typeof rawProgress.totalCompletedDays === 'number' ? rawProgress.totalCompletedDays : 0,
+                    currentProgram: rawProgress.currentProgram ? String(rawProgress.currentProgram) : undefined,
+                    startDate: rawProgress.startDate ? String(rawProgress.startDate) : undefined,
+                    lastCompletedDay: typeof rawProgress.lastCompletedDay === 'number' ? rawProgress.lastCompletedDay : undefined
                   };
+                } else {
+                  progressData = defaultProgress;
+                }
 
                 setUser({
                   id: currentSession.user.id,
