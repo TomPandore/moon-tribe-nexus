@@ -24,7 +24,7 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (loginInProgress || authIsLoading) {
+    if (loginInProgress) {
       console.log("Login already in progress, skipping");
       return;
     }
@@ -34,6 +34,7 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
       setLoginInProgress(true);
       
       if (!loginEmail || !loginPassword) {
+        setLoginInProgress(false);
         throw new Error("Veuillez remplir tous les champs");
       }
       
@@ -50,8 +51,8 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
     }
   };
 
-  // Détermine si le bouton devrait être désactivé
-  const isButtonDisabled = loginInProgress || authIsLoading;
+  // On ne désactive le bouton que pendant le processus de connexion local
+  const isButtonDisabled = loginInProgress;
   
   console.log("LoginForm rendering with states:", { 
     loginInProgress, 
