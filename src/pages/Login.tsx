@@ -1,31 +1,17 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 import Logo from "@/components/Logo";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserPlus, LogIn, Mail, Lock, User } from "lucide-react";
+import { UserPlus, LogIn } from "lucide-react";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { RegisterForm } from "@/components/auth/RegisterForm";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login, register, user, isLoading } = useAuth();
-  const { toast } = useToast();
-  const [loginInProgress, setLoginInProgress] = useState(false);
-  const [registerInProgress, setRegisterInProgress] = useState(false);
+  const { user, isLoading } = useAuth();
   
-  // États pour le login
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  
-  // États pour l'inscription
-  const [registerEmail, setRegisterEmail] = useState("");
-  const [registerPassword, setRegisterPassword] = useState("");
-  const [registerName, setRegisterName] = useState("");
-  
-  // Redirect if user is already logged in
   useEffect(() => {
     console.log("Login page - user state changed:", user ? "logged in" : "not logged in");
     if (user) {
@@ -34,52 +20,8 @@ const Login: React.FC = () => {
     }
   }, [user, navigate]);
   
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (loginInProgress) return; // Éviter les soumissions multiples
-    
-    try {
-      setLoginInProgress(true);
-      
-      if (!loginEmail || !loginPassword) {
-        throw new Error("Veuillez remplir tous les champs");
-      }
-      
-      console.log("Submitting login form");
-      await login(loginEmail, loginPassword);
-      // La redirection est gérée par l'useEffect ci-dessus
-      
-    } catch (error) {
-      console.error("Login form error:", error);
-      setLoginInProgress(false);
-    }
-  };
-  
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (registerInProgress) return; // Éviter les soumissions multiples
-    
-    try {
-      setRegisterInProgress(true);
-      
-      if (!registerEmail || !registerPassword) {
-        throw new Error("Veuillez remplir tous les champs obligatoires");
-      }
-      
-      await register(registerEmail, registerPassword, registerName);
-      setRegisterInProgress(false);
-      
-    } catch (error) {
-      console.error("Register form error:", error);
-      setRegisterInProgress(false);
-    }
-  };
-  
   return (
     <div className="min-h-screen bg-background text-foreground relative">
-      {/* Background pattern */}
       <div className="absolute inset-0 tribal-pattern pointer-events-none"></div>
       
       <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12 relative z-10">
@@ -110,136 +52,11 @@ const Login: React.FC = () => {
               </TabsList>
               
               <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-6">
-                  <div>
-                    <label htmlFor="login-email" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Email
-                    </label>
-                    <div className="relative">
-                      <Mail size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="login-email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        required
-                        className="tribal-input w-full pl-10"
-                        value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
-                        disabled={loginInProgress}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="login-password" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Mot de passe
-                    </label>
-                    <div className="relative">
-                      <Lock size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="login-password"
-                        name="password"
-                        type="password"
-                        autoComplete="current-password"
-                        required
-                        className="tribal-input w-full pl-10"
-                        value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
-                        disabled={loginInProgress}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Button 
-                      type="submit" 
-                      className="w-full tribal-btn-primary" 
-                      disabled={loginInProgress}
-                    >
-                      {loginInProgress ? "Connexion..." : "Se connecter"}
-                    </Button>
-                  </div>
-                  
-                  {/* Débogage */}
-                  <div className="text-xs text-muted-foreground">
-                    État: {loginInProgress ? "En cours" : "Prêt"} | 
-                    Auth: {isLoading ? "Chargement" : (user ? "Connecté" : "Non connecté")}
-                  </div>
-                </form>
+                <LoginForm isLoading={isLoading} />
               </TabsContent>
               
               <TabsContent value="register">
-                <form onSubmit={handleRegister} className="space-y-6">
-                  <div>
-                    <label htmlFor="register-name" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Nom (optionnel)
-                    </label>
-                    <div className="relative">
-                      <User size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="register-name"
-                        name="name"
-                        type="text"
-                        autoComplete="name"
-                        className="tribal-input w-full pl-10"
-                        value={registerName}
-                        onChange={(e) => setRegisterName(e.target.value)}
-                        disabled={registerInProgress}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="register-email" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Email
-                    </label>
-                    <div className="relative">
-                      <Mail size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="register-email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        required
-                        className="tribal-input w-full pl-10"
-                        value={registerEmail}
-                        onChange={(e) => setRegisterEmail(e.target.value)}
-                        disabled={registerInProgress}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="register-password" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Mot de passe
-                    </label>
-                    <div className="relative">
-                      <Lock size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="register-password"
-                        name="password"
-                        type="password"
-                        autoComplete="new-password"
-                        required
-                        className="tribal-input w-full pl-10"
-                        value={registerPassword}
-                        onChange={(e) => setRegisterPassword(e.target.value)}
-                        disabled={registerInProgress}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Button 
-                      type="submit" 
-                      className="w-full tribal-btn-primary" 
-                      disabled={registerInProgress}
-                    >
-                      {registerInProgress ? "Inscription..." : "S'inscrire"}
-                    </Button>
-                  </div>
-                </form>
+                <RegisterForm />
               </TabsContent>
             </Tabs>
           </div>
