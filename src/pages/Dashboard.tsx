@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,13 +17,8 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const [isCompleting, setIsCompleting] = useState(false);
 
-  useEffect(() => {
-    if (!user || !currentProgram || !currentRitual) {
-      navigate("/programs");
-    }
-  }, [user, currentProgram, currentRitual, navigate]);
-
   if (!user || !currentProgram || !currentRitual) {
+    navigate("/programs");
     return null;
   }
 

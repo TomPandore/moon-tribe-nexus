@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -11,7 +11,7 @@ import { UserPlus, LogIn, Mail, Lock, User } from "lucide-react";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login, register, user, isLoading: authLoading } = useAuth();
+  const { login, register } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   
@@ -24,15 +24,6 @@ const Login: React.FC = () => {
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
   
-  // Redirect if user is already logged in
-  useEffect(() => {
-    console.log("Login page - user state:", user);
-    if (user) {
-      console.log("User logged in, navigating to /");
-      navigate("/");
-    }
-  }, [user, navigate]);
-  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -42,13 +33,14 @@ const Login: React.FC = () => {
         throw new Error("Veuillez remplir tous les champs");
       }
       
-      console.log("Login form submitted");
       await login(loginEmail, loginPassword);
-      console.log("Login successful, waiting for redirect");
-      
-      // Note: We don't navigate here - the useEffect will handle redirect when user state updates
+      navigate("/dashboard");
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue sur MoHero !",
+      });
     } catch (error) {
-      console.error("Login error in handler:", error);
+      console.error(error);
       toast({
         title: "Erreur de connexion",
         description: "Vérifiez vos identifiants et réessayez",
@@ -69,6 +61,7 @@ const Login: React.FC = () => {
       }
       
       await register(registerEmail, registerPassword, registerName);
+      navigate("/programs");
       toast({
         title: "Inscription réussie",
         description: "Bienvenue sur MoHero ! Choisissez un programme pour commencer.",

@@ -1,38 +1,30 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Trophy, Target, Calendar, Flame } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import TotalStatsCard from "@/components/TotalStatsCard";
 
 const Home = () => {
   const { user } = useAuth();
   const { currentProgram } = useProgram();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
-
   if (!user) {
+    navigate("/login");
     return null;
   }
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Bienvenue, {user.name || "Champion"}</h1>
+        <h1 className="text-3xl font-bold mb-2">Bienvenue, {user.name}</h1>
         <p className="text-muted-foreground">
-          Voici un aperçu de ta progression et de ton programme actuel
+          Voici un aperçu de votre progression et de votre programme actuel
         </p>
       </div>
-
-      <TotalStatsCard />
 
       {currentProgram ? (
         <>

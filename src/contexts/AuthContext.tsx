@@ -21,21 +21,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log("AuthProvider initialized");
-    
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log("Auth state changed:", event, session?.user?.id);
-        
         if (session?.user) {
           const { data: profile } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', session.user.id)
             .single();
-
-          console.log("Profile fetched:", profile);
 
           if (profile) {
             // Initialize default progress object if it's null
@@ -53,22 +46,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               name: profile.name,
               progress: progressData
             });
-          } else {
-            console.log("No profile found for user");
           }
         } else {
-          console.log("No session, setting user to null");
           setUser(null);
         }
         setIsLoading(false);
       }
     );
 
-    // THEN check for existing session
+    // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Initial session check:", session?.user?.id);
       if (!session) {
-        console.log("No initial session found");
         setIsLoading(false);
       }
     });
@@ -79,30 +67,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      console.log("Attempting login with:", email);
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        console.error("Login error:", error.message);
-        throw error;
-      }
+      if (error) throw error;
       
-      console.log("Login successful, data:", data);
-      
-      // We don't need to manually set user state here
-      // as the onAuthStateChange listener will handle it
-      
-      toast({
-        title: "Connexion réussie",
-        description: "Bienvenue sur MoHero !",
-      });
-      
-      return data;
     } catch (error: any) {
-      console.error("Login error caught:", error.message);
       toast({
         title: "Erreur de connexion",
         description: error.message,
