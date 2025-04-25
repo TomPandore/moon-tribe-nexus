@@ -21,33 +21,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { toast } = useToast();
 
   useEffect(() => {
+    // Configuration de l'écouteur d'état d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state changed:", event, session?.user?.id);
+        
         if (session?.user) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
+          try {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
 
-          if (profile) {
-            // Initialize default progress object if it's null
-            const progressData: UserProgress = profile.progress ? 
-              profile.progress as UserProgress : 
-              {
-                currentDay: 1,
-                streak: 0,
-                totalCompletedDays: 0
-              };
+            if (profile) {
+              // Initialize default progress object if it's null
+              const progressData: UserProgress = profile.progress ? 
+                profile.progress as UserProgress : 
+                {
+                  currentDay: 1,
+                  streak: 0,
+                  totalCompletedDays: 0
+                };
 
-            setUser({
-              id: session.user.id,
-              email: session.user.email!,
-              name: profile.name,
-              progress: progressData
-            });
-            console.log("User set from profile:", profile);
+              setUser({
+                id: session.user.id,
+                email: session.user.email!,
+                name: profile.name,
+                progress: progressData
+              });
+              console.log("User set from profile:", profile);
+            }
+          } catch (error) {
+            console.error("Error getting profile:", error);
           }
         } else {
           setUser(null);
@@ -57,35 +63,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
+    // Vérifier la session actuelle au chargement initial
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          console.log("No session found on load");
+          setIsLoading(false);
+        } else {
+          console.log("Session found on load:", session.user?.id);
+          // La session sera traitée par l'écouteur onAuthStateChange
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
         setIsLoading(false);
-        console.log("No session found on load");
-      } else {
-        console.log("Session found on load:", session.user?.id);
       }
-    });
+    };
 
+    checkSession();
     return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const { error, data } = await supabase.auth.signInWithPassword({
+      console.log("Attempting login with:", email);
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
       
-      console.log("Login successful:", data.user?.id);
+      console.log("Login successful");
       toast({
         title: "Connexion réussie",
         description: "Bienvenue sur MoHero !",
       });
       
+      // Ne pas définir isLoading à false ici, laissez l'écouteur onAuthStateChange s'en charger
     } catch (error: any) {
       console.error("Login error:", error.message);
       toast({
@@ -93,9 +109,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: error.message,
         variant: "destructive",
       });
+      setIsLoading(false); // Définir isLoading à false uniquement en cas d'erreur
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
