@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext } from "react";
 import { AuthContextType } from "@/types/auth";
+import { UserProgress } from "@/types"; // Added import for UserProgress
 import { useAuthState } from "@/hooks/useAuthState";
 import { handleLogin, handleRegister, handleLogout, handleUpdateUserProgress } from "@/utils/authUtils";
 import { useToast } from "@/hooks/use-toast";
