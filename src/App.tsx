@@ -30,23 +30,11 @@ const App = () => (
             <div className="min-h-screen pb-16 relative bg-background pt-20">
               <AppHeader />
               <Routes>
-                <Route 
-                  path="/" 
-                  element={<Home />} 
-                />
+                <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
-                <Route 
-                  path="/programs" 
-                  element={<Programs />} 
-                />
-                <Route 
-                  path="/dashboard" 
-                  element={<Dashboard />} 
-                />
-                <Route 
-                  path="/settings" 
-                  element={<Settings />} 
-                />
+                <Route path="/programs" element={<Programs />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/settings" element={<Settings />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <AppMenuBar />

@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Trophy, Target, Calendar, Flame } from "lucide-react";
@@ -8,19 +8,36 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const Home = () => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const { currentProgram } = useProgram();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Check if user is not logged in and not currently loading
+    if (!user && !isLoading) {
+      console.log("Home: User not authenticated, redirecting to login");
+      navigate("/login");
+    }
+  }, [user, isLoading, navigate]);
+
+  // Don't render anything while checking authentication
+  if (isLoading) {
+    return (
+      <div className="container max-w-4xl mx-auto px-4 py-8 flex justify-center">
+        <p>Chargement...</p>
+      </div>
+    );
+  }
+
+  // Don't render content if not authenticated
   if (!user) {
-    navigate("/login");
     return null;
   }
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Bienvenue, {user.name}</h1>
+        <h1 className="text-3xl font-bold mb-2">Bienvenue, {user.name || "utilisateur"}</h1>
         <p className="text-muted-foreground">
           Voici un aperçu de votre progression et de votre programme actuel
         </p>

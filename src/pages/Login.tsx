@@ -15,7 +15,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     console.log("Login page - auth state:", user ? "logged in" : "not logged in", "isLoading:", isLoading);
     
-    if (user) {
+    if (user && !isLoading) {
       console.log("Redirecting to home because user is logged in");
       navigate("/", { replace: true });
     }

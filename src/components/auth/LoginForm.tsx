@@ -34,9 +34,9 @@ export const LoginForm = ({ isLoading: parentIsLoading }: { isLoading: boolean }
         throw new Error("Veuillez remplir tous les champs");
       }
       
-      console.log("Submitting login form");
+      console.log("Submitting login form with email:", loginEmail);
       await login(loginEmail, loginPassword);
-      // La redirection sera gérée par l'effet useEffect ci-dessus
+      console.log("Login successful, redirection will be handled by useEffect");
       
     } catch (error: any) {
       console.error("Login form error:", error);
