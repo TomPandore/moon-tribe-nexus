@@ -1,36 +1,35 @@
 
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserPlus, LogIn } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { RegisterForm } from "@/components/auth/RegisterForm";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Login: React.FC = () => {
-  const navigate = useNavigate();
   const { user, isLoading } = useAuth();
   
-  useEffect(() => {
-    console.log("Login page: Auth state check:", { 
-      isLoggedIn: !!user, 
-      isLoading 
-    });
-    
-    if (user && !isLoading) {
-      console.log("Login page: User is logged in, redirecting to home");
-      navigate("/", { replace: true });
-    }
-  }, [user, navigate, isLoading]);
+  // If user is logged in, redirect to home
+  if (user && !isLoading) {
+    return <Navigate to="/" replace />;
+  }
   
-  // Don't display anything while checking auth state
+  // Loading state while checking authentication
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-tribal-green mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Chargement...</p>
+        <div className="text-center space-y-4 w-full max-w-md px-4">
+          <div className="w-24 mx-auto">
+            <Skeleton className="h-12 w-full rounded-full" />
+          </div>
+          <Skeleton className="h-8 w-48 mx-auto" />
+          <Skeleton className="h-4 w-64 mx-auto" />
+          <div className="tribal-card glass-panel">
+            <Skeleton className="h-64 w-full rounded-lg" />
+          </div>
         </div>
       </div>
     );
@@ -79,7 +78,7 @@ const Login: React.FC = () => {
           
           <div className="mt-8 text-center text-sm text-muted-foreground">
             <button 
-              onClick={() => navigate("/")}
+              onClick={() => window.location.href = "/"}
               className="tribal-link"
             >
               Retour à l'accueil

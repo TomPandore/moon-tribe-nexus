@@ -14,6 +14,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     console.log("AuthProvider: Initializing");
+    
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("AuthProvider: Auth state changed:", event, session?.user?.id);
       
@@ -30,11 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (error) {
               console.error("AuthProvider: Error fetching profile:", error);
               setUser(null);
-              setIsLoading(false);
-              return;
-            }
-
-            if (profile) {
+            } else if (profile) {
               const progressData = profile.progress ? 
                 profile.progress as UserProgress : 
                 {
@@ -64,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    // Check initial session
+    // THEN check for existing session
     const checkSession = async () => {
       try {
         console.log("AuthProvider: Checking initial session");
@@ -83,41 +81,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         console.log("AuthProvider: Session found, user ID:", session.user?.id);
-        try {
-          const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-          
-          if (profileError) {
-            console.error("AuthProvider: Profile error:", profileError);
-            setIsLoading(false);
-            return;
-          }
+        if (session.user) {
+          try {
+            const { data: profile, error: profileError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
+            
+            if (profileError) {
+              console.error("AuthProvider: Profile error:", profileError);
+              setIsLoading(false);
+              return;
+            }
 
-          if (profile) {
-            const progressData = profile.progress ? 
-              profile.progress as UserProgress : 
-              {
-                currentDay: 1,
-                streak: 0,
-                totalCompletedDays: 0
-              };
+            if (profile) {
+              const progressData = profile.progress ? 
+                profile.progress as UserProgress : 
+                {
+                  currentDay: 1,
+                  streak: 0,
+                  totalCompletedDays: 0
+                };
 
-            setUser({
-              id: session.user.id,
-              email: session.user.email!,
-              name: profile.name,
-              progress: progressData
-            });
-            console.log("AuthProvider: User set from profile on init:", profile);
+              setUser({
+                id: session.user.id,
+                email: session.user.email!,
+                name: profile.name,
+                progress: progressData
+              });
+              console.log("AuthProvider: User set from profile on init:", profile);
+            }
+          } catch (error) {
+            console.error("AuthProvider: Error getting profile on init:", error);
           }
-        } catch (error) {
-          console.error("AuthProvider: Error getting profile on init:", error);
-        } finally {
-          setIsLoading(false);
         }
+        setIsLoading(false);
       } catch (error) {
         console.error("AuthProvider: Error checking session:", error);
         setIsLoading(false);
@@ -135,9 +134,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log("AuthProvider: Login attempt with email:", email);
       await handleLogin(email, password);
-      // Auth state change will update the user
+      // Auth state change will handle updating the user
     } catch (error) {
       console.error("AuthProvider: Login error:", error);
+      setIsLoading(false);
       throw error;
     }
   };
@@ -146,9 +146,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log("AuthProvider: Registration attempt with email:", email);
       await handleRegister(email, password, name);
-      // Auth state change will update the user if email confirmation is disabled
+      // Auth state change will handle updating the user if email confirmation is disabled
     } catch (error) {
       console.error("AuthProvider: Registration error:", error);
+      setIsLoading(false);
       throw error;
     }
   };

@@ -1,25 +1,20 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Mail, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginInProgress, setLoginInProgress] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/", { replace: true });
-    }
-  }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +26,7 @@ export const LoginForm = () => {
     }
     
     try {
-      setIsSubmitting(true);
+      setLoginInProgress(true);
       console.log("LoginForm: Attempting login with email:", email);
       await login(email, password);
       console.log("LoginForm: Login successful");
@@ -39,11 +34,12 @@ export const LoginForm = () => {
         title: "Connexion réussie",
         description: "Bienvenue sur MoHero !",
       });
+      navigate("/", { replace: true });
     } catch (err: any) {
       console.error("LoginForm: Login failed:", err);
       setError(err.message || "Une erreur est survenue lors de la connexion");
     } finally {
-      setIsSubmitting(false);
+      setLoginInProgress(false);
     }
   };
 
@@ -69,6 +65,7 @@ export const LoginForm = () => {
             className="tribal-input w-full pl-10"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loginInProgress}
           />
         </div>
       </div>
@@ -87,6 +84,7 @@ export const LoginForm = () => {
             className="tribal-input w-full pl-10"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loginInProgress}
           />
         </div>
       </div>
@@ -94,9 +92,9 @@ export const LoginForm = () => {
       <Button 
         type="submit" 
         className="w-full tribal-btn-primary" 
-        disabled={isSubmitting}
+        disabled={loginInProgress}
       >
-        {isSubmitting ? "Connexion en cours..." : "Se connecter"}
+        {loginInProgress ? "Connexion en cours..." : "Se connecter"}
       </Button>
     </form>
   );
