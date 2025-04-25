@@ -21,12 +21,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log("AuthProvider mounted");
+    let mounted = true;
+
     // Configuration de l'écouteur d'état d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state changed:", event, session?.user?.id);
         
-        if (session?.user) {
+        if (session?.user && mounted) {
           try {
             const { data: profile } = await supabase
               .from('profiles')
@@ -34,7 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               .eq('id', session.user.id)
               .single();
 
-            if (profile) {
+            if (profile && mounted) {
               // Initialize default progress object if it's null
               const progressData: UserProgress = profile.progress ? 
                 profile.progress as UserProgress : 
@@ -55,11 +58,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           } catch (error) {
             console.error("Error getting profile:", error);
           }
-        } else {
+        } else if (mounted) {
           setUser(null);
           console.log("User set to null");
         }
-        setIsLoading(false);
+        
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     );
 
@@ -69,33 +75,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           console.log("No session found on load");
-          setIsLoading(false);
+          if (mounted) setIsLoading(false);
         } else {
           console.log("Session found on load:", session.user?.id);
           // La session sera traitée par l'écouteur onAuthStateChange
         }
       } catch (error) {
         console.error("Error checking session:", error);
-        setIsLoading(false);
+        if (mounted) setIsLoading(false);
       }
     };
 
     checkSession();
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
     try {
       console.log("Attempting login with:", email);
-      const { error } = await supabase.auth.signInWithPassword({
+      setIsLoading(true);
+      
+      const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
       
-      console.log("Login successful");
+      console.log("Login successful, data:", data);
       toast({
         title: "Connexion réussie",
         description: "Bienvenue sur MoHero !",

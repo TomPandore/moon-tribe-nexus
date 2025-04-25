@@ -13,12 +13,13 @@ const Login: React.FC = () => {
   const { user, isLoading } = useAuth();
   
   useEffect(() => {
-    console.log("Login page - user state changed:", user ? "logged in" : "not logged in");
+    console.log("Login page - auth state:", user ? "logged in" : "not logged in", "isLoading:", isLoading);
+    
     if (user) {
-      console.log("Redirecting to dashboard because user is logged in");
-      navigate("/dashboard", { replace: true });
+      console.log("Redirecting to home because user is logged in");
+      navigate("/", { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, isLoading]);
   
   return (
     <div className="min-h-screen bg-background text-foreground relative">
