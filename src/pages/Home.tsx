@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Trophy, Target, Calendar, Flame } from "lucide-react";
@@ -13,8 +13,13 @@ const Home = () => {
   const { currentProgram } = useProgram();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
   if (!user) {
-    navigate("/login");
     return null;
   }
 
