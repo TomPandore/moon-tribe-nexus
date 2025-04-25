@@ -23,6 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log("Auth state changed:", event, session?.user?.id);
         if (session?.user) {
           const { data: profile } = await supabase
             .from('profiles')
@@ -46,9 +47,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               name: profile.name,
               progress: progressData
             });
+            console.log("User set from profile:", profile);
           }
         } else {
           setUser(null);
+          console.log("User set to null");
         }
         setIsLoading(false);
       }
@@ -58,6 +61,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         setIsLoading(false);
+        console.log("No session found on load");
+      } else {
+        console.log("Session found on load:", session.user?.id);
       }
     });
 
@@ -67,14 +73,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
       
+      console.log("Login successful:", data.user?.id);
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue sur MoHero !",
+      });
+      
     } catch (error: any) {
+      console.error("Login error:", error.message);
       toast({
         title: "Erreur de connexion",
         description: error.message,
