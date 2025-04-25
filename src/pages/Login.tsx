@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,7 +26,9 @@ const Login: React.FC = () => {
   
   // Redirect if user is already logged in
   useEffect(() => {
+    console.log("Login page - user state:", user);
     if (user) {
+      console.log("User logged in, navigating to /");
       navigate("/");
     }
   }, [user, navigate]);
@@ -39,11 +42,11 @@ const Login: React.FC = () => {
         throw new Error("Veuillez remplir tous les champs");
       }
       
+      console.log("Login form submitted");
       await login(loginEmail, loginPassword);
-      toast({
-        title: "Connexion réussie",
-        description: "Bienvenue sur MoHero !",
-      });
+      console.log("Login successful, waiting for redirect");
+      
+      // Note: We don't navigate here - the useEffect will handle redirect when user state updates
     } catch (error) {
       console.error("Login error in handler:", error);
       toast({
