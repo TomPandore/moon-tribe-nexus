@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -11,7 +10,7 @@ import { UserPlus, LogIn, Mail, Lock, User } from "lucide-react";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login, register, user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   
@@ -24,6 +23,13 @@ const Login: React.FC = () => {
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
   
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -34,13 +40,12 @@ const Login: React.FC = () => {
       }
       
       await login(loginEmail, loginPassword);
-      navigate("/dashboard");
       toast({
         title: "Connexion réussie",
         description: "Bienvenue sur MoHero !",
       });
     } catch (error) {
-      console.error(error);
+      console.error("Login error in handler:", error);
       toast({
         title: "Erreur de connexion",
         description: "Vérifiez vos identifiants et réessayez",
@@ -61,7 +66,6 @@ const Login: React.FC = () => {
       }
       
       await register(registerEmail, registerPassword, registerName);
-      navigate("/programs");
       toast({
         title: "Inscription réussie",
         description: "Bienvenue sur MoHero ! Choisissez un programme pour commencer.",

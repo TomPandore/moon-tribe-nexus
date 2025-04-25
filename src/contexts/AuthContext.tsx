@@ -21,6 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { toast } = useToast();
 
   useEffect(() => {
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
@@ -54,7 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Check current session
+    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         setIsLoading(false);
@@ -67,14 +68,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
+      console.log("Attempting login with:", email);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Login error:", error.message);
+        throw error;
+      }
+      
+      console.log("Login successful");
       
     } catch (error: any) {
+      console.error("Login error caught:", error.message);
       toast({
         title: "Erreur de connexion",
         description: error.message,
