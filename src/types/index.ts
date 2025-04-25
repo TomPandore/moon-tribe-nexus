@@ -34,10 +34,10 @@ export type DailyRitual = {
 export type UserProgress = {
   currentProgram?: string;
   currentDay: number;
+  lastCompletedDay?: number;
   streak: number;
   totalCompletedDays: number;
   startDate?: string;
-  lastCompletedDay?: number;
 };
 
 export type User = {
@@ -46,4 +46,3 @@ export type User = {
   name?: string;
   progress: UserProgress;
 };
-
