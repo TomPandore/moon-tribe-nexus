@@ -9,6 +9,8 @@ import Image from "@/components/ui/image";
 function getProgramIcon(id: string) {
   switch (id) {
     case "origin":
+    case "9dc8a43e-820c-4fb0-b4d4-deee30cdfe31":
+    case "e6ce804a-3c22-46a7-9798-b6102e67bde0":
       return <Flame className="text-primary" size={20} />;
     case "rituels-nomades":
       return <Leaf className="text-primary" size={20} />;
@@ -38,6 +40,9 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
   isSelected = false,
   simple = false
 }) => {
+  // Définir l'image à utiliser - donner la priorité à illustration puis image_url
+  const imageUrl = program.illustration || program.image || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png";
+  
   return (
     <div
       className={`
@@ -49,15 +54,13 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
       role="button"
       aria-pressed={isSelected}
     >
-      {program.illustration && (
-        <div className="mb-4 -mx-6 -mt-6 overflow-hidden rounded-t-lg">
-          <Image 
-            src={program.illustration} 
-            alt={program.name} 
-            className="w-full h-40 object-cover"
-          />
-        </div>
-      )}
+      <div className="mb-4 -mx-6 -mt-6 overflow-hidden rounded-t-lg">
+        <Image 
+          src={imageUrl} 
+          alt={program.name} 
+          className="w-full h-40 object-cover"
+        />
+      </div>
       
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 flex items-center justify-center rounded-md bg-secondary">

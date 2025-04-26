@@ -63,9 +63,9 @@ const ProgramSection: React.FC<ProgramSectionProps> = ({
                 duration: program.duree_jours,
                 difficulty: "medium",
                 focus: program.tags || [],
-                image: program.image_url || "",
-                illustration: program.image_url || "",
-                category: title.toLowerCase().includes("découverte") ? "free" : "premium"
+                image: program.image_url || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png",
+                illustration: program.image_url || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png",
+                category: title.toLowerCase().includes('découverte') ? "free" : "premium"
               }}
               onSelect={() => onProgramSelect(program.id)}
               isSelected={currentProgramId === program.id}
