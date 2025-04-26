@@ -25,7 +25,7 @@ function getProgramIcon(id: string) {
 }
 
 interface ProgramCardProps {
-  program: Program & { illustration?: string };
+  program: Program;
   onSelect: () => void;
   isSelected?: boolean;
   simple?: boolean;

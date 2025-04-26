@@ -64,6 +64,7 @@ const ProgramSection: React.FC<ProgramSectionProps> = ({
                 difficulty: "medium",
                 focus: program.tags || [],
                 image: program.image_url || "",
+                illustration: program.image_url || "",
                 category: title.toLowerCase().includes("découverte") ? "free" : "premium"
               }}
               onSelect={() => onProgramSelect(program.id)}
