@@ -3,29 +3,7 @@ import React from "react";
 import { Program } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Leaf, TreeDeciduous, Flame, Zap, Waves } from "lucide-react";
 import Image from "@/components/ui/image";
-
-function getProgramIcon(id: string) {
-  switch (id) {
-    case "origin":
-    case "9dc8a43e-820c-4fb0-b4d4-deee30cdfe31":
-    case "e6ce804a-3c22-46a7-9798-b6102e67bde0":
-      return <Flame className="text-primary" size={20} />;
-    case "rituels-nomades":
-      return <Leaf className="text-primary" size={20} />;
-    case "souffle-jaguar":
-      return <Zap className="text-amber-400" size={20} />;
-    case "corps-chene":
-      return <TreeDeciduous className="text-primary" size={20} />;
-    case "fureur-jaguar":
-      return <Zap className="text-orange-500" size={20} />;
-    case "maree-crocodile":
-      return <Waves className="text-teal-500" size={20} />;
-    default:
-      return null;
-  }
-}
 
 interface ProgramCardProps {
   program: Program;
@@ -40,7 +18,6 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
   isSelected = false,
   simple = false
 }) => {
-  // Définir l'image à utiliser - donner la priorité à illustration puis image_url
   const imageUrl = program.illustration || program.image || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png";
   
   return (
@@ -62,22 +39,19 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
         />
       </div>
       
-      <div className="flex items-start gap-3">
-        <div className="w-10 h-10 flex items-center justify-center rounded-md bg-secondary">
-          {getProgramIcon(program.id)}
-        </div>
+      <div className="flex flex-col gap-3">
         <div>
-          <h3 className="font-medium text-lg mb-1 flex items-center gap-2">
+          <h3 className="font-medium text-lg mb-1 text-left">
             {program.name}
-            <span className="text-sm text-muted-foreground">({program.duration} jours)</span>
+            <span className="text-sm text-muted-foreground ml-2">({program.duration} jours)</span>
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-sm text-muted-foreground line-clamp-2 text-left">
             {program.description}
           </p>
         </div>
       </div>
       
-      <div className="mt-4 mb-4 flex flex-wrap justify-center gap-2">
+      <div className="mt-4 mb-4 flex flex-wrap justify-start gap-2">
         {program.focus.slice(0, 3).map((f, i) => (
           <Badge
             key={i}
@@ -118,3 +92,4 @@ const ProgramCard: React.FC<ProgramCardProps> = ({
 };
 
 export default ProgramCard;
+
