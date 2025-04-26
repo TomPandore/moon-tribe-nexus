@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
@@ -33,8 +32,15 @@ const Programs: React.FC = () => {
     console.log("Programs data:", programs);
   }, [programs]);
 
-  const premiumPrograms = programs?.filter(p => p.type === "premium") || [];
-  const freePrograms = programs?.filter(p => p.type === "free") || [];
+  const freePrograms = programs?.filter(p => 
+    p.type?.toLowerCase().includes('découverte') || 
+    p.type?.toLowerCase() === 'free'
+  ) || [];
+  
+  const premiumPrograms = programs?.filter(p => 
+    p.type?.toLowerCase().includes('principal') || 
+    p.type?.toLowerCase() === 'premium'
+  ) || [];
 
   const handleProgramSelect = (programId: string) => {
     if (!currentProgram) {

@@ -21,7 +21,12 @@ export const usePrograms = () => {
         .select("*")
         .order("nom");
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching programs:", error);
+        throw error;
+      }
+      
+      console.log("Programs fetched from Supabase:", data);
       return data as ProgramType[];
     }
   });
