@@ -1,24 +1,14 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
-import ProgramCard from "@/components/ProgramCard";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import { usePrograms } from "@/hooks/usePrograms";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle 
-} from "@/components/ui/alert-dialog";
-import { Loader2 } from "lucide-react";
+import ProgramSection from "@/components/programs/ProgramSection";
+import ProgramChangeDialog from "@/components/programs/ProgramChangeDialog";
 
 const Programs: React.FC = () => {
   const navigate = useNavigate();
@@ -27,10 +17,6 @@ const Programs: React.FC = () => {
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const { data: programs, isLoading, error } = usePrograms();
-
-  useEffect(() => {
-    console.log("Programs data:", programs);
-  }, [programs]);
 
   const freePrograms = programs?.filter(p => 
     p.type?.toLowerCase().includes('découverte') || 
@@ -86,97 +72,24 @@ const Programs: React.FC = () => {
           Explorez nos programmes d'entraînement et trouvez celui qui correspond à vos objectifs.
         </p>
 
-        {/* Programmes Découverte */}
-        <section className="mb-12">
-          <h2 className="text-lg md:text-xl font-medium mb-4 flex items-center">
-            Programmes Découverte
-            <span className="ml-3 badge badge-secondary">
-              Gratuit
-            </span>
-          </h2>
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : error ? (
-            <Alert variant="destructive" className="mb-4">
-              <AlertDescription>
-                Une erreur est survenue lors du chargement des programmes.
-              </AlertDescription>
-            </Alert>
-          ) : freePrograms.length === 0 ? (
-            <Alert className="mb-4">
-              <AlertDescription>
-                Aucun programme gratuit disponible pour le moment.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {freePrograms.map(program => (
-                <ProgramCard
-                  key={program.id}
-                  program={{
-                    id: program.id,
-                    name: program.nom,
-                    description: program.description || "",
-                    duration: program.duree_jours,
-                    difficulty: "medium",
-                    focus: program.tags || [],
-                    image: program.image_url || "",
-                    category: "free"
-                  }}
-                  onSelect={() => handleProgramSelect(program.id)}
-                  isSelected={currentProgram?.id === program.id}
-                  simple
-                />
-              ))}
-            </div>
-          )}
-        </section>
+        <ProgramSection
+          title="Programmes Découverte"
+          badge="Gratuit"
+          programs={freePrograms}
+          isLoading={isLoading}
+          error={error}
+          onProgramSelect={handleProgramSelect}
+          currentProgramId={currentProgram?.id}
+        />
 
-        {/* Section La Voie MoHero */}
-        <section>
-          <h2 className="text-lg md:text-xl font-medium mb-4">La Voie MoHero</h2>
-
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : error ? (
-            <Alert variant="destructive" className="mb-4">
-              <AlertDescription>
-                Une erreur est survenue lors du chargement des programmes.
-              </AlertDescription>
-            </Alert>
-          ) : premiumPrograms.length === 0 ? (
-            <Alert className="mb-4">
-              <AlertDescription>
-                Aucun programme premium disponible pour le moment.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-              {premiumPrograms.map(program => (
-                <ProgramCard
-                  key={program.id}
-                  program={{
-                    id: program.id,
-                    name: program.nom,
-                    description: program.description || "",
-                    duration: program.duree_jours,
-                    difficulty: "medium",
-                    focus: program.tags || [],
-                    image: program.image_url || "",
-                    category: "premium"
-                  }}
-                  onSelect={() => handleProgramSelect(program.id)}
-                  isSelected={currentProgram?.id === program.id}
-                  simple
-                />
-              ))}
-            </div>
-          )}
-        </section>
+        <ProgramSection
+          title="La Voie MoHero"
+          programs={premiumPrograms}
+          isLoading={isLoading}
+          error={error}
+          onProgramSelect={handleProgramSelect}
+          currentProgramId={currentProgram?.id}
+        />
 
         {user && currentProgram && (
           <div className="mt-12 text-center">
@@ -191,22 +104,11 @@ const Programs: React.FC = () => {
           </div>
         )}
 
-        <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Changer de programme ?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Attention, en changeant de programme, vous perdrez toute votre progression actuelle et repartirez à zéro. Êtes-vous sûr de vouloir continuer ?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <AlertDialogAction onClick={handleConfirmProgramChange}>
-                Confirmer
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <ProgramChangeDialog
+          open={showConfirmDialog}
+          onOpenChange={setShowConfirmDialog}
+          onConfirm={handleConfirmProgramChange}
+        />
       </main>
     </div>
   );
