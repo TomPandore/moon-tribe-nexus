@@ -29,7 +29,7 @@ export const programs: Program[] = [
   {
     id: "origin",
     name: "MoHero Origin",
-    description: "La fondation complète de l'héritier MoHero. Corps entier, mental focus, rituels ancestraux.",
+    description: "Le chemin de l'éveil fonctionnel, de la fluidité tribale et de la maîtrise intérieure.",
     duration: 42,
     difficulty: "hard",
     focus: ["Force", "Endurance", "Respiration", "Posture", "Discipline"],

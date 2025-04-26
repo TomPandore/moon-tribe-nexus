@@ -9,12 +9,87 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      exercices: {
+        Row: {
+          categorie: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          jour_id: string
+          nom: string
+          ordre: number | null
+          type: string
+          valeur_cible: number
+          video_url: string | null
+        }
+        Insert: {
+          categorie?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          jour_id: string
+          nom: string
+          ordre?: number | null
+          type: string
+          valeur_cible: number
+          video_url?: string | null
+        }
+        Update: {
+          categorie?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          jour_id?: string
+          nom?: string
+          ordre?: number | null
+          type?: string
+          valeur_cible?: number
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercices_jour_id_fkey"
+            columns: ["jour_id"]
+            isOneToOne: false
+            referencedRelation: "jours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jours: {
+        Row: {
+          id: string
+          numero_jour: number
+          programme_id: string
+        }
+        Insert: {
+          id?: string
+          numero_jour: number
+          programme_id: string
+        }
+        Update: {
+          id?: string
+          numero_jour?: number
+          programme_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jours_programme_id_fkey"
+            columns: ["programme_id"]
+            isOneToOne: false
+            referencedRelation: "programmes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string | null
           email: string | null
           id: string
+          jour_actuel: number | null
           name: string | null
+          programme_id: string | null
           progress: Json | null
           updated_at: string | null
         }
@@ -22,7 +97,9 @@ export type Database = {
           created_at?: string | null
           email?: string | null
           id: string
+          jour_actuel?: number | null
           name?: string | null
+          programme_id?: string | null
           progress?: Json | null
           updated_at?: string | null
         }
@@ -30,11 +107,89 @@ export type Database = {
           created_at?: string | null
           email?: string | null
           id?: string
+          jour_actuel?: number | null
           name?: string | null
+          programme_id?: string | null
           progress?: Json | null
           updated_at?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_programme_id_fkey"
+            columns: ["programme_id"]
+            isOneToOne: false
+            referencedRelation: "programmes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programmes: {
+        Row: {
+          description: string | null
+          duree_jours: number
+          id: string
+          image_url: string | null
+          nom: string
+          tags: string[] | null
+          type: string | null
+        }
+        Insert: {
+          description?: string | null
+          duree_jours?: number
+          id?: string
+          image_url?: string | null
+          nom: string
+          tags?: string[] | null
+          type?: string | null
+        }
+        Update: {
+          description?: string | null
+          duree_jours?: number
+          id?: string
+          image_url?: string | null
+          nom?: string
+          tags?: string[] | null
+          type?: string | null
+        }
         Relationships: []
+      }
+      progression_exercice: {
+        Row: {
+          date: string | null
+          exercice_id: string
+          id: string
+          jour_numero: number | null
+          termine: boolean | null
+          user_id: string
+          valeur_realisee: number
+        }
+        Insert: {
+          date?: string | null
+          exercice_id: string
+          id?: string
+          jour_numero?: number | null
+          termine?: boolean | null
+          user_id: string
+          valeur_realisee: number
+        }
+        Update: {
+          date?: string | null
+          exercice_id?: string
+          id?: string
+          jour_numero?: number | null
+          termine?: boolean | null
+          user_id?: string
+          valeur_realisee?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "progression_exercice_exercice_id_fkey"
+            columns: ["exercice_id"]
+            isOneToOne: false
+            referencedRelation: "exercices"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
