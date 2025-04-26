@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -28,6 +28,10 @@ const Programs: React.FC = () => {
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const { data: programs, isLoading, error } = usePrograms();
+
+  useEffect(() => {
+    console.log("Programs data:", programs);
+  }, [programs]);
 
   const premiumPrograms = programs?.filter(p => p.type === "premium") || [];
   const freePrograms = programs?.filter(p => p.type === "free") || [];
@@ -94,6 +98,12 @@ const Programs: React.FC = () => {
                 Une erreur est survenue lors du chargement des programmes.
               </AlertDescription>
             </Alert>
+          ) : freePrograms.length === 0 ? (
+            <Alert className="mb-4">
+              <AlertDescription>
+                Aucun programme gratuit disponible pour le moment.
+              </AlertDescription>
+            </Alert>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {freePrograms.map(program => (
@@ -105,7 +115,7 @@ const Programs: React.FC = () => {
                     description: program.description || "",
                     duration: program.duree_jours,
                     difficulty: "medium",
-                    focus: program.tags,
+                    focus: program.tags || [],
                     image: program.image_url || "",
                     category: "free"
                   }}
@@ -132,6 +142,12 @@ const Programs: React.FC = () => {
                 Une erreur est survenue lors du chargement des programmes.
               </AlertDescription>
             </Alert>
+          ) : premiumPrograms.length === 0 ? (
+            <Alert className="mb-4">
+              <AlertDescription>
+                Aucun programme premium disponible pour le moment.
+              </AlertDescription>
+            </Alert>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
               {premiumPrograms.map(program => (
@@ -143,7 +159,7 @@ const Programs: React.FC = () => {
                     description: program.description || "",
                     duration: program.duree_jours,
                     difficulty: "medium",
-                    focus: program.tags,
+                    focus: program.tags || [],
                     image: program.image_url || "",
                     category: "premium"
                   }}
