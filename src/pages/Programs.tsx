@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
@@ -7,7 +8,17 @@ import ProgramCard from "@/components/ProgramCard";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
 import { usePrograms } from "@/hooks/usePrograms";
-import { Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription as AlertDialogDescription2, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
+} from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
 
 const Programs: React.FC = () => {
@@ -162,9 +173,9 @@ const Programs: React.FC = () => {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Changer de programme ?</AlertDialogTitle>
-              <AlertDialogDescription2>
+              <AlertDialogDescription>
                 Attention, en changeant de programme, vous perdrez toute votre progression actuelle et repartirez à zéro. Êtes-vous sûr de vouloir continuer ?
-              </AlertDialogDescription2>
+              </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Annuler</AlertDialogCancel>
