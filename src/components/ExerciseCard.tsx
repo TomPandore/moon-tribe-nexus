@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
@@ -15,7 +14,7 @@ interface ExerciseCardProps {
 
 const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
   const [incrementAmount, setIncrementAmount] = useState(
-    exercise.type === "reps" ? 5 : 10
+    exercise.type === "reps" ? 5 : 1
   );
   const [mediaOpen, setMediaOpen] = useState(false);
   const [checkAnim, setCheckAnim] = useState(false);
@@ -110,7 +109,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
               <Minus size={16} />
             </Button>
 
-            {[5, 10, 20].map((amount) => (
+            {[1, 5, 10].map((amount) => (
               <button
                 key={amount}
                 type="button"
