@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -238,7 +239,7 @@ const Dashboard: React.FC = () => {
                 <Trophy size={20} className="text-primary" />
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Total complété</div>
+                <div className="text-xs text-muted-foreground">Exercices Accomplis</div>
                 <div className="text-xl font-bold">{`${completedExercises}/${totalExercises}`}</div>
               </div>
             </div>
