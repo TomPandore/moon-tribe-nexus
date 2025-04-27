@@ -128,6 +128,8 @@ export const updateExerciseProgress = async (
   dayNumber: number
 ) => {
   try {
+    console.log(`Updating exercise progress: user=${userId}, exercise=${exerciseId}, value=${value}`);
+    
     // Vérifier d'abord si une entrée existe déjà
     const { data: existingData, error: checkError } = await supabase
       .from("progression_exercice")
@@ -141,13 +143,28 @@ export const updateExerciseProgress = async (
       throw checkError;
     }
 
+    // Récupérer la valeur cible pour cet exercice
+    const { data: exerciseData, error: exerciseError } = await supabase
+      .from("exercices")
+      .select("valeur_cible")
+      .eq("id", exerciseId)
+      .single();
+      
+    if (exerciseError) {
+      console.error("Error fetching exercise data:", exerciseError);
+      throw exerciseError;
+    }
+    
+    const targetValue = exerciseData.valeur_cible;
+    const isCompleted = value >= targetValue;
+
     if (existingData) {
       // Mettre à jour l'entrée existante
       const { error: updateError } = await supabase
         .from("progression_exercice")
         .update({
           valeur_realisee: value,
-          termine: value >= existingData.valeur_cible,
+          termine: isCompleted,
         })
         .eq("id", existingData.id);
 
@@ -163,7 +180,7 @@ export const updateExerciseProgress = async (
           user_id: userId,
           exercice_id: exerciseId,
           valeur_realisee: value,
-          termine: false, // Sera mis à jour une fois qu'on connaîtra la valeur cible
+          termine: isCompleted,
           jour_numero: dayNumber
         });
 
@@ -173,6 +190,7 @@ export const updateExerciseProgress = async (
       }
     }
 
+    console.log(`Exercise progress updated successfully: value=${value}, completed=${isCompleted}`);
     return true;
   } catch (err) {
     console.error("Error in updateExerciseProgress:", err);
