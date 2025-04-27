@@ -78,7 +78,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
             <div className="text-sm font-semibold text-primary/80 mt-1">
               {exercise.type === "reps" 
                 ? `${exercise.completed}/${exercise.reps} répétitions`
-                : `${exercise.completed}/${exercise.duration} secondes`
+                : `${exercise.completed}/${exercise.duration} répétitions`
               }
             </div>
           </div>
