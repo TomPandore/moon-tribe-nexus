@@ -34,33 +34,38 @@ export const usePrograms = () => {
     queryFn: async () => {
       console.log("Fetching programs from Supabase...");
       
-      const { data, error } = await supabase
-        .from("programmes")
-        .select("*")
-        .order("nom");
+      try {
+        const { data, error } = await supabase
+          .from("programmes")
+          .select("*")
+          .order("nom");
 
-      if (error) {
-        console.error("Error fetching programs:", error);
-        throw error;
+        if (error) {
+          console.error("Error fetching programs:", error);
+          throw error;
+        }
+        
+        console.log("Programs fetched from Supabase:", data);
+        
+        if (!data || data.length === 0) {
+          console.warn("No programs found in Supabase!");
+          return [];
+        }
+        
+        // Transformer les données pour correspondre à l'interface Program
+        const formattedPrograms = (data as ProgramType[]).map(item => {
+          console.log(`Mapping program: ${item.id} - ${item.nom}`);
+          return mapSupabaseToProgramFormat(item);
+        });
+        
+        console.log("Formatted programs:", formattedPrograms);
+        return formattedPrograms;
+      } catch (err) {
+        console.error("Error in usePrograms:", err);
+        throw err;
       }
-      
-      console.log("Programs fetched from Supabase:", data);
-      
-      if (!data || data.length === 0) {
-        console.warn("No programs found in Supabase!");
-        return [];
-      }
-      
-      // Transformer les données pour correspondre à l'interface Program
-      const formattedPrograms = (data as ProgramType[]).map(item => {
-        console.log(`Mapping program: ${item.id} - ${item.nom}`);
-        return mapSupabaseToProgramFormat(item);
-      });
-      
-      console.log("Formatted programs:", formattedPrograms);
-      return formattedPrograms;
     },
-    retry: 1,
+    retry: 2,
     refetchOnWindowFocus: false
   });
 };

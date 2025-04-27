@@ -55,6 +55,16 @@ export const useSessionManager = () => {
                   progressData = defaultProgress;
                 }
 
+                // Sync currentDay with jour_actuel if available
+                if (profile.jour_actuel && profile.jour_actuel !== progressData.currentDay) {
+                  progressData.currentDay = profile.jour_actuel;
+                }
+
+                // Sync currentProgram with programme_id if available
+                if (profile.programme_id && !progressData.currentProgram) {
+                  progressData.currentProgram = profile.programme_id;
+                }
+
                 setUser({
                   id: currentSession.user.id,
                   email: currentSession.user.email!,
