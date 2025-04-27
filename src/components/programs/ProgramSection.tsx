@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ProgramType } from "@/hooks/usePrograms";
+import { Program } from "@/types";
 import ProgramCard from "@/components/ProgramCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 interface ProgramSectionProps {
   title: string;
   badge?: string;
-  programs: ProgramType[];
+  programs: Program[];
   isLoading: boolean;
   error: Error | null;
   onProgramSelect: (programId: string) => void;
@@ -56,17 +56,7 @@ const ProgramSection: React.FC<ProgramSectionProps> = ({
           {programs.map(program => (
             <ProgramCard
               key={program.id}
-              program={{
-                id: program.id,
-                name: program.nom,
-                description: program.description || "",
-                duration: program.duree_jours,
-                difficulty: "medium",
-                focus: program.tags || [],
-                image: program.image_url || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png",
-                illustration: program.image_url || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png",
-                category: title.toLowerCase().includes('découverte') ? "free" : "premium"
-              }}
+              program={program}
               onSelect={() => onProgramSelect(program.id)}
               isSelected={currentProgramId === program.id}
               simple

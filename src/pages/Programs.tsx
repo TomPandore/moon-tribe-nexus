@@ -9,6 +9,7 @@ import { ArrowUp } from "lucide-react";
 import { usePrograms } from "@/hooks/usePrograms";
 import ProgramSection from "@/components/programs/ProgramSection";
 import ProgramChangeDialog from "@/components/programs/ProgramChangeDialog";
+import { Program } from "@/types";
 
 const Programs: React.FC = () => {
   const navigate = useNavigate();
@@ -16,19 +17,17 @@ const Programs: React.FC = () => {
   const { user } = useAuth();
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const { data: programs, isLoading, error } = usePrograms();
+  const { data: programs = [], isLoading, error } = usePrograms();
 
-  const freePrograms = programs?.filter(p => 
-    p.type?.toLowerCase().includes('découverte') || 
-    p.type?.toLowerCase() === 'free'
-  ) || [];
+  // Filtrer les programmes par type
+  const freePrograms = programs.filter(p => p.category === "free");
+  const premiumPrograms = programs.filter(p => p.category === "premium");
   
-  const premiumPrograms = programs?.filter(p => 
-    p.type?.toLowerCase().includes('principal') || 
-    p.type?.toLowerCase() === 'premium'
-  ) || [];
+  console.log("Current programs:", { all: programs, free: freePrograms, premium: premiumPrograms });
 
   const handleProgramSelect = (programId: string) => {
+    console.log(`Selecting program with ID: ${programId}`);
+    
     if (!currentProgram) {
       selectProgram(programId);
       setTimeout(() => {
@@ -48,6 +47,7 @@ const Programs: React.FC = () => {
 
   const handleConfirmProgramChange = () => {
     if (selectedProgramId) {
+      console.log(`Confirming program change to ID: ${selectedProgramId}`);
       selectProgram(selectedProgramId);
       setShowConfirmDialog(false);
       setTimeout(() => {
