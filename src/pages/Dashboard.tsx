@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -190,11 +189,6 @@ const Dashboard: React.FC = () => {
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold">{selectedProgram.name}</h1>
-              <div className="flex items-center bg-muted px-3 py-1 rounded-full">
-                <span className="text-sm font-medium text-muted-foreground">
-                  Jour {currentDay}/{selectedProgram.duration}
-                </span>
-              </div>
             </div>
             <ProgressBar 
               value={currentDay} 
@@ -207,9 +201,6 @@ const Dashboard: React.FC = () => {
         <section id="ritual-section" className="app-card mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Rituel du Jour {currentDay}</h2>
-            <span className="text-sm font-medium">
-              {completedExercises}/{totalExercises}
-            </span>
           </div>
 
           <p className="text-primary font-medium mb-4 text-lg">
