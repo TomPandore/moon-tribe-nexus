@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,10 +19,8 @@ const Dashboard: React.FC = () => {
   const { data: allPrograms = [], isLoading: programsLoading } = usePrograms();
   const [selectedProgram, setSelectedProgram] = useState<any>(null);
 
-  // État pour le jour actuel
   const [currentDay, setCurrentDay] = useState<number>(1);
   
-  // Obtenir les exercices du jour actuel
   const { 
     data: dailyExercises = [], 
     isLoading: exercisesLoading, 
@@ -34,7 +31,6 @@ const Dashboard: React.FC = () => {
     user?.progress?.currentDay
   );
 
-  // Effet pour charger le programme sélectionné
   useEffect(() => {
     if (user?.progress?.currentProgram && allPrograms.length > 0) {
       const program = allPrograms.find(p => p.id === user.progress.currentProgram);
@@ -56,15 +52,13 @@ const Dashboard: React.FC = () => {
     }
   }, [user?.progress?.currentProgram, allPrograms, programsLoading]);
 
-  // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
   if (!user) {
     navigate("/login");
     return null;
   }
 
-  // Si aucun programme n'est sélectionné et qu'on a fini de charger, rediriger vers la page des programmes
   if (!selectedProgram && !programsLoading) {
-    return null; // On laisse l'effet de redirection s'exécuter
+    return null;
   }
 
   const totalExercises = dailyExercises.length;
@@ -73,14 +67,11 @@ const Dashboard: React.FC = () => {
     return ex.completed >= target;
   }).length;
   
-  // Vérifier si tous les exercices sont terminés
   const allExercisesCompleted = completedExercises === totalExercises && totalExercises > 0;
 
-  // Mettre à jour la progression d'un exercice
   const handleUpdateExerciseProgress = async (exerciseId: string, value: number) => {
     if (!user) return;
     
-    // Mettre à jour l'UI immédiatement
     const updatedExercises = dailyExercises.map(ex => {
       if (ex.id === exerciseId) {
         return {
@@ -91,7 +82,6 @@ const Dashboard: React.FC = () => {
       return ex;
     });
     
-    // Sauvegarder dans la base de données
     try {
       await updateExerciseProgress(
         user.id, 
@@ -99,7 +89,6 @@ const Dashboard: React.FC = () => {
         value,
         currentDay
       );
-      // Rafraîchir les données
       refetchExercises();
     } catch (error) {
       console.error("Erreur lors de la mise à jour de la progression:", error);
@@ -111,7 +100,6 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Terminer le rituel du jour et passer au suivant
   const handleCompleteRitual = async () => {
     if (!allExercisesCompleted || !user || !selectedProgram) {
       toast({
@@ -125,11 +113,9 @@ const Dashboard: React.FC = () => {
     setIsCompleting(true);
     
     try {
-      // Calculer le prochain jour
       const nextDay = currentDay + 1;
       const isLastDay = nextDay > selectedProgram.duration;
       
-      // Mettre à jour le profil utilisateur
       const newProgress = {
         ...user.progress,
         currentDay: isLastDay ? 1 : nextDay,
@@ -138,7 +124,6 @@ const Dashboard: React.FC = () => {
         totalCompletedDays: user.progress.totalCompletedDays + 1
       };
       
-      // Mettre à jour dans Supabase
       const { error } = await supabase
         .from('profiles')
         .update({ 
@@ -149,13 +134,10 @@ const Dashboard: React.FC = () => {
         
       if (error) throw error;
       
-      // Mettre à jour le contexte local
       updateUserProgress(newProgress);
       
-      // Mettre à jour l'état local
       setCurrentDay(isLastDay ? 1 : nextDay);
       
-      // Afficher un message de félicitation
       if (isLastDay) {
         toast({
           title: "Programme terminé !",
@@ -170,7 +152,6 @@ const Dashboard: React.FC = () => {
         });
       }
       
-      // Rafraîchir les exercices pour le nouveau jour
       setTimeout(() => {
         refetchExercises();
       }, 500);
@@ -222,7 +203,6 @@ const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Section Rituel */}
         <section id="ritual-section" className="app-card mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Rituel du Jour {currentDay}</h2>
@@ -259,7 +239,7 @@ const Dashboard: React.FC = () => {
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Total complété</div>
-                <div className="text-xl font-bold">{user.progress.totalCompletedDays}</div>
+                <div className="text-xl font-bold">{`${completedExercises}/${totalExercises}`}</div>
               </div>
             </div>
           </div>
