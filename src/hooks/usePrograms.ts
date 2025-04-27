@@ -32,6 +32,8 @@ export const usePrograms = () => {
   return useQuery({
     queryKey: ["programs"],
     queryFn: async () => {
+      console.log("Fetching programs from Supabase...");
+      
       const { data, error } = await supabase
         .from("programmes")
         .select("*")
@@ -43,9 +45,22 @@ export const usePrograms = () => {
       }
       
       console.log("Programs fetched from Supabase:", data);
+      
+      if (!data || data.length === 0) {
+        console.warn("No programs found in Supabase!");
+        return [];
+      }
+      
       // Transformer les données pour correspondre à l'interface Program
-      const formattedPrograms = (data as ProgramType[]).map(mapSupabaseToProgramFormat);
+      const formattedPrograms = (data as ProgramType[]).map(item => {
+        console.log(`Mapping program: ${item.id} - ${item.nom}`);
+        return mapSupabaseToProgramFormat(item);
+      });
+      
+      console.log("Formatted programs:", formattedPrograms);
       return formattedPrograms;
-    }
+    },
+    retry: 1,
+    refetchOnWindowFocus: false
   });
 };

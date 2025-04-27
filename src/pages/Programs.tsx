@@ -10,6 +10,7 @@ import { usePrograms } from "@/hooks/usePrograms";
 import ProgramSection from "@/components/programs/ProgramSection";
 import ProgramChangeDialog from "@/components/programs/ProgramChangeDialog";
 import { Program } from "@/types";
+import { useToast } from "@/hooks/use-toast";
 
 const Programs: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Programs: React.FC = () => {
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const { data: programs = [], isLoading, error } = usePrograms();
+  const { toast } = useToast();
 
   // Filtrer les programmes par type
   const freePrograms = programs.filter(p => p.category === "free");
@@ -28,8 +30,23 @@ const Programs: React.FC = () => {
   const handleProgramSelect = (programId: string) => {
     console.log(`Selecting program with ID: ${programId}`);
     
+    // Vérifier si le programme existe dans la liste
+    const programExists = programs.some(p => p.id === programId);
+    if (!programExists) {
+      toast({
+        title: "Programme non trouvé",
+        description: `Impossible de trouver le programme avec l'ID: ${programId}`,
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (!currentProgram) {
       selectProgram(programId);
+      toast({
+        title: "Programme sélectionné",
+        description: "Chargement du programme en cours...",
+      });
       setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
@@ -49,12 +66,20 @@ const Programs: React.FC = () => {
     if (selectedProgramId) {
       console.log(`Confirming program change to ID: ${selectedProgramId}`);
       selectProgram(selectedProgramId);
+      toast({
+        title: "Programme modifié",
+        description: "Chargement du nouveau programme en cours...",
+      });
       setShowConfirmDialog(false);
       setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
     }
   };
+
+  if (error) {
+    console.error("Error in Programs component:", error);
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -71,6 +96,14 @@ const Programs: React.FC = () => {
         <p className="text-muted-foreground mb-8 max-w-2xl">
           Explorez nos programmes d'entraînement et trouvez celui qui correspond à vos objectifs.
         </p>
+
+        {error ? (
+          <div className="p-4 mb-8 bg-destructive/10 border border-destructive rounded-md">
+            <h3 className="text-lg font-medium text-destructive mb-2">Erreur de chargement</h3>
+            <p className="text-destructive/80">{error.message}</p>
+            <p className="mt-2 text-sm text-muted-foreground">Essayez de rafraîchir la page ou contactez le support technique.</p>
+          </div>
+        ) : null}
 
         <ProgramSection
           title="Programmes Découverte"

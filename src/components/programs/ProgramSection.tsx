@@ -24,6 +24,16 @@ const ProgramSection: React.FC<ProgramSectionProps> = ({
   onProgramSelect,
   currentProgramId,
 }) => {
+  console.log(`Rendering ProgramSection: ${title}`, { 
+    programsCount: programs.length, 
+    isLoading, 
+    currentProgramId 
+  });
+  
+  if (programs.length > 0) {
+    console.log(`First program in ${title}:`, programs[0]);
+  }
+
   return (
     <section className="mb-12">
       <h2 className="text-lg md:text-xl font-medium mb-4 flex items-center">
