@@ -5,6 +5,7 @@ import { programs } from "@/data/programs";
 import { getRitualsByProgram } from "@/data/rituals";
 import { useAuth } from "./AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { usePrograms } from "@/hooks/usePrograms";
 
 type ProgramContextType = {
   availablePrograms: Program[];
@@ -21,16 +22,24 @@ const ProgramContext = createContext<ProgramContextType | undefined>(undefined);
 export const ProgramProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, updateUserProgress } = useAuth();
   const { toast } = useToast();
-  const [availablePrograms] = useState<Program[]>(programs);
+  const { data: supabasePrograms = [] } = usePrograms();
+  const [availablePrograms, setAvailablePrograms] = useState<Program[]>(programs);
   const [currentProgram, setCurrentProgram] = useState<Program | null>(null);
   const [rituals, setRituals] = useState<DailyRitual[]>([]);
   const [currentRitual, setCurrentRitual] = useState<DailyRitual | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Mettre à jour les programmes disponibles avec ceux de Supabase
+  useEffect(() => {
+    if (supabasePrograms.length > 0) {
+      setAvailablePrograms(supabasePrograms);
+    }
+  }, [supabasePrograms]);
+
   // Charger le programme actuel depuis le localStorage
   useEffect(() => {
-    if (user?.progress.currentProgram) {
-      const program = programs.find(p => p.id === user.progress.currentProgram);
+    if (user?.progress.currentProgram && availablePrograms.length > 0) {
+      const program = availablePrograms.find(p => p.id === user.progress.currentProgram);
       if (program) {
         setCurrentProgram(program);
         const programRituals = getRitualsByProgram(program.id);
@@ -40,17 +49,23 @@ export const ProgramProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const currentDay = user.progress.currentDay || 1;
         const ritual = programRituals.find(r => r.day === currentDay) || null;
         setCurrentRitual(ritual);
+      } else {
+        console.error("Programme non trouvé:", user.progress.currentProgram);
       }
     }
-  }, [user]);
+  }, [user, availablePrograms]);
 
   const selectProgram = (programId: string) => {
     setIsLoading(true);
     try {
-      const program = programs.find(p => p.id === programId);
-      if (!program) throw new Error("Programme non trouvé");
+      const program = availablePrograms.find(p => p.id === programId);
+      if (!program) {
+        throw new Error(`Programme non trouvé avec l'ID: ${programId}`);
+      }
       
+      console.log("Programme sélectionné:", program);
       setCurrentProgram(program);
+      
       const programRituals = getRitualsByProgram(program.id);
       setRituals(programRituals);
       
@@ -69,11 +84,11 @@ export const ProgramProvider: React.FC<{ children: React.ReactNode }> = ({ child
         title: "Programme sélectionné",
         description: `Vous avez commencé le programme ${program.name}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erreur lors de la sélection du programme:", error);
       toast({
         title: "Erreur",
-        description: "Impossible de charger le programme",
+        description: error.message || "Impossible de charger le programme",
         variant: "destructive"
       });
     } finally {

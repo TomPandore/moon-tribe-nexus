@@ -47,6 +47,12 @@ export const useDailyExercises = (programId?: string, dayNumber?: number) => {
       console.log(`Fetching exercises for program ${programId}, day ${dayNumber}`);
       
       try {
+        // Vérifier que programId est bien un UUID valide
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(programId)) {
+          console.error("Invalid UUID format for programId:", programId);
+          return [];
+        }
+
         // 1. Trouver l'ID du jour correspondant au numéro de jour et au programme
         const { data: jourData, error: jourError } = await supabase
           .from("jours")
