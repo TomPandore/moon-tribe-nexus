@@ -4,12 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
-import { Button } from "@/components/ui/button";
-import { ArrowUp } from "lucide-react";
 import { usePrograms } from "@/hooks/usePrograms";
 import ProgramSection from "@/components/programs/ProgramSection";
 import ProgramChangeDialog from "@/components/programs/ProgramChangeDialog";
-import { Program } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 
 const Programs: React.FC = () => {
@@ -123,19 +120,6 @@ const Programs: React.FC = () => {
           onProgramSelect={handleProgramSelect}
           currentProgramId={currentProgram?.id}
         />
-
-        {user && currentProgram && (
-          <div className="mt-12 text-center">
-            <Button
-              className="bg-primary text-white font-medium text-base px-6 py-5 rounded-lg hover:bg-primary/90"
-              onClick={() => navigate("/dashboard")}
-              disabled={isProgramChanging}
-            >
-              <ArrowUp className="mr-2 h-5 w-5" />
-              Retourner à mon programme
-            </Button>
-          </div>
-        )}
 
         <ProgramChangeDialog
           open={showConfirmDialog}
