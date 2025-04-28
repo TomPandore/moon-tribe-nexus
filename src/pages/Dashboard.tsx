@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import ExerciseCard from "@/components/ExerciseCard";
-import ProgressBar from "@/components/ProgressBar";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, Flame, CheckCircle } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { useDailyExercises, updateExerciseProgress } from "@/hooks/useDailyExercises";
-import { supabase } from "@/integrations/supabase/client";
 import { usePrograms } from "@/hooks/usePrograms";
-import { checkDayProgression, advanceToNextDay } from "@/utils/dayProgression";
+import { supabase } from "@/integrations/supabase/client";
+import ProgramHeader from "@/components/dashboard/ProgramHeader";
+import RitualSection from "@/components/dashboard/RitualSection";
+import ExercisesList from "@/components/dashboard/ExercisesList";
+import CompleteRitualButton from "@/components/dashboard/CompleteRitualButton";
+import { useDayProgression } from "@/hooks/useDayProgression";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -19,9 +19,7 @@ const Dashboard: React.FC = () => {
   const [isCompleting, setIsCompleting] = useState(false);
   const { data: allPrograms = [], isLoading: programsLoading } = usePrograms();
   const [selectedProgram, setSelectedProgram] = useState<any>(null);
-
   const [currentDay, setCurrentDay] = useState<number>(1);
-  const [dayProgressChecked, setDayProgressChecked] = useState(false);
   
   const { 
     data: dailyExercises = [], 
@@ -33,7 +31,16 @@ const Dashboard: React.FC = () => {
     user?.progress?.currentDay
   );
 
-  useEffect(() => {
+  const { dayProgressChecked } = useDayProgression(
+    user,
+    selectedProgram,
+    currentDay,
+    dailyExercises,
+    exercisesLoading,
+    refetchExercises
+  );
+
+  React.useEffect(() => {
     if (user?.progress?.currentProgram && allPrograms.length > 0) {
       const program = allPrograms.find(p => p.id === user.progress.currentProgram);
       if (program) {
@@ -54,57 +61,6 @@ const Dashboard: React.FC = () => {
     }
   }, [user?.progress?.currentProgram, allPrograms, programsLoading]);
 
-  useEffect(() => {
-    const checkAndAdvanceDay = async () => {
-      if (
-        user && 
-        selectedProgram && 
-        !exercisesLoading && 
-        dailyExercises.length > 0 && 
-        !dayProgressChecked
-      ) {
-        try {
-          const { shouldAdvance, allExercisesCompleted } = await checkDayProgression(user, dailyExercises);
-          
-          if (shouldAdvance) {
-            console.log("New day detected, advancing to next day...");
-            const success = await advanceToNextDay(
-              user, 
-              currentDay, 
-              selectedProgram.duration
-            );
-            
-            if (success) {
-              const nextDay = currentDay + 1 > selectedProgram.duration ? 1 : currentDay + 1;
-              setCurrentDay(nextDay);
-              
-              const newProgress = {
-                ...user.progress,
-                currentDay: nextDay,
-                lastCompletedDay: currentDay
-              };
-              updateUserProgress(newProgress);
-              
-              toast({
-                title: "Nouveau jour",
-                description: allExercisesCompleted 
-                  ? "Tous les exercices d'hier étaient complétés. Voici tes nouveaux exercices !"
-                  : "Un nouveau jour commence, les exercices d'hier n'ont pas tous été complétés.",
-              });
-              
-              setTimeout(() => refetchExercises(), 500);
-            }
-          }
-          setDayProgressChecked(true);
-        } catch (error) {
-          console.error("Error in day progression check:", error);
-        }
-      }
-    };
-    
-    checkAndAdvanceDay();
-  }, [user, selectedProgram, dailyExercises, exercisesLoading, dayProgressChecked]);
-
   if (!user) {
     navigate("/login");
     return null;
@@ -124,16 +80,6 @@ const Dashboard: React.FC = () => {
 
   const handleUpdateExerciseProgress = async (exerciseId: string, value: number) => {
     if (!user) return;
-    
-    const updatedExercises = dailyExercises.map(ex => {
-      if (ex.id === exerciseId) {
-        return {
-          ...ex,
-          completed: value
-        };
-      }
-      return ex;
-    });
     
     try {
       await updateExerciseProgress(
@@ -188,7 +134,6 @@ const Dashboard: React.FC = () => {
       if (error) throw error;
       
       updateUserProgress(newProgress);
-      
       setCurrentDay(isLastDay ? 1 : nextDay);
       
       if (isLastDay) {
@@ -239,110 +184,37 @@ const Dashboard: React.FC = () => {
     <div className="min-h-screen bg-background text-foreground relative">
       <main className="relative z-10 container mx-auto px-4 py-6 pb-20 max-w-3xl">
         {selectedProgram && (
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold">{selectedProgram.name}</h1>
-            </div>
-            <ProgressBar 
-              value={currentDay} 
-              max={selectedProgram.duration} 
-              className="h-2"
-            />
-          </div>
+          <ProgramHeader 
+            program={selectedProgram}
+            currentDay={currentDay}
+          />
         )}
 
-        <section id="ritual-section" className="app-card mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Rituel du Jour {currentDay}</h2>
-          </div>
-
-          <p className="text-primary font-medium mb-4 text-lg">
-            {getEncouragingMessage()}
-          </p>
-
-          <div className="mb-6">
-            <ProgressBar 
-              value={completedExercises} 
-              max={totalExercises} 
-              className="h-2"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="app-card flex items-center gap-3 p-3 shadow-none">
-              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                <Flame size={20} className="text-primary" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">Série actuelle</div>
-                <div className="text-xl font-bold">{user.progress.streak}</div>
-              </div>
-            </div>
-            <div className="app-card flex items-center gap-3 p-3 shadow-none">
-              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                <Trophy size={20} className="text-primary" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">Exercices Accomplis</div>
-                <div className="text-xl font-bold">{`${completedExercises}/${totalExercises}`}</div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <RitualSection 
+          currentDay={currentDay}
+          user={user}
+          completedExercises={completedExercises}
+          totalExercises={totalExercises}
+          encouragingMessage={getEncouragingMessage()}
+        />
 
         <h3 className="text-lg font-bold mb-4">Exercices à compléter</h3>
         
-        {exercisesLoading ? (
-          <div className="text-center py-8">
-            <div className="spinner animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p>Chargement des exercices...</p>
-          </div>
-        ) : exercisesError ? (
-          <div className="p-4 mb-8 border border-destructive rounded-md">
-            <p className="text-destructive">Erreur lors du chargement des exercices.</p>
-            <button 
-              onClick={() => refetchExercises()} 
-              className="mt-2 text-sm text-primary hover:underline"
-            >
-              Réessayer
-            </button>
-          </div>
-        ) : dailyExercises.length === 0 ? (
-          <div className="p-4 mb-8 border border-muted rounded-md">
-            <p className="text-center">Aucun exercice trouvé pour ce jour.</p>
-          </div>
-        ) : (
-          <div className="mb-20">
-            {dailyExercises.map((exercise, idx) => (
-              <React.Fragment key={exercise.id}>
-                <ExerciseCard
-                  exercise={exercise}
-                  onUpdate={(exerciseId, value) => handleUpdateExerciseProgress(exerciseId, value)}
-                />
-                {idx < dailyExercises.length - 1 && (
-                  <Separator className="exercise-separator" />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        )}
+        <ExercisesList 
+          exercises={dailyExercises}
+          onUpdateExercise={handleUpdateExerciseProgress}
+          isLoading={exercisesLoading}
+          error={exercisesError}
+          refetchExercises={refetchExercises}
+        />
 
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t border-border z-20">
-          <div className="container max-w-3xl mx-auto">
-            <Button 
-              className={`w-full py-6 ${allExercisesCompleted ? "bg-primary text-white" : "bg-muted text-foreground"}`}
-              onClick={handleCompleteRitual}
-              disabled={isCompleting || !allExercisesCompleted}
-              variant="default"
-            >
-              {isCompleting 
-                ? "Validation en cours..." 
-                : allExercisesCompleted 
-                  ? "Valider le rituel du jour" 
-                  : `Complète tous les exercices pour valider (${completedExercises}/${totalExercises})`}
-            </Button>
-          </div>
-        </div>
+        <CompleteRitualButton 
+          isCompleting={isCompleting}
+          allExercisesCompleted={allExercisesCompleted}
+          completedExercises={completedExercises}
+          totalExercises={totalExercises}
+          onComplete={handleCompleteRitual}
+        />
       </main>
     </div>
   );
