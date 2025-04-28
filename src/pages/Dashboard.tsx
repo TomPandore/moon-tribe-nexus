@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useDailyExercises, updateExerciseProgress } from "@/hooks/useDailyExercises";
 import { supabase } from "@/integrations/supabase/client";
 import { usePrograms } from "@/hooks/usePrograms";
+import { checkDayProgression, advanceToNextDay } from "@/utils/dayProgression";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Dashboard: React.FC = () => {
   const [selectedProgram, setSelectedProgram] = useState<any>(null);
 
   const [currentDay, setCurrentDay] = useState<number>(1);
+  const [dayProgressChecked, setDayProgressChecked] = useState(false);
   
   const { 
     data: dailyExercises = [], 
@@ -51,6 +53,57 @@ const Dashboard: React.FC = () => {
       navigate("/programs");
     }
   }, [user?.progress?.currentProgram, allPrograms, programsLoading]);
+
+  useEffect(() => {
+    const checkAndAdvanceDay = async () => {
+      if (
+        user && 
+        selectedProgram && 
+        !exercisesLoading && 
+        dailyExercises.length > 0 && 
+        !dayProgressChecked
+      ) {
+        try {
+          const { shouldAdvance, allExercisesCompleted } = await checkDayProgression(user, dailyExercises);
+          
+          if (shouldAdvance) {
+            console.log("New day detected, advancing to next day...");
+            const success = await advanceToNextDay(
+              user, 
+              currentDay, 
+              selectedProgram.duration
+            );
+            
+            if (success) {
+              const nextDay = currentDay + 1 > selectedProgram.duration ? 1 : currentDay + 1;
+              setCurrentDay(nextDay);
+              
+              const newProgress = {
+                ...user.progress,
+                currentDay: nextDay,
+                lastCompletedDay: currentDay
+              };
+              updateUserProgress(newProgress);
+              
+              toast({
+                title: "Nouveau jour",
+                description: allExercisesCompleted 
+                  ? "Tous les exercices d'hier étaient complétés. Voici tes nouveaux exercices !"
+                  : "Un nouveau jour commence, les exercices d'hier n'ont pas tous été complétés.",
+              });
+              
+              setTimeout(() => refetchExercises(), 500);
+            }
+          }
+          setDayProgressChecked(true);
+        } catch (error) {
+          console.error("Error in day progression check:", error);
+        }
+      }
+    };
+    
+    checkAndAdvanceDay();
+  }, [user, selectedProgram, dailyExercises, exercisesLoading, dayProgressChecked]);
 
   if (!user) {
     navigate("/login");
