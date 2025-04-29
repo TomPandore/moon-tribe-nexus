@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,6 +20,13 @@ const Dashboard: React.FC = () => {
   const [selectedProgram, setSelectedProgram] = useState<any>(null);
   const [currentDay, setCurrentDay] = useState<number>(1);
   
+  // First update: Get the current day from the user's progress
+  React.useEffect(() => {
+    if (user?.progress?.currentDay) {
+      setCurrentDay(user.progress.currentDay);
+    }
+  }, [user?.progress?.currentDay]);
+  
   const { 
     data: dailyExercises = [], 
     isLoading: exercisesLoading, 
@@ -28,13 +34,14 @@ const Dashboard: React.FC = () => {
     error: exercisesError 
   } = useDailyExercises(
     user?.progress?.currentProgram,
-    user?.progress?.currentDay
+    currentDay // Updated: Use the local state instead of user.progress.currentDay
   );
 
   const { dayProgressChecked } = useDayProgression(
     user,
     selectedProgram,
     currentDay,
+    setCurrentDay, // Pass the setter function
     dailyExercises,
     exercisesLoading,
     refetchExercises
@@ -134,7 +141,7 @@ const Dashboard: React.FC = () => {
       if (error) throw error;
       
       updateUserProgress(newProgress);
-      setCurrentDay(isLastDay ? 1 : nextDay);
+      setCurrentDay(isLastDay ? 1 : nextDay); // Update local state
       
       if (isLastDay) {
         toast({

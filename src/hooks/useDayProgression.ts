@@ -8,6 +8,7 @@ export const useDayProgression = (
   user: User | null,
   selectedProgram: Program | null,
   currentDay: number,
+  setCurrentDay: (day: number) => void, // Added parameter to update parent state
   dailyExercises: any[],
   isLoading: boolean,
   refetchExercises: () => void
@@ -38,11 +39,8 @@ export const useDayProgression = (
             if (success) {
               const nextDay = currentDay + 1 > selectedProgram.duration ? 1 : currentDay + 1;
               
-              const newProgress = {
-                ...user.progress,
-                currentDay: nextDay,
-                lastCompletedDay: currentDay
-              };
+              // Update the current day in the parent component
+              setCurrentDay(nextDay);
               
               toast({
                 title: "Nouveau jour",
