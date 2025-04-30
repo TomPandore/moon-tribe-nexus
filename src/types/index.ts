@@ -40,10 +40,13 @@ export type UserProgress = {
   lastCompletedDay?: number;
 };
 
+export type UserClan = "ONOTKA" | "EKLOA" | "OKWÁHO";
+
 export type User = {
   id: string;
   email: string;
   name?: string;
+  clan?: UserClan;
   progress: UserProgress;
 };
 

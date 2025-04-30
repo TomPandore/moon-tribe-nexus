@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Session, User, UserProgress } from "@/types";
+import { Session, User, UserProgress, UserClan } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useSessionManager = () => {
@@ -65,10 +65,15 @@ export const useSessionManager = () => {
                   progressData.currentProgram = profile.programme_id;
                 }
 
+                // Get the clan from user metadata
+                const userMetadata = currentSession.user.user_metadata || {};
+                const clan = userMetadata.clan as UserClan | undefined;
+
                 setUser({
                   id: currentSession.user.id,
                   email: currentSession.user.email!,
-                  name: profile.name,
+                  name: profile.name || userMetadata.name,
+                  clan: clan,
                   progress: progressData
                 });
                 console.log("User set from profile:", profile);

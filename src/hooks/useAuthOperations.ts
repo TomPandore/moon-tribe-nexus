@@ -32,14 +32,15 @@ export const useAuthOperations = (setUser: any) => {
     }
   };
 
-  const register = async (email: string, password: string, name?: string) => {
+  const register = async (email: string, password: string, name?: string, userMetadata?: Record<string, any>) => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            name: name
+            name: name,
+            ...userMetadata
           }
         }
       });

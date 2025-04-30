@@ -8,22 +8,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserPlus, LogIn, Mail, Lock, User } from "lucide-react";
+import RegisterFlow from "@/components/auth/RegisterFlow";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login, register, user, isLoading } = useAuth();
+  const { login, user, isLoading } = useAuth();
   const { toast } = useToast();
+  
+  const [showRegisterFlow, setShowRegisterFlow] = useState(false);
   
   // États pour le login
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginInProgress, setLoginInProgress] = useState(false);
-  
-  // États pour l'inscription
-  const [registerEmail, setRegisterEmail] = useState("");
-  const [registerPassword, setRegisterPassword] = useState("");
-  const [registerName, setRegisterName] = useState("");
-  const [registerInProgress, setRegisterInProgress] = useState(false);
   
   // Redirect if user is already logged in
   useEffect(() => {
@@ -58,27 +55,6 @@ const Login: React.FC = () => {
     }
   };
   
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (registerInProgress) return;
-    
-    try {
-      setRegisterInProgress(true);
-      
-      if (!registerEmail || !registerPassword) {
-        throw new Error("Veuillez remplir tous les champs obligatoires");
-      }
-      
-      await register(registerEmail, registerPassword, registerName);
-      
-    } catch (error) {
-      console.error("Register form error:", error);
-    } finally {
-      setRegisterInProgress(false);
-    }
-  };
-  
   if (isLoading && user === null) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -90,6 +66,10 @@ const Login: React.FC = () => {
         </div>
       </div>
     );
+  }
+  
+  if (showRegisterFlow) {
+    return <RegisterFlow onCancel={() => setShowRegisterFlow(false)} />;
   }
   
   return (
@@ -185,76 +165,21 @@ const Login: React.FC = () => {
               </TabsContent>
               
               <TabsContent value="register">
-                <form onSubmit={handleRegister} className="space-y-6">
-                  <div>
-                    <label htmlFor="register-name" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Nom (optionnel)
-                    </label>
-                    <div className="relative">
-                      <User size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="register-name"
-                        name="name"
-                        type="text"
-                        autoComplete="name"
-                        className="tribal-input w-full pl-10"
-                        value={registerName}
-                        onChange={(e) => setRegisterName(e.target.value)}
-                        disabled={registerInProgress}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="register-email" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Email
-                    </label>
-                    <div className="relative">
-                      <Mail size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="register-email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        required
-                        className="tribal-input w-full pl-10"
-                        value={registerEmail}
-                        onChange={(e) => setRegisterEmail(e.target.value)}
-                        disabled={registerInProgress}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="register-password" className="block text-sm font-medium text-muted-foreground mb-1">
-                      Mot de passe
-                    </label>
-                    <div className="relative">
-                      <Lock size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="register-password"
-                        name="password"
-                        type="password"
-                        autoComplete="new-password"
-                        required
-                        className="tribal-input w-full pl-10"
-                        value={registerPassword}
-                        onChange={(e) => setRegisterPassword(e.target.value)}
-                        disabled={registerInProgress}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Button 
-                      type="submit" 
-                      className="w-full tribal-btn-primary" 
-                      disabled={registerInProgress}
-                    >
-                      {registerInProgress ? "Inscription..." : "S'inscrire"}
-                    </Button>
-                  </div>
-                </form>
+                <div className="text-center space-y-6">
+                  <h3 className="text-lg font-bold">Commencer ton aventure</h3>
+                  
+                  <p className="text-muted-foreground">
+                    Rejoins une communauté qui transforme le mouvement en mode de vie
+                  </p>
+                  
+                  <Button 
+                    onClick={() => setShowRegisterFlow(true)}
+                    className="w-full tribal-btn-primary"
+                  >
+                    <UserPlus size={18} className="mr-2" />
+                    Rejoindre la tribu
+                  </Button>
+                </div>
               </TabsContent>
             </Tabs>
           </div>
