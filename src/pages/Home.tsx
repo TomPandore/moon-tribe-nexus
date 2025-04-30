@@ -2,10 +2,11 @@
 import React from "react";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Trophy, Target, Calendar, Flame } from "lucide-react";
+import { Trophy, Target, Calendar, Flame, Shield } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const Home = () => {
   const { user } = useAuth();
@@ -17,6 +18,18 @@ const Home = () => {
     return null;
   }
 
+  // Determine clan colors based on the user's clan
+  const getClanColor = () => {
+    if (!user.clan) return "bg-primary/10";
+
+    switch(user.clan) {
+      case "ONOTKA": return "bg-red-600";
+      case "EKLOA": return "bg-blue-600";
+      case "OKWÁHO": return "bg-green-600";
+      default: return "bg-primary/10";
+    }
+  };
+
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
       <div className="mb-8">
@@ -24,6 +37,15 @@ const Home = () => {
         <p className="text-muted-foreground">
           Voici un aperçu de votre progression et de votre programme actuel
         </p>
+        
+        {user.clan && (
+          <div className="flex items-center gap-3 mt-4">
+            <div className={cn("w-8 h-8 rounded-full flex items-center justify-center", getClanColor())}>
+              <Shield className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-sm font-medium">Clan {user.clan}</span>
+          </div>
+        )}
       </div>
 
       {currentProgram ? (

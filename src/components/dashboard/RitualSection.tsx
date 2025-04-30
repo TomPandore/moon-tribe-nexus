@@ -1,8 +1,9 @@
 
 import React from "react";
-import { Trophy, Flame } from "lucide-react";
+import { Trophy, Flame, Shield } from "lucide-react";
 import ProgressBar from "@/components/ProgressBar";
 import { User } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface RitualSectionProps {
   currentDay: number;
@@ -19,10 +20,33 @@ const RitualSection: React.FC<RitualSectionProps> = ({
   totalExercises,
   encouragingMessage
 }) => {
+  // Determine clan colors based on the user's clan
+  const getClanBadge = () => {
+    if (!user.clan) return null;
+
+    const clanColors = {
+      "ONOTKA": "bg-red-600",
+      "EKLOA": "bg-blue-600",
+      "OKWÁHO": "bg-green-600"
+    };
+
+    const clanColor = clanColors[user.clan] || "bg-primary/10";
+
+    return (
+      <div className="flex items-center gap-2 text-sm">
+        <div className={cn("w-5 h-5 rounded-full flex items-center justify-center", clanColor)}>
+          <Shield size={12} className="text-white" />
+        </div>
+        <span>Clan {user.clan}</span>
+      </div>
+    );
+  };
+
   return (
     <section id="ritual-section" className="app-card mb-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Rituel du Jour {currentDay}</h2>
+        {user.clan && getClanBadge()}
       </div>
 
       <p className="text-primary font-medium mb-4 text-lg">
