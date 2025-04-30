@@ -9,7 +9,7 @@ type AuthContextType = {
   session: Session | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name?: string) => Promise<void>;
+  register: (email: string, password: string, name?: string, userMetadata?: Record<string, any>) => Promise<void>;
   logout: () => Promise<void>;
   updateUserProgress: (progress: Partial<UserProgress>) => void;
 };
