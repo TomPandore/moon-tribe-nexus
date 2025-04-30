@@ -1,13 +1,16 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProgram } from "@/contexts/ProgramContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
-import { usePrograms } from "@/hooks/usePrograms";
+import { usePrograms, useClanPrograms } from "@/hooks/usePrograms";
 import ProgramSection from "@/components/programs/ProgramSection";
 import ProgramChangeDialog from "@/components/programs/ProgramChangeDialog";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { Shield } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const Programs: React.FC = () => {
   const navigate = useNavigate();
@@ -15,20 +18,26 @@ const Programs: React.FC = () => {
   const { user } = useAuth();
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const { data: programs = [], isLoading, error } = usePrograms();
+  const { data: programs = [], isLoading: isLoadingAllPrograms, error: allProgramsError } = usePrograms();
+  const { data: clanPrograms = [], isLoading: isLoadingClanPrograms } = useClanPrograms(user?.clanId);
   const { toast } = useToast();
 
   // Filtrer les programmes par type
   const freePrograms = programs.filter(p => p.category === "free");
-  const premiumPrograms = programs.filter(p => p.category === "premium");
+  const premiumPrograms = programs.filter(p => p.category === "premium" && !clanPrograms.some(cp => cp.id === p.id));
   
-  console.log("Current programs:", { all: programs, free: freePrograms, premium: premiumPrograms });
+  console.log("Current programs:", { 
+    all: programs, 
+    free: freePrograms, 
+    premium: premiumPrograms,
+    clan: clanPrograms 
+  });
 
   const handleProgramSelect = (programId: string) => {
     console.log(`Selecting program with ID: ${programId}`);
     
     // Vérifier si le programme existe dans la liste
-    const programExists = programs.some(p => p.id === programId);
+    const programExists = [...programs, ...clanPrograms].some(p => p.id === programId);
     if (!programExists) {
       toast({
         title: "Programme non trouvé",
@@ -74,9 +83,20 @@ const Programs: React.FC = () => {
     }
   };
 
-  if (error) {
-    console.error("Error in Programs component:", error);
-  }
+  // Get clan color for badge
+  const getClanColor = () => {
+    if (!user?.clan) return "bg-primary/10";
+
+    switch(user.clan) {
+      case "ONOTKA": return "bg-red-600";
+      case "EKLOA": return "bg-blue-600";
+      case "OKWÁHO": return "bg-green-600";
+      default: return "bg-primary/10";
+    }
+  };
+
+  const isLoading = isLoadingAllPrograms || isLoadingClanPrograms;
+  const error = allProgramsError;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -94,6 +114,17 @@ const Programs: React.FC = () => {
           Explorez nos programmes d'entraînement et trouvez celui qui correspond à vos objectifs.
         </p>
 
+        {user?.clan && (
+          <div className="flex items-center gap-3 mb-6">
+            <div className={cn("w-6 h-6 rounded-full flex items-center justify-center", getClanColor())}>
+              <Shield size={16} className="text-white" />
+            </div>
+            <span className="text-sm">
+              Vous appartenez au <span className="font-medium">Clan {user.clan}</span>
+            </span>
+          </div>
+        )}
+
         {error ? (
           <div className="p-4 mb-8 bg-destructive/10 border border-destructive rounded-md">
             <h3 className="text-lg font-medium text-destructive mb-2">Erreur de chargement</h3>
@@ -101,6 +132,18 @@ const Programs: React.FC = () => {
             <p className="mt-2 text-sm text-muted-foreground">Essayez de rafraîchir la page ou contactez le support technique.</p>
           </div>
         ) : null}
+
+        {user?.clan && clanPrograms.length > 0 && (
+          <ProgramSection
+            title={`Programmes du Clan ${user.clan}`}
+            badge="Exclusif"
+            programs={clanPrograms}
+            isLoading={isLoading}
+            error={error}
+            onProgramSelect={handleProgramSelect}
+            currentProgramId={currentProgram?.id}
+          />
+        )}
 
         <ProgramSection
           title="Programmes Découverte"

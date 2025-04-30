@@ -9,6 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      clans: {
+        Row: {
+          couleur_theme: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          nom_clan: string
+          rituel_entree: string | null
+          tagline: string | null
+        }
+        Insert: {
+          couleur_theme?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          nom_clan: string
+          rituel_entree?: string | null
+          tagline?: string | null
+        }
+        Update: {
+          couleur_theme?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          nom_clan?: string
+          rituel_entree?: string | null
+          tagline?: string | null
+        }
+        Relationships: []
+      }
       exercices: {
         Row: {
           categorie: string | null
@@ -84,6 +117,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          clan_id: string | null
           created_at: string | null
           email: string | null
           id: string
@@ -94,6 +128,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          clan_id?: string | null
           created_at?: string | null
           email?: string | null
           id: string
@@ -104,6 +139,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          clan_id?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
@@ -115,6 +151,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "profiles_clan_id_fkey"
+            columns: ["clan_id"]
+            isOneToOne: false
+            referencedRelation: "clans"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "profiles_programme_id_fkey"
             columns: ["programme_id"]
             isOneToOne: false
@@ -125,6 +168,7 @@ export type Database = {
       }
       programmes: {
         Row: {
+          clan_id: string | null
           description: string | null
           duree_jours: number
           id: string
@@ -134,6 +178,7 @@ export type Database = {
           type: string | null
         }
         Insert: {
+          clan_id?: string | null
           description?: string | null
           duree_jours?: number
           id?: string
@@ -143,6 +188,7 @@ export type Database = {
           type?: string | null
         }
         Update: {
+          clan_id?: string | null
           description?: string | null
           duree_jours?: number
           id?: string
@@ -151,7 +197,15 @@ export type Database = {
           tags?: string[] | null
           type?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "programmes_clan_id_fkey"
+            columns: ["clan_id"]
+            isOneToOne: false
+            referencedRelation: "clans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       progression_exercice: {
         Row: {

@@ -11,6 +11,7 @@ export type ProgramType = {
   type: string | null;
   tags: string[];
   image_url: string | null;
+  clan_id: string | null;
 };
 
 // Fonction pour transformer les données de Supabase en format Programme
@@ -24,21 +25,29 @@ const mapSupabaseToProgramFormat = (item: ProgramType): Program => {
     focus: item.tags || [],
     image: item.image_url || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png",
     illustration: item.image_url || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png",
-    category: item.type?.toLowerCase().includes('principal') ? "premium" : "free"
+    category: item.type?.toLowerCase().includes('principal') ? "premium" : "free",
+    clanId: item.clan_id || undefined
   };
 };
 
-export const usePrograms = () => {
+export const usePrograms = (clanId?: string) => {
   return useQuery({
-    queryKey: ["programs"],
+    queryKey: ["programs", clanId],
     queryFn: async () => {
-      console.log("Fetching programs from Supabase...");
+      console.log(`Fetching programs from Supabase${clanId ? ` for clan ${clanId}` : ''}...`);
       
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from("programmes")
           .select("*")
           .order("nom");
+          
+        if (clanId) {
+          // If clan ID is provided, filter by clan or get programs without clan
+          query = query.or(`clan_id.eq.${clanId},clan_id.is.null`);
+        }
+        
+        const { data, error } = await query;
 
         if (error) {
           console.error("Error fetching programs:", error);
@@ -62,6 +71,78 @@ export const usePrograms = () => {
         return formattedPrograms;
       } catch (err) {
         console.error("Error in usePrograms:", err);
+        throw err;
+      }
+    },
+    retry: 2,
+    refetchOnWindowFocus: false
+  });
+};
+
+// Hook to fetch clan-specific programs
+export const useClanPrograms = (clanId?: string) => {
+  return useQuery({
+    queryKey: ["clan-programs", clanId],
+    queryFn: async () => {
+      if (!clanId) return [];
+      
+      console.log(`Fetching clan-specific programs for clan ${clanId}...`);
+      
+      try {
+        const { data, error } = await supabase
+          .from("programmes")
+          .select("*")
+          .eq("clan_id", clanId)
+          .order("nom");
+
+        if (error) {
+          console.error("Error fetching clan programs:", error);
+          throw error;
+        }
+        
+        if (!data || data.length === 0) {
+          console.warn(`No clan-specific programs found for clan ${clanId}`);
+          return [];
+        }
+        
+        const formattedPrograms = (data as ProgramType[]).map(item => {
+          return mapSupabaseToProgramFormat(item);
+        });
+        
+        return formattedPrograms;
+      } catch (err) {
+        console.error("Error in useClanPrograms:", err);
+        throw err;
+      }
+    },
+    retry: 2,
+    refetchOnWindowFocus: false,
+    enabled: !!clanId
+  });
+};
+
+// Hook to fetch clan data
+export const useClans = () => {
+  return useQuery({
+    queryKey: ["clans"],
+    queryFn: async () => {
+      console.log("Fetching clans from Supabase...");
+      
+      try {
+        const { data, error } = await supabase
+          .from("clans")
+          .select("*")
+          .order("nom_clan");
+
+        if (error) {
+          console.error("Error fetching clans:", error);
+          throw error;
+        }
+        
+        console.log("Clans fetched from Supabase:", data);
+        return data || [];
+      } catch (err) {
+        console.error("Error in useClans:", err);
         throw err;
       }
     },

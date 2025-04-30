@@ -9,6 +9,7 @@ export interface Program {
   image: string;
   illustration?: string;
   category?: "free" | "premium";
+  clanId?: string;
 }
 
 export type Exercise = {
@@ -42,11 +43,22 @@ export type UserProgress = {
 
 export type UserClan = "ONOTKA" | "EKLOA" | "OKWÁHO";
 
+export type Clan = {
+  id: string;
+  nom_clan: UserClan;
+  tagline: string;
+  description: string;
+  rituel_entree: string;
+  image_url?: string;
+  couleur_theme: string;
+};
+
 export type User = {
   id: string;
   email: string;
   name?: string;
   clan?: UserClan;
+  clanId?: string;
   progress: UserProgress;
 };
 

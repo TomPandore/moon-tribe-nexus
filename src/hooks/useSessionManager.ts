@@ -23,7 +23,7 @@ export const useSessionManager = () => {
             try {
               const { data: profile, error } = await supabase
                 .from('profiles')
-                .select('*')
+                .select('*, clans:clan_id(nom_clan, couleur_theme)')
                 .eq('id', currentSession.user.id)
                 .single();
 
@@ -65,15 +65,17 @@ export const useSessionManager = () => {
                   progressData.currentProgram = profile.programme_id;
                 }
 
-                // Get the clan from user metadata
+                // Get the clan from user metadata or from the joined clan data
                 const userMetadata = currentSession.user.user_metadata || {};
                 const clan = userMetadata.clan as UserClan | undefined;
+                const clanFromDb = profile.clans ? profile.clans.nom_clan as UserClan : undefined;
 
                 setUser({
                   id: currentSession.user.id,
                   email: currentSession.user.email!,
                   name: profile.name || userMetadata.name,
-                  clan: clan,
+                  clan: clan || clanFromDb,
+                  clanId: profile.clan_id,
                   progress: progressData
                 });
                 console.log("User set from profile:", profile);

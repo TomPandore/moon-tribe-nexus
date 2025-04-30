@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext } from "react";
-import { User, UserProgress, Session } from "@/types";
+import { User, UserProgress, Session, UserClan } from "@/types";
 import { useSessionManager } from "@/hooks/useSessionManager";
 import { useAuthOperations } from "@/hooks/useAuthOperations";
 
@@ -12,13 +12,14 @@ type AuthContextType = {
   register: (email: string, password: string, name?: string, userMetadata?: Record<string, any>) => Promise<void>;
   logout: () => Promise<void>;
   updateUserProgress: (progress: Partial<UserProgress>) => void;
+  updateUserClan: (clan: UserClan) => Promise<string | undefined>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, session, isLoading, setUser } = useSessionManager();
-  const { login, register, logout, updateUserProgress } = useAuthOperations(setUser);
+  const { login, register, logout, updateUserProgress, updateUserClan } = useAuthOperations(setUser);
 
   const handleUpdateUserProgress = async (progress: Partial<UserProgress>) => {
     if (!user) return;
@@ -33,6 +34,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error("Failed to update user progress:", error);
     }
   };
+  
+  const handleUpdateUserClan = async (clan: UserClan) => {
+    if (!user) return;
+    
+    try {
+      const clanId = await updateUserClan(user.id, clan);
+      setUser({
+        ...user,
+        clan,
+        clanId
+      });
+      return clanId;
+    } catch (error) {
+      console.error("Failed to update user clan:", error);
+    }
+  };
 
   return (
     <AuthContext.Provider 
@@ -43,7 +60,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login, 
         register, 
         logout,
-        updateUserProgress: handleUpdateUserProgress
+        updateUserProgress: handleUpdateUserProgress,
+        updateUserClan: handleUpdateUserClan
       }}
     >
       {children}

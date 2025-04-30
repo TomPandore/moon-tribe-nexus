@@ -1,7 +1,7 @@
 
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { UserProgress } from "@/types";
+import { UserProgress, UserClan } from "@/types";
 
 export const useAuthOperations = (setUser: any) => {
   const { toast } = useToast();
@@ -46,6 +46,33 @@ export const useAuthOperations = (setUser: any) => {
       });
 
       if (error) throw error;
+
+      // If user selects a clan, update the profiles table with clan_id
+      if (userMetadata?.clan) {
+        try {
+          // Get the user that was just created
+          const { data: authUser } = await supabase.auth.getUser();
+          
+          if (authUser?.user) {
+            // Find clan_id from clan name
+            const { data: clanData } = await supabase
+              .from('clans')
+              .select('id')
+              .eq('nom_clan', userMetadata.clan)
+              .single();
+            
+            if (clanData) {
+              // Update the profile with clan_id
+              await supabase
+                .from('profiles')
+                .update({ clan_id: clanData.id })
+                .eq('id', authUser.user.id);
+            }
+          }
+        } catch (err) {
+          console.error("Error linking clan to user:", err);
+        }
+      }
 
       toast({
         title: "Inscription réussie",
@@ -100,5 +127,42 @@ export const useAuthOperations = (setUser: any) => {
     }
   };
 
-  return { login, register, logout, updateUserProgress };
+  const updateUserClan = async (userId: string, clanName: UserClan) => {
+    try {
+      // Find clan_id from clan name
+      const { data: clanData, error: clanError } = await supabase
+        .from('clans')
+        .select('id')
+        .eq('nom_clan', clanName)
+        .single();
+        
+      if (clanError || !clanData) {
+        throw new Error(`Clan "${clanName}" non trouvé`);
+      }
+      
+      // Update the profile with clan_id
+      const { error } = await supabase
+        .from('profiles')
+        .update({ clan_id: clanData.id })
+        .eq('id', userId);
+        
+      if (error) throw error;
+      
+      toast({
+        title: "Clan mis à jour",
+        description: `Vous appartenez désormais au clan ${clanName}`,
+      });
+      
+      return clanData.id;
+    } catch (error: any) {
+      toast({
+        title: "Erreur de mise à jour du clan",
+        description: error.message,
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
+  return { login, register, logout, updateUserProgress, updateUserClan };
 };
