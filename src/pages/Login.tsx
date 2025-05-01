@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,71 +8,67 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserPlus, LogIn, Mail, Lock, User } from "lucide-react";
 import RegisterFlow from "@/components/auth/RegisterFlow";
-
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login, user, isLoading } = useAuth();
-  const { toast } = useToast();
-  
+  const {
+    login,
+    user,
+    isLoading
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
   const [showRegisterFlow, setShowRegisterFlow] = useState(false);
-  
+
   // États pour le login
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginInProgress, setLoginInProgress] = useState(false);
-  
+
   // Redirect if user is already logged in
   useEffect(() => {
-    console.log("Login page - auth state:", { user, isLoading });
-    
+    console.log("Login page - auth state:", {
+      user,
+      isLoading
+    });
     if (user && !isLoading) {
       console.log("Redirecting to dashboard because user is logged in");
-      navigate("/dashboard", { replace: true });
+      navigate("/dashboard", {
+        replace: true
+      });
     }
   }, [user, isLoading, navigate]);
-  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (loginInProgress) return;
-    
     try {
       setLoginInProgress(true);
-      
       if (!loginEmail || !loginPassword) {
         throw new Error("Veuillez remplir tous les champs");
       }
-      
       console.log("Submitting login form");
       await login(loginEmail, loginPassword);
       // La redirection est gérée par l'useEffect ci-dessus
-      
     } catch (error) {
       console.error("Login form error:", error);
     } finally {
       setLoginInProgress(false);
     }
   };
-  
   if (isLoading && user === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+    return <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="mb-4">
             <Logo size="lg" />
           </div>
           <p className="text-lg text-muted-foreground animate-pulse">Chargement...</p>
         </div>
-      </div>
-    );
+      </div>;
   }
-  
   if (showRegisterFlow) {
     return <RegisterFlow onCancel={() => setShowRegisterFlow(false)} />;
   }
-  
-  return (
-    <div className="min-h-screen bg-background text-foreground relative">
+  return <div className="min-h-screen bg-background text-foreground relative">
       {/* Background pattern */}
       <div className="absolute inset-0 tribal-pattern pointer-events-none"></div>
       
@@ -83,9 +78,7 @@ const Login: React.FC = () => {
             <Logo size="lg" />
           </div>
           
-          <h2 className="text-3xl font-oswald text-center mb-2 text-tribal-green uppercase tracking-wider">
-            Rejoins la communauté
-          </h2>
+          <h2 className="text-3xl font-oswald text-center mb-2 text-tribal-green uppercase tracking-wider">Rejoindre la tribu</h2>
           
           <p className="text-center text-muted-foreground mb-8">
             Transforme ton quotidien avec des rituels de mouvements
@@ -112,17 +105,7 @@ const Login: React.FC = () => {
                     </label>
                     <div className="relative">
                       <Mail size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="login-email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        required
-                        className="tribal-input w-full pl-10"
-                        value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
-                        disabled={loginInProgress}
-                      />
+                      <Input id="login-email" name="email" type="email" autoComplete="email" required className="tribal-input w-full pl-10" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} disabled={loginInProgress} />
                     </div>
                   </div>
 
@@ -132,26 +115,12 @@ const Login: React.FC = () => {
                     </label>
                     <div className="relative">
                       <Lock size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
-                      <Input
-                        id="login-password"
-                        name="password"
-                        type="password"
-                        autoComplete="current-password"
-                        required
-                        className="tribal-input w-full pl-10"
-                        value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
-                        disabled={loginInProgress}
-                      />
+                      <Input id="login-password" name="password" type="password" autoComplete="current-password" required className="tribal-input w-full pl-10" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} disabled={loginInProgress} />
                     </div>
                   </div>
 
                   <div>
-                    <Button 
-                      type="submit" 
-                      className="w-full tribal-btn-primary" 
-                      disabled={loginInProgress}
-                    >
+                    <Button type="submit" className="w-full tribal-btn-primary" disabled={loginInProgress}>
                       {loginInProgress ? "Connexion..." : "Se connecter"}
                     </Button>
                   </div>
@@ -159,7 +128,7 @@ const Login: React.FC = () => {
                   {/* Debugging state */}
                   <div className="text-xs text-muted-foreground">
                     État: {loginInProgress ? "Connexion en cours" : "Prêt"} | 
-                    Auth: {isLoading ? "Chargement" : (user ? "Connecté" : "Non connecté")}
+                    Auth: {isLoading ? "Chargement" : user ? "Connecté" : "Non connecté"}
                   </div>
                 </form>
               </TabsContent>
@@ -168,14 +137,9 @@ const Login: React.FC = () => {
                 <div className="text-center space-y-6">
                   <h3 className="text-lg font-bold">Commencer ton aventure</h3>
                   
-                  <p className="text-muted-foreground">
-                    Rejoins une communauté qui transforme le mouvement en mode de vie
-                  </p>
+                  <p className="text-muted-foreground">Mohero transforme le mouvement en mode de vie</p>
                   
-                  <Button 
-                    onClick={() => setShowRegisterFlow(true)}
-                    className="w-full tribal-btn-primary"
-                  >
+                  <Button onClick={() => setShowRegisterFlow(true)} className="w-full tribal-btn-primary">
                     <UserPlus size={18} className="mr-2" />
                     Rejoindre la tribu
                   </Button>
@@ -185,17 +149,12 @@ const Login: React.FC = () => {
           </div>
           
           <div className="mt-8 text-center text-sm text-muted-foreground">
-            <button 
-              onClick={() => navigate("/")}
-              className="tribal-link"
-            >
+            <button onClick={() => navigate("/")} className="tribal-link">
               Retour à l'accueil
             </button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Login;
