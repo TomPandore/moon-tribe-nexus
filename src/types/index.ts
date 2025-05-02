@@ -10,6 +10,9 @@ export interface Program {
   illustration?: string;
   category?: "free" | "premium";
   clanId?: string;
+  resultats?: string[];
+  parcours_resume?: any[];
+  niveau_difficulte?: string;
 }
 
 export type Exercise = {

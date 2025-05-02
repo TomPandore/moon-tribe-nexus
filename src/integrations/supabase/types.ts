@@ -173,7 +173,10 @@ export type Database = {
           duree_jours: number
           id: string
           image_url: string | null
+          niveau_difficulte: string | null
           nom: string
+          parcours_resume: Json | null
+          resultats: string[] | null
           tags: string[] | null
           type: string | null
         }
@@ -183,7 +186,10 @@ export type Database = {
           duree_jours?: number
           id?: string
           image_url?: string | null
+          niveau_difficulte?: string | null
           nom: string
+          parcours_resume?: Json | null
+          resultats?: string[] | null
           tags?: string[] | null
           type?: string | null
         }
@@ -193,7 +199,10 @@ export type Database = {
           duree_jours?: number
           id?: string
           image_url?: string | null
+          niveau_difficulte?: string | null
           nom?: string
+          parcours_resume?: Json | null
+          resultats?: string[] | null
           tags?: string[] | null
           type?: string | null
         }

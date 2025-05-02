@@ -144,12 +144,12 @@ const ProgramDetail = () => {
             <Card>
               <CardContent className="p-6">
                 <ul className="space-y-3">
-                  {program.focus.map((benefit, index) => (
+                  {(program.resultats || program.focus).map((benefit, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <div className="mt-0.5 bg-primary/10 rounded-full p-1">
                         <Check size={16} className="text-primary" />
                       </div>
-                      <span>{benefit === "Posture" 
+                      <span>{program.resultats ? benefit : benefit === "Posture" 
                         ? "Améliorez votre posture" 
                         : benefit === "Mobilité" 
                           ? "Gagnez en mobilité et souplesse"

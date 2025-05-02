@@ -12,6 +12,9 @@ export type ProgramType = {
   tags: string[];
   image_url: string | null;
   clan_id: string | null;
+  niveau_difficulte: string | null;
+  resultats: string[] | null;
+  parcours_resume: any | null;
 };
 
 // Fonction pour transformer les données de Supabase en format Programme
@@ -21,12 +24,15 @@ const mapSupabaseToProgramFormat = (item: ProgramType): Program => {
     name: item.nom,
     description: item.description || "",
     duration: item.duree_jours,
-    difficulty: "medium", // Valeur par défaut
+    difficulty: (item.niveau_difficulte as "easy" | "medium" | "hard") || "medium",
     focus: item.tags || [],
     image: item.image_url || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png",
     illustration: item.image_url || "/lovable-uploads/c5934c7a-812b-43ad-95e0-ca8200ca260e.png",
     category: item.type?.toLowerCase().includes('principal') ? "premium" : "free",
-    clanId: item.clan_id || undefined
+    clanId: item.clan_id || undefined,
+    resultats: item.resultats || [],
+    parcours_resume: item.parcours_resume || [],
+    niveau_difficulte: item.niveau_difficulte || "medium"
   };
 };
 

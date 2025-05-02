@@ -8,8 +8,18 @@ interface ProgramPhasesProps {
 }
 
 const ProgramPhases: React.FC<ProgramPhasesProps> = ({ program }) => {
-  // Créer dynamiquement les phases du programme basées sur sa durée
-  const createPhases = () => {
+  // Utiliser parcours_resume s'il est disponible, sinon créer des phases dynamiquement
+  const getPhases = () => {
+    // Si nous avons des données de parcours_resume, utilisons-les
+    if (program.parcours_resume && program.parcours_resume.length > 0) {
+      return program.parcours_resume.map(phase => ({
+        name: phase.titre,
+        range: phase.sous_titre,
+        description: phase.texte
+      }));
+    }
+    
+    // Sinon, créer dynamiquement les phases du programme basées sur sa durée
     const duration = program.duration;
     
     // Pour les programmes courts (moins de 10 jours), créer 2 phases
@@ -78,7 +88,7 @@ const ProgramPhases: React.FC<ProgramPhasesProps> = ({ program }) => {
     }
   };
 
-  const phases = createPhases();
+  const phases = getPhases();
 
   return (
     <div className="mb-6">
