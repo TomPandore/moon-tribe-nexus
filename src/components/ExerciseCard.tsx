@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Exercise } from "@/types";
 import ProgressBar from "./ProgressBar";
@@ -97,16 +98,16 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
         />
 
         {!isCompleted && (
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8"
+              className="h-10 w-10"
               onClick={handleDecrement}
               disabled={exercise.completed <= 0}
               aria-label="Réduire"
             >
-              <Minus size={16} />
+              <Minus size={18} />
             </Button>
 
             {[1, 5, 10].map((amount) => (
@@ -114,7 +115,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
                 key={amount}
                 type="button"
                 className={`
-                  px-2 py-1 text-xs font-medium rounded
+                  min-w-[48px] h-10 px-3 py-2 text-sm font-medium rounded
                   ${incrementAmount === amount
                     ? "bg-primary/10 text-primary"
                     : "bg-muted text-muted-foreground"}
@@ -129,11 +130,11 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onUpdate }) => {
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8"
+              className="h-10 w-10"
               onClick={handleIncrement}
               aria-label="Augmenter"
             >
-              <Plus size={16} />
+              <Plus size={18} />
             </Button>
           </div>
         )}
