@@ -19,11 +19,21 @@ import { useAuth } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
 
+// Protected route component - redirects to login if user is not authenticated
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
-  const isAuthenticated = localStorage.getItem("mohero_user") !== null;
+  const { user, isLoading } = useAuth();
   
-  if (!isAuthenticated) {
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-lg text-muted-foreground animate-pulse">Chargement...</p>
+      </div>
+    );
+  }
+  
+  if (!user) {
     // Redirect to login while preserving the intended destination
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
@@ -33,9 +43,18 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 // Public routes component - these routes are only accessible when logged out
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const isAuthenticated = localStorage.getItem("mohero_user") !== null;
+  const { user, isLoading } = useAuth();
   
-  if (isAuthenticated) {
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-lg text-muted-foreground animate-pulse">Chargement...</p>
+      </div>
+    );
+  }
+  
+  if (user) {
     return <Navigate to="/" replace />;
   }
   
