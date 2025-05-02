@@ -6,6 +6,7 @@ import { getRitualsByProgram } from "@/data/rituals";
 import { useAuth } from "./AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { usePrograms } from "@/hooks/usePrograms";
+import { supabase } from "@/integrations/supabase/client";
 
 type ProgramContextType = {
   availablePrograms: Program[];
@@ -55,7 +56,38 @@ export const ProgramProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [user, availablePrograms]);
 
-  const selectProgram = (programId: string) => {
+  // Fonction pour supprimer toutes les progressions d'exercices d'un utilisateur
+  const deleteUserExerciseProgress = async (userId: string) => {
+    try {
+      // Supprimer tous les enregistrements de progression pour cet utilisateur
+      const { error } = await supabase
+        .from('progression_exercice')
+        .delete()
+        .eq('user_id', userId);
+        
+      if (error) throw error;
+      
+      console.log("Progression des exercices supprimée avec succès");
+    } catch (error: any) {
+      console.error("Erreur lors de la suppression de la progression:", error.message);
+      toast({
+        title: "Erreur de réinitialisation",
+        description: "Impossible de supprimer l'historique des exercices",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const selectProgram = async (programId: string) => {
+    if (!user) {
+      toast({
+        title: "Erreur",
+        description: "Vous devez être connecté pour sélectionner un programme",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsLoading(true);
     try {
       const program = availablePrograms.find(p => p.id === programId);
@@ -64,6 +96,13 @@ export const ProgramProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
       
       console.log("Programme sélectionné:", program);
+      
+      // Si l'utilisateur change de programme, on supprime toutes ses progressions
+      if (currentProgram && currentProgram.id !== programId) {
+        await deleteUserExerciseProgress(user.id);
+      }
+      
+      // Mettre à jour l'état local
       setCurrentProgram(program);
       
       const programRituals = getRitualsByProgram(program.id);
@@ -73,7 +112,19 @@ export const ProgramProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const ritual = programRituals.find(r => r.day === 1) || null;
       setCurrentRitual(ritual);
       
-      // Mettre à jour l'état utilisateur
+      // Mettre à jour la base de données
+      // 1. Mettre à jour le programme_id dans la table profiles
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ 
+          programme_id: programId,
+          jour_actuel: 1
+        })
+        .eq('id', user.id);
+        
+      if (profileError) throw profileError;
+      
+      // 2. Mettre à jour l'état utilisateur dans le contexte
       updateUserProgress({
         currentProgram: program.id,
         currentDay: 1,

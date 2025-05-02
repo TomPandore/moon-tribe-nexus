@@ -11,12 +11,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Program } from "@/types";
 
 const Programs: React.FC = () => {
   const navigate = useNavigate();
   const { selectProgram, currentProgram, isLoading: isProgramChanging } = useProgram();
   const { user } = useAuth();
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
+  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const { data: programs = [], isLoading: isLoadingAllPrograms, error: allProgramsError } = usePrograms();
   const { data: clanPrograms = [], isLoading: isLoadingClanPrograms } = useClanPrograms(user?.clanId);
@@ -37,8 +39,10 @@ const Programs: React.FC = () => {
     console.log(`Selecting program with ID: ${programId}`);
     
     // Vérifier si le programme existe dans la liste
-    const programExists = [...programs, ...clanPrograms].some(p => p.id === programId);
-    if (!programExists) {
+    const allPrograms = [...programs, ...clanPrograms];
+    const program = allPrograms.find(p => p.id === programId);
+    
+    if (!program) {
       toast({
         title: "Programme non trouvé",
         description: `Impossible de trouver le programme avec l'ID: ${programId}`,
@@ -65,6 +69,7 @@ const Programs: React.FC = () => {
     }
 
     setSelectedProgramId(programId);
+    setSelectedProgram(program);
     setShowConfirmDialog(true);
   };
 
@@ -168,6 +173,7 @@ const Programs: React.FC = () => {
           open={showConfirmDialog}
           onOpenChange={setShowConfirmDialog}
           onConfirm={handleConfirmProgramChange}
+          newProgramName={selectedProgram?.name}
         />
       </main>
     </div>
