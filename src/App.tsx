@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProgramProvider } from "@/contexts/ProgramContext";
 import Login from "./pages/Login";
 import Programs from "./pages/Programs";
+import ProgramDetail from "./pages/ProgramDetail";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -87,6 +88,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Programs />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/programs/:programId" 
+          element={
+            <ProtectedRoute>
+              <ProgramDetail />
             </ProtectedRoute>
           } 
         />

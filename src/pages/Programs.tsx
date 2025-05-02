@@ -6,20 +6,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
 import { usePrograms, useClanPrograms } from "@/hooks/usePrograms";
 import ProgramSection from "@/components/programs/ProgramSection";
-import ProgramChangeDialog from "@/components/programs/ProgramChangeDialog";
 import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
 import { Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Program } from "@/types";
 
 const Programs: React.FC = () => {
   const navigate = useNavigate();
-  const { selectProgram, currentProgram, isLoading: isProgramChanging } = useProgram();
+  const { currentProgram } = useProgram();
   const { user } = useAuth();
-  const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
-  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const { data: programs = [], isLoading: isLoadingAllPrograms, error: allProgramsError } = usePrograms();
   const { data: clanPrograms = [], isLoading: isLoadingClanPrograms } = useClanPrograms(user?.clanId);
   const { toast } = useToast();
@@ -51,41 +46,8 @@ const Programs: React.FC = () => {
       return;
     }
     
-    if (!currentProgram) {
-      selectProgram(programId);
-      toast({
-        title: "Programme sélectionné",
-        description: "Chargement du programme en cours...",
-      });
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
-      return;
-    }
-
-    if (currentProgram.id === programId) {
-      navigate("/dashboard");
-      return;
-    }
-
-    setSelectedProgramId(programId);
-    setSelectedProgram(program);
-    setShowConfirmDialog(true);
-  };
-
-  const handleConfirmProgramChange = () => {
-    if (selectedProgramId) {
-      console.log(`Confirming program change to ID: ${selectedProgramId}`);
-      selectProgram(selectedProgramId);
-      toast({
-        title: "Programme modifié",
-        description: "Chargement du nouveau programme en cours...",
-      });
-      setShowConfirmDialog(false);
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
-    }
+    // Naviguer vers la page de détail du programme
+    navigate(`/programs/${programId}`);
   };
 
   // Get clan color for badge
@@ -167,13 +129,6 @@ const Programs: React.FC = () => {
           error={error}
           onProgramSelect={handleProgramSelect}
           currentProgramId={currentProgram?.id}
-        />
-
-        <ProgramChangeDialog
-          open={showConfirmDialog}
-          onOpenChange={setShowConfirmDialog}
-          onConfirm={handleConfirmProgramChange}
-          newProgramName={selectedProgram?.name}
         />
       </main>
     </div>
