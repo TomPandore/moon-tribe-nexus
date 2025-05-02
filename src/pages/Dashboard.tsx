@@ -10,6 +10,7 @@ import RitualSection from "@/components/dashboard/RitualSection";
 import ExercisesList from "@/components/dashboard/ExercisesList";
 import CompleteRitualButton from "@/components/dashboard/CompleteRitualButton";
 import { useDayProgression } from "@/hooks/useDayProgression";
+import { useProgram } from "@/contexts/program";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();

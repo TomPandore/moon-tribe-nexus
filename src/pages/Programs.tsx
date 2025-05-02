@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useProgram } from "@/contexts/ProgramContext";
+import { useProgram } from "@/contexts/program";
 import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
 import { usePrograms, useClanPrograms } from "@/hooks/usePrograms";

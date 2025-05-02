@@ -1,22 +1,14 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Program, DailyRitual, Exercise } from "@/types";
+import { Program, DailyRitual } from "@/types";
 import { programs } from "@/data/programs";
 import { getRitualsByProgram } from "@/data/rituals";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { usePrograms } from "@/hooks/usePrograms";
 import { supabase } from "@/integrations/supabase/client";
-
-type ProgramContextType = {
-  availablePrograms: Program[];
-  currentProgram: Program | null;
-  currentRitual: DailyRitual | null;
-  selectProgram: (programId: string) => void;
-  updateExerciseProgress: (exerciseId: string, value: number) => void;
-  completeRitual: () => void;
-  isLoading: boolean;
-};
+import { ProgramContextType } from "./types";
+import { deleteUserExerciseProgress } from "./utils";
 
 const ProgramContext = createContext<ProgramContextType | undefined>(undefined);
 
@@ -55,28 +47,6 @@ export const ProgramProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     }
   }, [user, availablePrograms]);
-
-  // Fonction pour supprimer toutes les progressions d'exercices d'un utilisateur
-  const deleteUserExerciseProgress = async (userId: string) => {
-    try {
-      // Supprimer tous les enregistrements de progression pour cet utilisateur
-      const { error } = await supabase
-        .from('progression_exercice')
-        .delete()
-        .eq('user_id', userId);
-        
-      if (error) throw error;
-      
-      console.log("Progression des exercices supprimée avec succès");
-    } catch (error: any) {
-      console.error("Erreur lors de la suppression de la progression:", error.message);
-      toast({
-        title: "Erreur de réinitialisation",
-        description: "Impossible de supprimer l'historique des exercices",
-        variant: "destructive"
-      });
-    }
-  };
 
   const selectProgram = async (programId: string) => {
     if (!user) {
