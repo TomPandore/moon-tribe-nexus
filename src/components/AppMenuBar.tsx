@@ -1,19 +1,19 @@
 
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, Calendar, List, Cog } from "lucide-react";
+import { Flame, ArrowRight, Calendar, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   {
-    label: "Accueil",
-    icon: Home,
-    to: "/",  // Modification : utiliser "/" explicitement pour l'accueil
+    label: "Totem",
+    icon: Flame,
+    to: "/",
     testId: "menu-home"
   },
   {
-    label: "Programmes",
-    icon: List,
+    label: "Voies",
+    icon: ArrowRight,
     to: "/programs",
     testId: "menu-programs"
   },
@@ -24,8 +24,8 @@ const navItems = [
     testId: "menu-ritual"
   },
   {
-    label: "Paramètres",
-    icon: Cog,
+    label: "Compte",
+    icon: UserRound,
     to: "/settings",
     testId: "menu-settings"
   }
@@ -37,7 +37,7 @@ const AppMenuBar: React.FC = () => {
 
   const isActive = (to: string) =>
     location.pathname === to ||
-    (to === "/" && location.pathname === "/"); // S'assurer que "/" est bien géré
+    (to === "/" && location.pathname === "/");
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-50 px-safe">
@@ -86,4 +86,3 @@ const AppMenuBar: React.FC = () => {
 };
 
 export default AppMenuBar;
-
