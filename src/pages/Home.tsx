@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useProgram } from "@/contexts/ProgramContext";
+import { useProgram } from "@/contexts/program";
 import { useAuth } from "@/contexts/AuthContext";
 import { Trophy, Target, Calendar, Flame, Shield } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
