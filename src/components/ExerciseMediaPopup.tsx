@@ -13,7 +13,7 @@ interface ExerciseMediaPopupProps {
 const ExerciseMediaPopup: React.FC<ExerciseMediaPopupProps> = ({ open, onOpenChange, exerciseName, videoUrl }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-3xl w-[90vw]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Video className="text-primary" size={18} />
@@ -36,7 +36,7 @@ const ExerciseMediaPopup: React.FC<ExerciseMediaPopupProps> = ({ open, onOpenCha
             />
           </div>
         ) : (
-          <div className="w-full h-40 flex items-center justify-center text-gray-500 bg-muted rounded-lg">
+          <div className="w-full h-64 flex items-center justify-center text-gray-500 bg-muted rounded-lg">
             Vidéo non disponible
           </div>
         )}
