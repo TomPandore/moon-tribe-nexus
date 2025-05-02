@@ -1,23 +1,22 @@
+
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import Logo from "@/components/Logo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserPlus, LogIn, Mail, Lock, User } from "lucide-react";
+import { UserPlus, LogIn, Mail, Lock } from "lucide-react";
 import RegisterFlow from "@/components/auth/RegisterFlow";
+
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    login,
-    user,
-    isLoading
-  } = useAuth();
-  const {
-    toast
-  } = useToast();
+  const location = useLocation();
+  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || "/";
+  
+  const { login, user, isLoading } = useAuth();
+  const { toast } = useToast();
   const [showRegisterFlow, setShowRegisterFlow] = useState(false);
 
   // États pour le login
@@ -27,26 +26,22 @@ const Login: React.FC = () => {
 
   // Redirect if user is already logged in
   useEffect(() => {
-    console.log("Login page - auth state:", {
-      user,
-      isLoading
-    });
     if (user && !isLoading) {
-      console.log("Redirecting to dashboard because user is logged in");
-      navigate("/dashboard", {
-        replace: true
-      });
+      navigate(from, { replace: true });
     }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading, navigate, from]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loginInProgress) return;
+
     try {
       setLoginInProgress(true);
+      
       if (!loginEmail || !loginPassword) {
         throw new Error("Veuillez remplir tous les champs");
       }
-      console.log("Submitting login form");
+      
       await login(loginEmail, loginPassword);
       // La redirection est gérée par l'useEffect ci-dessus
     } catch (error) {
@@ -55,20 +50,26 @@ const Login: React.FC = () => {
       setLoginInProgress(false);
     }
   };
+
   if (isLoading && user === null) {
-    return <div className="min-h-screen flex items-center justify-center bg-background">
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="mb-4">
             <Logo size="lg" />
           </div>
           <p className="text-lg text-muted-foreground animate-pulse">Chargement...</p>
         </div>
-      </div>;
+      </div>
+    );
   }
+
   if (showRegisterFlow) {
     return <RegisterFlow onCancel={() => setShowRegisterFlow(false)} />;
   }
-  return <div className="min-h-screen bg-background text-foreground relative">
+
+  return (
+    <div className="min-h-screen bg-background text-foreground relative">
       {/* Background pattern */}
       <div className="absolute inset-0 tribal-pattern pointer-events-none"></div>
       
@@ -125,11 +126,11 @@ const Login: React.FC = () => {
                     </Button>
                   </div>
                   
-                  {/* Debugging state */}
-                  <div className="text-xs text-muted-foreground">
-                    État: {loginInProgress ? "Connexion en cours" : "Prêt"} | 
-                    Auth: {isLoading ? "Chargement" : user ? "Connecté" : "Non connecté"}
-                  </div>
+                  {from !== "/" && (
+                    <div className="text-sm text-tribal-green">
+                      Vous devez vous connecter pour accéder à cette page.
+                    </div>
+                  )}
                 </form>
               </TabsContent>
               
@@ -147,14 +148,10 @@ const Login: React.FC = () => {
               </TabsContent>
             </Tabs>
           </div>
-          
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            <button onClick={() => navigate("/")} className="tribal-link">
-              Retour à l'accueil
-            </button>
-          </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Login;

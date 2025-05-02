@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProgramProvider } from "@/contexts/ProgramContext";
 import Login from "./pages/Login";
@@ -15,17 +15,83 @@ import NotFound from "./pages/NotFound";
 import AppMenuBar from "@/components/AppMenuBar";
 import AppHeader from "@/components/AppHeader";
 import Home from "./pages/Home";
+import { useAuth } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
   const isAuthenticated = localStorage.getItem("mohero_user") !== null;
   
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    // Redirect to login while preserving the intended destination
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   
   return <>{children}</>;
+};
+
+// Public routes component - these routes are only accessible when logged out
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuthenticated = localStorage.getItem("mohero_user") !== null;
+  
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const AppRoutes = () => {
+  return (
+    <div className="min-h-screen pb-16 relative bg-background pt-20">
+      <AppHeader />
+      <Routes>
+        <Route 
+          path="/login" 
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          } 
+        />
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/programs" 
+          element={
+            <ProtectedRoute>
+              <Programs />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/settings" 
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <AppMenuBar />
+    </div>
+  );
 };
 
 const App = () => (
@@ -36,49 +102,7 @@ const App = () => (
       <AuthProvider>
         <ProgramProvider>
           <BrowserRouter>
-            <div className="min-h-screen pb-16 relative bg-background pt-20">
-              <AppHeader />
-              <Routes>
-                <Route 
-                  path="/login" 
-                  element={<Login />} 
-                />
-                <Route 
-                  path="/" 
-                  element={
-                    <ProtectedRoute>
-                      <Home />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/programs" 
-                  element={
-                    <ProtectedRoute>
-                      <Programs />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/settings" 
-                  element={
-                    <ProtectedRoute>
-                      <Settings />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <AppMenuBar />
-            </div>
+            <AppRoutes />
           </BrowserRouter>
         </ProgramProvider>
       </AuthProvider>
