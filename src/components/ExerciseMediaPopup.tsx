@@ -17,8 +17,8 @@ const ExerciseMediaPopup: React.FC<ExerciseMediaPopupProps> = ({ open, onOpenCha
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md w-[90vw] mx-auto">
-        <DialogHeader>
+      <DialogContent className="max-w-md w-[90vw] mx-auto p-4 h-auto max-h-[90vh] my-auto">
+        <DialogHeader className="pb-2">
           <DialogTitle className="flex items-center gap-2">
             <Video className="text-primary" size={18} />
             {exerciseName}
