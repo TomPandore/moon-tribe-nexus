@@ -17,7 +17,7 @@ const ExerciseMediaPopup: React.FC<ExerciseMediaPopupProps> = ({ open, onOpenCha
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md w-[90vw] mx-auto p-4 h-auto max-h-[90vh] my-auto">
+      <DialogContent className="max-w-md w-[90vw] mx-auto p-4 h-auto max-h-[90vh] my-auto overflow-hidden">
         <DialogHeader className="pb-2">
           <DialogTitle className="flex items-center gap-2">
             <Video className="text-primary" size={18} />
@@ -38,7 +38,7 @@ const ExerciseMediaPopup: React.FC<ExerciseMediaPopupProps> = ({ open, onOpenCha
                 frameBorder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                className="w-full h-full"
+                className="w-full h-full object-contain"
               />
             </AspectRatio>
           </div>
