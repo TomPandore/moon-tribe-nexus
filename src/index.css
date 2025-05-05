@@ -100,13 +100,7 @@
     @apply w-full h-px bg-gray-200 my-4;
   }
 
-  /* Styles pour la page de login avec l'arrière-plan jungle */
-  .jungle-background {
-    background-image: url('/lovable-uploads/a5fea299-ef7a-467e-8c3f-beb7db9215df.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
+  /* Suppression de la classe jungle-background et utilisation directe dans le composant */
 
   .glass-panel {
     @apply bg-black/40 backdrop-blur-md border border-white/10 shadow-xl;
