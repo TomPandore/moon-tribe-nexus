@@ -68,13 +68,15 @@ const Login: React.FC = () => {
     return <RegisterFlow onCancel={() => setShowRegisterFlow(false)} />;
   }
 
-  // Style inline pour l'arrière-plan
+  // Style inline pour l'arrière-plan avec l'URL distante
   const backgroundStyle = {
-    backgroundImage: `url('/lovable-uploads/a5fea299-ef7a-467e-8c3f-beb7db9215df.png')`,
+    backgroundImage: `url('https://mohero.fr/wp-content/uploads/2025/05/arriereplan-screen1.png')`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat'
   };
+
+  console.log("Background image URL:", 'https://mohero.fr/wp-content/uploads/2025/05/arriereplan-screen1.png');
 
   return (
     <div className="min-h-screen text-white" style={backgroundStyle}>
