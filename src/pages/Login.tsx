@@ -70,7 +70,7 @@ const Login: React.FC = () => {
 
   // Style inline pour l'arrière-plan
   const backgroundStyle = {
-    backgroundImage: `url(${process.env.PUBLIC_URL || ''}/lovable-uploads/a5fea299-ef7a-467e-8c3f-beb7db9215df.png)`,
+    backgroundImage: `url('/lovable-uploads/a5fea299-ef7a-467e-8c3f-beb7db9215df.png')`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat'
