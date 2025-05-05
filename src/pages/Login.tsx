@@ -10,9 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserPlus, LogIn, Mail, Lock } from "lucide-react";
 import RegisterFlow from "@/components/auth/RegisterFlow";
 
-// Importez l'image en dur
-import jungleBackgroundImg from "/lovable-uploads/a5fea299-ef7a-467e-8c3f-beb7db9215df.png";
-
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,14 +70,11 @@ const Login: React.FC = () => {
 
   // Style inline pour l'arrière-plan
   const backgroundStyle = {
-    backgroundImage: `url(${jungleBackgroundImg})`,
+    backgroundImage: `url(${process.env.PUBLIC_URL || ''}/lovable-uploads/a5fea299-ef7a-467e-8c3f-beb7db9215df.png)`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat'
   };
-
-  // Console log pour vérifier l'URL de l'image
-  console.log("Jungle background image URL:", jungleBackgroundImg);
 
   return (
     <div className="min-h-screen text-white" style={backgroundStyle}>
