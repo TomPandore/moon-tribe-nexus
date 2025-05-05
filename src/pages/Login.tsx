@@ -70,6 +70,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen jungle-background text-white">
+      {/* Overlay pour améliorer la lisibilité */}
       <div className="absolute inset-0 bg-black/50 backdrop-brightness-50"></div>
       
       <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12 relative z-10">
