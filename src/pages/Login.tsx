@@ -80,8 +80,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen text-white" style={backgroundStyle}>
-      {/* Overlay pour améliorer la lisibilité */}
-      <div className="absolute inset-0 bg-black/50 backdrop-brightness-50"></div>
+      {/* Suppression de l'overlay noir */}
       
       <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12 relative z-10">
         <div className="w-full max-w-md relative animate-fade-in">
