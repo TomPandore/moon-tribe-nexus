@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -28,7 +29,7 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(160 25% 49%)",
+          DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))"
         },
         secondary: {
@@ -46,7 +47,10 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))"
-        }
+        },
+        "tribal-green": "#3dd78c",
+        "tribal-dark": "#222222",
+        "tribal-light": "#f2fce2"
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -54,7 +58,8 @@ export default {
         sm: "calc(var(--radius) - 0.25rem)"
       },
       fontFamily: {
-        sans: ["Inter", "SF Pro Display", "-apple-system", "BlinkMacSystemFont", "sans-serif"]
+        sans: ["Inter", "SF Pro Display", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        oswald: ["Oswald", "sans-serif"]
       },
       keyframes: {
         "fade-in": {

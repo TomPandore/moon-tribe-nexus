@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -97,5 +98,35 @@
   /* Séparateur pour blocs exercices */
   .exercise-separator {
     @apply w-full h-px bg-gray-200 my-4;
+  }
+
+  /* Styles pour la page de login avec l'arrière-plan jungle */
+  .jungle-background {
+    background-image: url('/lovable-uploads/09bbf519-8ba3-4796-94df-fc1666a1ab42.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .glass-panel {
+    @apply bg-black/40 backdrop-blur-md border border-white/10 shadow-xl;
+  }
+
+  .tribal-card {
+    @apply rounded-xl p-6;
+  }
+
+  .tribal-input {
+    @apply bg-black/30 border-white/20 text-white placeholder-white/50 focus:border-emerald-400/70 focus:ring-emerald-400/20;
+  }
+
+  .tribal-btn-primary {
+    @apply bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition-colors;
+  }
+
+  .tribal-pattern {
+    background-color: rgba(0, 0, 0, 0.4);
+    background-image: radial-gradient(rgba(0, 255, 128, 0.1) 2px, transparent 2px);
+    background-size: 30px 30px;
   }
 }
