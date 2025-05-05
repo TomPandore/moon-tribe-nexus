@@ -88,13 +88,13 @@ const Login: React.FC = () => {
             <Logo size="lg" />
           </div>
           
-          <h2 className="text-3xl font-oswald text-center mb-1 text-tribal-green uppercase tracking-wider">Rejoindre la tribu</h2>
-          
-          <p className="text-center text-white/80 mb-6">
-            Transforme ton quotidien avec des rituels de mouvements
-          </p>
-
           <div className="tribal-card glass-panel">
+            <h2 className="text-3xl font-oswald text-center mb-1 text-tribal-green uppercase tracking-wider">Rejoindre la tribu</h2>
+            
+            <p className="text-center text-white/80 mb-6">
+              Transforme ton quotidien avec des rituels de mouvements
+            </p>
+            
             <Tabs defaultValue="login" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-6 bg-black/20 border border-white/10">
                 <TabsTrigger value="login" className="data-[state=active]:bg-tribal-green data-[state=active]:text-black">
