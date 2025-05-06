@@ -3,6 +3,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Flame, ArrowRight, Calendar, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
   {
@@ -34,6 +35,12 @@ const navItems = [
 const AppMenuBar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // If user is not authenticated, don't render the menu bar
+  if (!user) {
+    return null;
+  }
 
   const isActive = (to: string) =>
     location.pathname === to ||

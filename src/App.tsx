@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -62,9 +63,16 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AppRoutes = () => {
+  const { user } = useAuth();
+  
+  // Conditionally apply padding bottom based on user authentication
+  const containerClasses = user 
+    ? "min-h-screen pb-16 relative bg-background pt-20" 
+    : "min-h-screen relative bg-background";
+  
   return (
-    <div className="min-h-screen pb-16 relative bg-background pt-20">
-      <AppHeader />
+    <div className={containerClasses}>
+      {user && <AppHeader />}
       <Routes>
         <Route 
           path="/login" 
