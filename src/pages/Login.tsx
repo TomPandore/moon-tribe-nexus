@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -113,14 +114,14 @@ const Login: React.FC = () => {
                       Email
                     </label>
                     <div className="relative">
-                      <Mail size={16} className="absolute left-3 top-3.5 text-white/60" />
+                      <Mail size={16} className="absolute left-3 top-3.5 text-tribal-green" />
                       <Input 
                         id="login-email" 
                         name="email" 
                         type="email" 
                         autoComplete="email" 
                         required 
-                        className="tribal-input w-full pl-10" 
+                        className="tribal-input w-full pl-10 text-white" 
                         value={loginEmail} 
                         onChange={e => setLoginEmail(e.target.value)} 
                         disabled={loginInProgress}
@@ -134,14 +135,14 @@ const Login: React.FC = () => {
                       Mot de passe
                     </label>
                     <div className="relative">
-                      <Lock size={16} className="absolute left-3 top-3.5 text-white/60" />
+                      <Lock size={16} className="absolute left-3 top-3.5 text-tribal-green" />
                       <Input 
                         id="login-password" 
                         name="password" 
                         type="password" 
                         autoComplete="current-password" 
                         required 
-                        className="tribal-input w-full pl-10" 
+                        className="tribal-input w-full pl-10 text-white" 
                         value={loginPassword} 
                         onChange={e => setLoginPassword(e.target.value)} 
                         disabled={loginInProgress}

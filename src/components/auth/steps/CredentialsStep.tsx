@@ -58,7 +58,7 @@ const CredentialsStep: React.FC<CredentialsStepProps> = ({
             Email
           </label>
           <div className="relative">
-            <Mail size={16} className="absolute left-3 top-3.5 text-white/60" />
+            <Mail size={16} className="absolute left-3 top-3.5 text-tribal-green" />
             <Input
               id="email"
               type="email"
@@ -78,7 +78,7 @@ const CredentialsStep: React.FC<CredentialsStepProps> = ({
             Mot de passe
           </label>
           <div className="relative">
-            <Lock size={16} className="absolute left-3 top-3.5 text-white/60" />
+            <Lock size={16} className="absolute left-3 top-3.5 text-tribal-green" />
             <Input
               id="password"
               type="password"
