@@ -36,6 +36,14 @@ const RegisterFlow: React.FC<RegisterFlowProps> = ({ onCancel }) => {
   });
   const [isRegistering, setIsRegistering] = useState(false);
   
+  // Style inline pour l'arrière-plan avec l'URL distante
+  const backgroundStyle = {
+    backgroundImage: `url('https://mohero.fr/wp-content/uploads/2025/05/arriereplan-screen1.png')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
+  };
+
   const updateRegisterData = (data: Partial<RegisterData>) => {
     setRegisterData(prev => ({
       ...prev,
@@ -89,10 +97,7 @@ const RegisterFlow: React.FC<RegisterFlowProps> = ({ onCancel }) => {
   };
   
   return (
-    <div className="min-h-screen bg-background text-foreground relative">
-      {/* Background pattern */}
-      <div className="absolute inset-0 tribal-pattern pointer-events-none"></div>
-      
+    <div className="min-h-screen text-white" style={backgroundStyle}>
       <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12 relative z-10">
         <div className="w-full max-w-md">
           <div className="flex justify-center mb-8">
