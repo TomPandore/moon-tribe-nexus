@@ -65,7 +65,7 @@ const CredentialsStep: React.FC<CredentialsStepProps> = ({
               value={email}
               onChange={(e) => onEmailChange(e.target.value)}
               onBlur={() => setEmailTouched(true)}
-              className="tribal-input pl-10 text-white"
+              className="tribal-input pl-10 text-black"
               placeholder="Ton email"
               disabled={isRegistering}
             />
@@ -85,7 +85,7 @@ const CredentialsStep: React.FC<CredentialsStepProps> = ({
               value={password}
               onChange={(e) => onPasswordChange(e.target.value)}
               onBlur={() => setPasswordTouched(true)}
-              className="tribal-input pl-10 text-white"
+              className="tribal-input pl-10 text-black"
               placeholder="Ton mot de passe"
               disabled={isRegistering}
             />

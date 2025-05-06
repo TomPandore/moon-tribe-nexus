@@ -58,7 +58,7 @@ export const UserInfoEdit = ({ currentName, currentEmail, onUpdate }: UserInfoEd
                 <FormItem>
                   <FormLabel>Pseudo</FormLabel>
                   <FormControl>
-                    <Input placeholder="Votre pseudo" {...field} />
+                    <Input placeholder="Votre pseudo" {...field} className="text-black" />
                   </FormControl>
                 </FormItem>
               )}
@@ -70,7 +70,7 @@ export const UserInfoEdit = ({ currentName, currentEmail, onUpdate }: UserInfoEd
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Votre email" {...field} />
+                    <Input type="email" placeholder="Votre email" {...field} className="text-black" />
                   </FormControl>
                 </FormItem>
               )}

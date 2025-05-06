@@ -121,7 +121,7 @@ const Login: React.FC = () => {
                         type="email" 
                         autoComplete="email" 
                         required 
-                        className="tribal-input w-full pl-10 text-white" 
+                        className="tribal-input w-full pl-10 text-black" 
                         value={loginEmail} 
                         onChange={e => setLoginEmail(e.target.value)} 
                         disabled={loginInProgress}
@@ -142,7 +142,7 @@ const Login: React.FC = () => {
                         type="password" 
                         autoComplete="current-password" 
                         required 
-                        className="tribal-input w-full pl-10 text-white" 
+                        className="tribal-input w-full pl-10 text-black" 
                         value={loginPassword} 
                         onChange={e => setLoginPassword(e.target.value)} 
                         disabled={loginInProgress}
