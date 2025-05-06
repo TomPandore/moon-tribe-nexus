@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -115,7 +114,18 @@ const Login: React.FC = () => {
                     </label>
                     <div className="relative">
                       <Mail size={16} className="absolute left-3 top-3.5 text-white/60" />
-                      <Input id="login-email" name="email" type="email" autoComplete="email" required className="tribal-input w-full pl-10" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} disabled={loginInProgress} />
+                      <Input 
+                        id="login-email" 
+                        name="email" 
+                        type="email" 
+                        autoComplete="email" 
+                        required 
+                        className="tribal-input w-full pl-10" 
+                        value={loginEmail} 
+                        onChange={e => setLoginEmail(e.target.value)} 
+                        disabled={loginInProgress}
+                        placeholder="Entrez votre email"
+                      />
                     </div>
                   </div>
 
@@ -125,7 +135,18 @@ const Login: React.FC = () => {
                     </label>
                     <div className="relative">
                       <Lock size={16} className="absolute left-3 top-3.5 text-white/60" />
-                      <Input id="login-password" name="password" type="password" autoComplete="current-password" required className="tribal-input w-full pl-10" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} disabled={loginInProgress} />
+                      <Input 
+                        id="login-password" 
+                        name="password" 
+                        type="password" 
+                        autoComplete="current-password" 
+                        required 
+                        className="tribal-input w-full pl-10" 
+                        value={loginPassword} 
+                        onChange={e => setLoginPassword(e.target.value)} 
+                        disabled={loginInProgress}
+                        placeholder="Entrez votre mot de passe"
+                      />
                     </div>
                   </div>
 

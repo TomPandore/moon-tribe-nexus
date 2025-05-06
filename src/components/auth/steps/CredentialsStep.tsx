@@ -1,8 +1,8 @@
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, Mail, Lock, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Lock, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CredentialsStepProps {
   email: string;
@@ -23,99 +23,100 @@ const CredentialsStep: React.FC<CredentialsStepProps> = ({
   onBack,
   isRegistering
 }) => {
-  const [errors, setErrors] = useState({ email: "", password: "" });
-
-  const validate = () => {
-    let valid = true;
-    const newErrors = { email: "", password: "" };
-
-    if (!email) {
-      newErrors.email = "L'email est requis";
-      valid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Format d'email invalide";
-      valid = false;
-    }
-
-    if (!password) {
-      newErrors.password = "Le mot de passe est requis";
-      valid = false;
-    } else if (password.length < 6) {
-      newErrors.password = "Le mot de passe doit contenir au moins 6 caractères";
-      valid = false;
-    }
-
-    setErrors(newErrors);
-    return valid;
-  };
-
+  // Form validation
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  
+  const isEmailValid = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isPasswordValid = password && password.length >= 6;
+  
+  const emailError = emailTouched && !isEmailValid ? "Email invalide" : null;
+  const passwordError = passwordTouched && !isPasswordValid ? "Le mot de passe doit contenir au moins 6 caractères" : null;
+  
+  const isFormValid = isEmailValid && isPasswordValid;
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
+    setEmailTouched(true);
+    setPasswordTouched(true);
+    
+    if (isFormValid) {
       onSubmit();
     }
   };
-
+  
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-center">Dernière étape - Créer ton compte</h2>
-
+      <div className="space-y-2">
+        <h2 className="text-2xl font-oswald text-tribal-green uppercase tracking-wide">Crée ton compte</h2>
+        <p className="text-sm text-white/80">Entre tes identifiants pour finaliser ton inscription</p>
+      </div>
+      
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-1">
+          <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-2">
             Email
           </label>
           <div className="relative">
-            <Mail size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
+            <Mail size={16} className="absolute left-3 top-3.5 text-white/60" />
             <Input
               id="email"
               type="email"
               value={email}
-              onChange={(e) => {
-                onEmailChange(e.target.value);
-                setErrors({ ...errors, email: "" });
-              }}
-              className="tribal-input w-full pl-10"
-              placeholder="ton@email.com"
+              onChange={(e) => onEmailChange(e.target.value)}
+              onBlur={() => setEmailTouched(true)}
+              className="tribal-input pl-10"
+              placeholder="Ton email"
               disabled={isRegistering}
             />
           </div>
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          {emailError && <p className="mt-1 text-sm text-red-400">{emailError}</p>}
         </div>
-
+        
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-1">
+          <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-2">
             Mot de passe
           </label>
           <div className="relative">
-            <Lock size={16} className="absolute left-3 top-3.5 text-muted-foreground" />
+            <Lock size={16} className="absolute left-3 top-3.5 text-white/60" />
             <Input
               id="password"
               type="password"
               value={password}
-              onChange={(e) => {
-                onPasswordChange(e.target.value);
-                setErrors({ ...errors, password: "" });
-              }}
-              className="tribal-input w-full pl-10"
-              placeholder="Mot de passe (6 caractères minimum)"
+              onChange={(e) => onPasswordChange(e.target.value)}
+              onBlur={() => setPasswordTouched(true)}
+              className="tribal-input pl-10"
+              placeholder="Ton mot de passe"
               disabled={isRegistering}
             />
           </div>
-          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+          {passwordError && <p className="mt-1 text-sm text-red-400">{passwordError}</p>}
         </div>
-
-        <div className="flex justify-between mt-8">
-          <Button type="button" variant="outline" onClick={onBack} disabled={isRegistering}>
-            <ArrowLeft size={16} className="mr-2" />
-            Retour
-          </Button>
+        
+        <div className="space-y-4">
           <Button 
             type="submit" 
-            className="tribal-btn-primary" 
+            className="w-full tribal-btn-primary" 
+            disabled={isRegistering || !isFormValid}
+          >
+            {isRegistering ? (
+              <>
+                <Loader2 size={16} className="mr-2 animate-spin" />
+                Création du compte...
+              </>
+            ) : (
+              "Finaliser l'inscription"
+            )}
+          </Button>
+          
+          <Button 
+            type="button" 
+            onClick={onBack} 
+            className="w-full bg-transparent hover:bg-white/5 text-white border border-white/20"
             disabled={isRegistering}
           >
-            {isRegistering ? "Création en cours..." : "Créer mon compte"}
+            <ChevronLeft size={16} className="mr-2" />
+            Retour
           </Button>
         </div>
       </form>

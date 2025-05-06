@@ -111,7 +111,7 @@
   }
 
   .tribal-input {
-    @apply bg-black/30 border-white/20 text-white placeholder-white/50 focus:border-emerald-400/70 focus:ring-emerald-400/20;
+    @apply bg-black/30 border-white/20 text-white placeholder-white/60 focus:border-emerald-400/70 focus:ring-emerald-400/20;
   }
 
   .tribal-btn-primary {
